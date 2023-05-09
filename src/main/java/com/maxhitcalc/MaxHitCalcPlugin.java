@@ -93,7 +93,7 @@ public class MaxHitCalcPlugin extends Plugin
 	@Override
 	protected void shutDown() throws Exception
 	{
-		overlayManager.add(pluginOverlay);
+		overlayManager.remove(pluginOverlay);
 	}
 
 	// Calculate Normal Max Hit
