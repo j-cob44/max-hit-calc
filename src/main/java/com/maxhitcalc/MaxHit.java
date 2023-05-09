@@ -303,11 +303,10 @@ public class MaxHit {
         return maxHit;
     }
 
-    public static double getSpellBaseHit(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle)
+    public static double getSpellBaseHit(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
     {
         int spellSpriteID = -1;
         double basehit = 0;
-        double magicLevel = client.getBoostedSkillLevel(Skill.MAGIC);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
@@ -379,7 +378,7 @@ public class MaxHit {
             // Magic Dart Case
             if(selectedSpell.getName().equalsIgnoreCase("MAGIC DART"))
             {
-                double magicDartDamage = Math.floor(client.getBoostedSkillLevel(Skill.MAGIC) * (1/10)) + 10;
+                double magicDartDamage = Math.floor(magicLevel * (1/10)) + 10;
 
                 basehit = magicDartDamage;
             }
@@ -418,7 +417,7 @@ public class MaxHit {
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
-        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle);
+        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
 
         // Step 2: Calculate the Magic Damage Bonus
         double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);

@@ -245,16 +245,40 @@ public class PredictNextMax extends MaxHit
 
     public static List<Object> predictNextMageMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
+        int nextMagicLevel = 0;
         double nextMagicDamageBonus = 0;
 
         double currentMaxHit = calculateMagicMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID);
 
-        // Predict Next Ranged Level for Next Max Hit
+        // Predict Next Magic Level for Next Max Hit
+        for(int i = 1; i <= 20; i++)
+        {
+            // Calculate Magic Max Hit
+            // Step 1: Find the base hit of the spell
+            double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, (client.getBoostedSkillLevel(Skill.MAGIC) + i));
+
+            // Step 2: Calculate the Magic Damage Bonus
+            double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment) + (i * 0.01);
+
+            double predictedMaxHit = (spellBaseMaxHit * magicDmgBonus);
+
+            // Step 3: Calculate Type Bonuses
+            // Not used here.
+
+            // Check if predicted is better than current
+            if (Math.floor(predictedMaxHit) > currentMaxHit)
+            {
+                nextMagicLevel = i;
+                break;
+            }
+        }
+
+        // Predict Next Magic Damage Bonus needed for next Max Hit
         for(int i = 1; i <= 50; i++)
         {
             // Calculate Magic Max Hit
             // Step 1: Find the base hit of the spell
-            double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle);
+            double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
 
             // Step 2: Calculate the Magic Damage Bonus
             double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment) + (i * 0.01);
@@ -272,7 +296,7 @@ public class PredictNextMax extends MaxHit
             }
         }
 
-        List<Object> results = Arrays.asList("magic", nextMagicDamageBonus);
+        List<Object> results = Arrays.asList("magic", nextMagicLevel, nextMagicDamageBonus);
 
 
 

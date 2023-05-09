@@ -236,21 +236,21 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			List<Object> meleeResults = PredictNextMax.predictNextMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
 
-			// 0 = "melee", 1 = strength level, 2 = equipment strength bonus, 3 = prayer percent bonus
+			// index: 0 = "melee", 1 = strength level, 2 = equipment strength bonus, 3 = prayer percent bonus
 			return meleeResults;
 		}
 		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
 		{
 			List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
 
-			// 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
+			// index: 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
 			return rangedResults;
 		}
 		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
 		{
 			List<Object> mageResults = PredictNextMax.predictNextMageMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
 
-			// 0 = "magic", 1 = mage equipment damage bonus
+			// index: 0 = "magic", 1 = magic level, 2 = mage equipment damage bonus
 			return mageResults;
 		}
 		else
