@@ -34,27 +34,33 @@ import net.runelite.client.game.ItemManager;
 
 public class MaxHit {
     // Get Prayer Bonus for Max Hit Calculation
-    public static double getPrayerBonus(Client client)
+    public static double getPrayerBonus(Client client, AttackStyle weaponAttackStyle)
     {
         // Melee Prayers
-        if(client.isPrayerActive((Prayer.BURST_OF_STRENGTH))) return 1.05;
+        if(weaponAttackStyle == AttackStyle.ACCURATE || weaponAttackStyle == AttackStyle.AGGRESSIVE || weaponAttackStyle == AttackStyle.CONTROLLED || weaponAttackStyle == AttackStyle.DEFENSIVE)
+        {
+            if(client.isPrayerActive((Prayer.BURST_OF_STRENGTH))) return 1.05;
 
-        if(client.isPrayerActive((Prayer.SUPERHUMAN_STRENGTH))) return 1.1;
+            if(client.isPrayerActive((Prayer.SUPERHUMAN_STRENGTH))) return 1.1;
 
-        if(client.isPrayerActive((Prayer.ULTIMATE_STRENGTH))) return 1.15;
+            if(client.isPrayerActive((Prayer.ULTIMATE_STRENGTH))) return 1.15;
 
-        if(client.isPrayerActive((Prayer.CHIVALRY))) return 1.18;
+            if(client.isPrayerActive((Prayer.CHIVALRY))) return 1.18;
 
-        if(client.isPrayerActive((Prayer.PIETY))) return 1.23;
+            if(client.isPrayerActive((Prayer.PIETY))) return 1.23;
+        }
 
         // Ranged Prayers
-        if(client.isPrayerActive((Prayer.SHARP_EYE))) return 1.05;
+        if(weaponAttackStyle == AttackStyle.RANGING || weaponAttackStyle == AttackStyle.LONGRANGE)
+        {
+            if(client.isPrayerActive((Prayer.SHARP_EYE))) return 1.05;
 
-        if(client.isPrayerActive((Prayer.HAWK_EYE))) return 1.1;
+            if(client.isPrayerActive((Prayer.HAWK_EYE))) return 1.1;
 
-        if(client.isPrayerActive((Prayer.EAGLE_EYE))) return 1.15;
+            if(client.isPrayerActive((Prayer.EAGLE_EYE))) return 1.15;
 
-        if(client.isPrayerActive((Prayer.RIGOUR))) return 1.23;
+            if(client.isPrayerActive((Prayer.RIGOUR))) return 1.23;
+        }
 
         return 1; // default
     }
@@ -173,7 +179,7 @@ public class MaxHit {
         // Calculate Melee Max Hit
         // Step 1: Calculate effective Strength
         int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-        double prayerBonus = getPrayerBonus(client);
+        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
         int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
         double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
@@ -280,7 +286,7 @@ public class MaxHit {
         // Calculate Ranged Max Hit
         // Step 1: Calculate effective ranged Strength
         int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-        double prayerBonus = getPrayerBonus(client);
+        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
         int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
         double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 

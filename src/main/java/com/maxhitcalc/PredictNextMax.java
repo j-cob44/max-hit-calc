@@ -52,7 +52,7 @@ public class PredictNextMax extends MaxHit
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
             int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-            double prayerBonus = getPrayerBonus(client) + (i * 0.01);
+            double prayerBonus = getPrayerBonus(client, weaponAttackStyle) + (i * 0.01);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
@@ -83,7 +83,7 @@ public class PredictNextMax extends MaxHit
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
             int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-            double prayerBonus = getPrayerBonus(client);
+            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
@@ -114,7 +114,7 @@ public class PredictNextMax extends MaxHit
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
             int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH) + i;
-            double prayerBonus = getPrayerBonus(client);
+            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
@@ -159,7 +159,7 @@ public class PredictNextMax extends MaxHit
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED) + i;
-            double prayerBonus = getPrayerBonus(client);
+            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
@@ -187,7 +187,7 @@ public class PredictNextMax extends MaxHit
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-            double prayerBonus = getPrayerBonus(client) + (i * 0.01);
+            double prayerBonus = getPrayerBonus(client, weaponAttackStyle) + (i * 0.01);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
@@ -215,7 +215,7 @@ public class PredictNextMax extends MaxHit
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-            double prayerBonus = getPrayerBonus(client);
+            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
