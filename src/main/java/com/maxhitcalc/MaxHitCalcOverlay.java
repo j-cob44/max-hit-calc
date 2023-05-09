@@ -1,5 +1,5 @@
 /* MaxHitCalcOverlay.java
- * Code for plugin main display panel.
+ * Code for plugin main display panel and tooltip.
  *
  *
  * Copyright (c) 2023, Jacob Burton <https://github.com/j-cob44>
@@ -34,24 +34,31 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
+import net.runelite.client.ui.overlay.tooltip.Tooltip;
+import net.runelite.client.ui.overlay.tooltip.TooltipManager;
 
 import javax.inject.Inject;
 import java.awt.*;
+import java.util.List;
 
 public class MaxHitCalcOverlay extends Overlay
 {
     private PanelComponent panelComponent = new PanelComponent();
     private MaxHitCalcPlugin plugin;
     private MaxHitCalcConfig config;
+    private TooltipManager tooltipManager;
+    private Client client;
 
     @Inject
-    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config)
+    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, TooltipManager tooltipManager, Client client)
     {
         setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
         setLayer(OverlayLayer.ABOVE_SCENE);
 
         this.plugin = plugin;
         this.config = config;
+        this.tooltipManager = tooltipManager;
+        this.client = client; // For tooltip
     }
 
     @Override
@@ -99,6 +106,52 @@ public class MaxHitCalcOverlay extends Overlay
                     .build());
         }
 
+        // Tooltip for Prediction
+        if (config.showPredictionTooltip())
+        {
+            // Check for mouse
+            if(this.getBounds().contains(
+                client.getMouseCanvasPosition().getX(),
+                client.getMouseCanvasPosition().getY()))
+            {
+                String tooltipString = predictedMaxHitTooltip();
+
+                // Check if useful
+                if(tooltipString != null)
+                {
+                    // Display tooltip
+                    tooltipManager.add(new Tooltip(tooltipString));
+                }
+            }
+        }
+
         return panelComponent.render(graphics);
+    }
+
+    private String predictedMaxHitTooltip()
+    {
+        List<Object> prediction = plugin.predictNextMaxHit();
+
+        String result = "Next Max Hit at: </br>";
+
+        if (prediction.get(0).equals("melee"))
+        {
+            result += prediction.get(1) + " Strength Levels </br>" + prediction.get(2) + " Strength Bonus </br>" + (int)((double)prediction.get(3) * 100) + "% Prayer Bonus";
+            return result;
+        }
+        else if (prediction.get(0).equals("ranged"))
+        {
+            result += prediction.get(1) + " Ranged Levels </br>" + prediction.get(2) + " Ranged Strength Bonus </br>" + (int)((double)prediction.get(3) * 100) + "% Prayer Bonus";
+            return result;
+        }
+        else if (prediction.get(0).equals("magic"))
+        {
+            result += (int)((double)prediction.get(1) * 100) + "% Magic Damage Bonus";
+            return result;
+        }
+        else
+        {
+            return null;
+        }
     }
 }

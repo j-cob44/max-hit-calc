@@ -39,7 +39,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigItem(
 			keyName = "showMaxHit",
 			name = "Display Max Hit",
-			description = "Shows your Max Hit with equipped item",
+			description = "Shows your Max Hit with equipped item.",
 			position = 1
 	)
 	default boolean showMaxHit()
@@ -51,7 +51,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigItem(
 		keyName = "showSpec",
 		name = "Display Max Spec",
-		description = "Shows your Max Spec with equipped items",
+		description = "Shows your Max Spec with equipped items.",
 		position = 1
 	)
 	default boolean showSpec()
@@ -63,7 +63,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigItem(
 			keyName = "showType",
 			name = "Display Max Hit vs Type",
-			description = "Shows your Max Hit vs current Type bonus",
+			description = "Shows your Max Hit vs current Type bonus.",
 			position = 2
 	)
 	default boolean showType()
@@ -75,10 +75,22 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigItem(
 			keyName = "showSpecVsType",
 			name = "Display Max Spec vs Type",
-			description = "Shows your Max Spec vs current Type bonus",
+			description = "Shows your Max Spec vs current Type bonus.",
 			position = 3
 	)
 	default boolean showSpecVsType()
+	{
+		return true;
+	}
+
+	// Show Predicted Requirements for next Max Hit
+	@ConfigItem(
+			keyName = "showPredictionTooltip",
+			name = "Tooltip for Predicted Next Max Hit",
+			description = "Hover over the panel for a prediction of requirements for next max hit.",
+			position = 3
+	)
+	default boolean showPredictionTooltip()
 	{
 		return true;
 	}

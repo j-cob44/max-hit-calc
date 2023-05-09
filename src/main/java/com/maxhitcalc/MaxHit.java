@@ -310,17 +310,17 @@ public class MaxHit {
         // Trident of the Seas
         if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("of the seas"))
         {
-            basehit = Math.max((Math.floor((magicLevel - 75) / 3) + 20), 1);
+            basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
         }
         // Trident of the Swamp
         else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("of the swamp"))
         {
-            basehit = Math.max((Math.floor((magicLevel - 75) / 3) + 23), 3);
+            basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
         }
         // Sanquinesti Staff
         else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Sanguinesti"))
         {
-            basehit = Math.max((Math.floor((magicLevel - 75) / 3) + 24), 4);
+            basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 3) / 3))), 4); // Corrected, thanks to Mod Ash
         }
         // Thammaron's Sceptre
         else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Thammaron's"))

@@ -41,9 +41,13 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
+import java.util.List;
+
 @Slf4j
 @PluginDescriptor(
-	name = "Max Hit Calculator"
+	name = "Max Hit Calculator",
+	description = "Calculates Max Hit stats for the current equipment setup.",
+	tags = "max hit, combat, stats, helpful, melee, ranged, magic"
 )
 public class MaxHitCalcPlugin extends Plugin
 {
@@ -212,5 +216,46 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		return 0; // No Type Bonus
+	}
+
+	public List<Object> predictNextMaxHit(){
+		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+
+		// Get Current Attack Style
+		WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+		AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+		// Get Current Equipment
+		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+
+		// Find what type to calculate
+		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
+		{
+			List<Object> meleeResults = PredictNextMax.predictNextMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+
+			// 0 = "melee", 1 = strength level, 2 = equipment strength bonus, 3 = prayer percent bonus
+			return meleeResults;
+		}
+		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
+		{
+			List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+
+			// 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
+			return rangedResults;
+		}
+		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
+		{
+			List<Object> mageResults = PredictNextMax.predictNextMageMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+
+			// 0 = "magic", 1 = mage equipment damage bonus
+			return mageResults;
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
