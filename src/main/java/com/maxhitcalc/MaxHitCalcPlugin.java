@@ -1,3 +1,31 @@
+/* MaxHitCalcPlugin.java
+ * Main program code for Max Hit Calc RuneLite plugin.
+ *
+ *
+ * Copyright (c) 2023, Jacob Burton <https://github.com/j-cob44>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.maxhitcalc;
 
 import com.google.inject.Provides;
@@ -11,9 +39,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-
-// Custom Imports
-import com.maxhitcalc.MaxHit;
+import net.runelite.client.ui.overlay.OverlayManager;
 
 @Slf4j
 @PluginDescriptor(
@@ -21,6 +47,12 @@ import com.maxhitcalc.MaxHit;
 )
 public class MaxHitCalcPlugin extends Plugin
 {
+	@Inject
+	private OverlayManager overlayManager;
+
+	@Inject
+	private MaxHitCalcOverlay pluginOverlay;
+
 	@Inject
 	private Client client;
 
@@ -51,11 +83,11 @@ public class MaxHitCalcPlugin extends Plugin
 //		}
 //	}
 
-
-
 	@Subscribe
-	public void onChatMessage(ChatMessage chatMessageReceived){
-		if(chatMessageReceived.getMessage().equals("!Checkmax")){
+	public void onChatMessage(ChatMessage chatMessageReceived)
+	{
+		if(chatMessageReceived.getMessage().equals("!Checkmax"))
+		{
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Hit: " + Math.floor(calculateMaxHit()), null);
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Spec Hit: " + calculateMaxSpec(), null);
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Against Type: " + calculateMaxAgainstType(), null);
@@ -69,7 +101,8 @@ public class MaxHitCalcPlugin extends Plugin
 	}
 
 	// Calculate Normal Max Hit
-	public double calculateMaxHit(){
+	public double calculateMaxHit()
+	{
 		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
 		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
 
@@ -83,19 +116,27 @@ public class MaxHitCalcPlugin extends Plugin
 		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
 
 		// Find what type to calculate
-		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE)){
+		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
+		{
 			return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-		} else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE)) {
+		}
+		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
+		{
 			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-		} else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING))){
+		}
+		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
+		{
 			return MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-		} else {
+		}
+		else
+		{
 			return -1;
 		}
 	}
 
 	// Calculate Max Spec Hit
-	public double calculateMaxSpec(){
+	public double calculateMaxSpec()
+	{
 		// Get Current Equipment
 		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
@@ -106,7 +147,8 @@ public class MaxHitCalcPlugin extends Plugin
 		// Debug
 		//client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
 
-		if(specialAttackWeapon != 0){
+		if(specialAttackWeapon != 0)
+		{
 			// Get Max hit then calculate Spec
 			double maxHit = calculateMaxHit();
 			double maxSpecHit = Math.floor(maxHit * specialAttackWeapon);
@@ -118,7 +160,8 @@ public class MaxHitCalcPlugin extends Plugin
 	}
 
 	// Calculate Max Hit against Type bonus
-	public double calculateMaxAgainstType(){
+	public double calculateMaxAgainstType()
+	{
 		// Get Current Equipment
 		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
@@ -135,7 +178,8 @@ public class MaxHitCalcPlugin extends Plugin
 		// Get Type modifier
 		double againstTypeModifier = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
 
-		if(againstTypeModifier != 1){
+		if(againstTypeModifier != 1)
+		{
 			// Get Max hit then calculate Spec
 			double maxHit = calculateMaxHit();
 			double maxOnTypeHit = Math.floor(maxHit * againstTypeModifier);

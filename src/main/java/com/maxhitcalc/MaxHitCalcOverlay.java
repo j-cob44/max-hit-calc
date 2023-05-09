@@ -1,5 +1,5 @@
-/* MaxHitCalcConfig.java
- * Contains all config items for the plugin.
+/* MaxHitCalcOverlay.java
+ * Code for plugin display panel.
  *
  *
  * Copyright (c) 2023, Jacob Burton <https://github.com/j-cob44>
@@ -28,20 +28,18 @@
 
 package com.maxhitcalc;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.components.PanelComponent;
 
-@ConfigGroup("example")
-public interface MaxHitCalcConfig extends Config
+import java.awt.*;
+
+public class MaxHitCalcOverlay extends Overlay
 {
-	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
-	)
-	default String greeting()
-	{
-		return "Hello";
-	}
+
+    private PanelComponent panelComponent = new PanelComponent();
+
+    @Override
+    public Dimension render(Graphics2D graphics) {
+        return null;
+    }
 }

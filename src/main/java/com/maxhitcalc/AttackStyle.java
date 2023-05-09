@@ -1,7 +1,3 @@
-// From AttackStyles RuneLite plugin
-// Located at: https://github.com/runelite/runelite/blob/master/runelite-client/src/main/java/net/runelite/client/plugins/attackstyles/AttackStyle.java
-// or net.runelite.client.plugins.attackstyles.AttackStyle
-
 /*
  * Copyright (c) 2017, honeyhoney <https://github.com/honeyhoney>
  * All rights reserved.
@@ -26,6 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+// From AttackStyles RuneLite plugin
+// Located at: https://github.com/runelite/runelite/blob/master/runelite-client/src/main/java/net/runelite/client/plugins/attackstyles/AttackStyle.java
+// or net.runelite.client.plugins.attackstyles.AttackStyle
+
 package com.maxhitcalc;
 
 import lombok.Getter;
