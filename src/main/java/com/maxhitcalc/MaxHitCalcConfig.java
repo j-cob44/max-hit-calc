@@ -32,16 +32,54 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("example")
+@ConfigGroup("MaxHitCalc")
 public interface MaxHitCalcConfig extends Config
 {
+	// Show Max Hit
 	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
+			keyName = "showMaxHit",
+			name = "Display Max Hit",
+			description = "Shows your Max Hit with equipped item",
+			position = 1
 	)
-	default String greeting()
+	default boolean showMaxHit()
 	{
-		return "Hello";
+		return true;
+	}
+
+	// Show Max Spec
+	@ConfigItem(
+		keyName = "showSpec",
+		name = "Display Max Spec",
+		description = "Shows your Max Spec with equipped items",
+		position = 1
+	)
+	default boolean showSpec()
+	{
+		return true;
+	}
+
+	// Show Max Hit vs Type
+	@ConfigItem(
+			keyName = "showType",
+			name = "Display Max Hit vs Type",
+			description = "Shows your Max Hit vs current Type bonus",
+			position = 2
+	)
+	default boolean showType()
+	{
+		return true;
+	}
+
+	// Show Max Spec vs Type
+	@ConfigItem(
+			keyName = "showSpecVsType",
+			name = "Display Max Spec vs Type",
+			description = "Shows your Max Spec vs current Type bonus",
+			position = 3
+	)
+	default boolean showSpecVsType()
+	{
+		return true;
 	}
 }

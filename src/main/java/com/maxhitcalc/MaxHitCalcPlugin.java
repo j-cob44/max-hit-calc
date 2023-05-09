@@ -62,42 +62,34 @@ public class MaxHitCalcPlugin extends Plugin
 	@Inject
 	private ItemManager itemManager;
 
-	@Override
-	protected void startUp() throws Exception
-	{
-		log.info("Example started!");
-	}
-
-	@Override
-	protected void shutDown() throws Exception
-	{
-		log.info("Example stopped!");
-	}
-
+//	DEBUG
 //	@Subscribe
-//	public void onGameStateChanged(GameStateChanged gameStateChanged)
+//	public void onChatMessage(ChatMessage chatMessageReceived)
 //	{
-//		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
+//		if(chatMessageReceived.getMessage().equals("!Checkmax"))
 //		{
-//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max hit: " + calculateMaxHit(), null);
+//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Hit: " + Math.floor(calculateMaxHit()), null);
+//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Spec Hit: " + calculateMaxSpec(), null);
+//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Against Type: " + calculateMaxAgainstType(), null);
 //		}
 //	}
-
-	@Subscribe
-	public void onChatMessage(ChatMessage chatMessageReceived)
-	{
-		if(chatMessageReceived.getMessage().equals("!Checkmax"))
-		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Hit: " + Math.floor(calculateMaxHit()), null);
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Spec Hit: " + calculateMaxSpec(), null);
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Against Type: " + calculateMaxAgainstType(), null);
-		}
-	}
 
 	@Provides
 	MaxHitCalcConfig provideConfig(ConfigManager configManager)
 	{
 		return configManager.getConfig(MaxHitCalcConfig.class);
+	}
+
+	@Override
+	protected void startUp() throws Exception
+	{
+		overlayManager.add(pluginOverlay);
+	}
+
+	@Override
+	protected void shutDown() throws Exception
+	{
+		overlayManager.add(pluginOverlay);
 	}
 
 	// Calculate Normal Max Hit
@@ -151,7 +143,7 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			// Get Max hit then calculate Spec
 			double maxHit = calculateMaxHit();
-			double maxSpecHit = Math.floor(maxHit * specialAttackWeapon);
+			double maxSpecHit = maxHit * specialAttackWeapon;
 
 			return maxSpecHit;
 		}
@@ -180,11 +172,43 @@ public class MaxHitCalcPlugin extends Plugin
 
 		if(againstTypeModifier != 1)
 		{
-			// Get Max hit then calculate Spec
+			// Get Max hit then calculate Type
 			double maxHit = calculateMaxHit();
 			double maxOnTypeHit = Math.floor(maxHit * againstTypeModifier);
 
 			return maxOnTypeHit;
+		}
+
+		return 0; // No Type Bonus
+	}
+
+	public double calculateMaxSpecAgainstType(){
+		// Get Current Equipment
+		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+
+		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+
+		// Get Current Attack Style
+		WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+		AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+		// Get Type modifier
+		double againstTypeModifier = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
+
+		if(againstTypeModifier != 1)
+		{
+			// Get Max hit then calculate Spec
+			double maxSpec = calculateMaxSpec();
+			if(maxSpec != 0)
+			{
+				double maxSpecVsTypeHit = Math.floor(maxSpec * againstTypeModifier);
+
+				return maxSpecVsTypeHit;
+			}
 		}
 
 		return 0; // No Type Bonus

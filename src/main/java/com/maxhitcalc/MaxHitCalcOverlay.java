@@ -1,5 +1,5 @@
 /* MaxHitCalcOverlay.java
- * Code for plugin display panel.
+ * Code for plugin main display panel.
  *
  *
  * Copyright (c) 2023, Jacob Burton <https://github.com/j-cob44>
@@ -28,18 +28,77 @@
 
 package com.maxhitcalc;
 
+import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 
+import javax.inject.Inject;
 import java.awt.*;
 
 public class MaxHitCalcOverlay extends Overlay
 {
-
     private PanelComponent panelComponent = new PanelComponent();
+    private MaxHitCalcPlugin plugin;
+    private MaxHitCalcConfig config;
+
+    @Inject
+    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config)
+    {
+        setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
+        setLayer(OverlayLayer.ABOVE_SCENE);
+
+        this.plugin = plugin;
+        this.config = config;
+    }
 
     @Override
-    public Dimension render(Graphics2D graphics) {
-        return null;
+    public Dimension render(Graphics2D graphics)
+    {
+        panelComponent.getChildren().clear();
+
+        int maxHit = (int)plugin.calculateMaxHit();
+        int maxSpec = (int)plugin.calculateMaxSpec();
+        int maxVsType = (int)plugin.calculateMaxAgainstType();
+        int maxSpecVsType = (int)plugin.calculateMaxSpecAgainstType();
+
+        if(config.showMaxHit())
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Max Hit:")
+                    .right(Integer.toString(maxHit))
+                    .build());
+        }
+
+        // Don't Display if 0 (not useful) or turned off
+        if(maxSpec != 0 && config.showSpec())
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Max Spec Hit:")
+                    .right(Integer.toString(maxSpec))
+                    .build());
+        }
+
+        // Don't Display if 0 (not useful) or turned off
+        if(maxVsType != 0 && config.showType())
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Max Hit vs Type:")
+                    .right(Integer.toString(maxVsType))
+                    .build());
+        }
+
+        // Don't Display if 0 (not useful) or turned off
+        if(maxSpecVsType != 0 && config.showSpecVsType())
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Max Spec vs Type:")
+                    .right(Integer.toString(maxSpecVsType))
+                    .build());
+        }
+
+        return panelComponent.render(graphics);
     }
 }
