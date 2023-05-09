@@ -55,6 +55,7 @@ public class MaxHitCalcPlugin extends Plugin
 	public void onChatMessage(ChatMessage chatMessageReceived){
 		if(chatMessageReceived.getMessage().equals("!Checkmax")){
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max hit: " + calculateMaxHit(), null);
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Spec hit: " + calculateMaxSpec(), null);
 		}
 	}
 
@@ -88,5 +89,28 @@ public class MaxHitCalcPlugin extends Plugin
 		} else {
 			return -1;
 		}
+	}
+
+	// Calculate Max Spec Hit
+	public double calculateMaxSpec(){
+		// Get Current Equipment
+		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+
+		// Get Spec modifier
+		double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, weaponName, playerEquipment);
+
+		// Debug
+		//client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
+
+		if(specialAttackWeapon != 0){
+			// Get Max hit then calculate Spec
+			double maxHit = calculateMaxHit();
+			double maxSpecHit = Math.floor(maxHit * specialAttackWeapon);
+
+			return maxSpecHit;
+		}
+
+		return 0; // No spec attack on weapon
 	}
 }
