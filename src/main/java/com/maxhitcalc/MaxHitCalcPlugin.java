@@ -51,11 +51,14 @@ public class MaxHitCalcPlugin extends Plugin
 //		}
 //	}
 
+
+
 	@Subscribe
 	public void onChatMessage(ChatMessage chatMessageReceived){
 		if(chatMessageReceived.getMessage().equals("!Checkmax")){
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max hit: " + calculateMaxHit(), null);
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Spec hit: " + calculateMaxSpec(), null);
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Hit: " + Math.floor(calculateMaxHit()), null);
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Spec Hit: " + calculateMaxSpec(), null);
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Against Type: " + calculateMaxAgainstType(), null);
 		}
 	}
 
@@ -112,5 +115,34 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		return 0; // No spec attack on weapon
+	}
+
+	// Calculate Max Hit against Type bonus
+	public double calculateMaxAgainstType(){
+		// Get Current Equipment
+		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+
+		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+
+		// Get Current Attack Style
+		WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+		AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+		// Get Type modifier
+		double againstTypeModifier = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
+
+		if(againstTypeModifier != 1){
+			// Get Max hit then calculate Spec
+			double maxHit = calculateMaxHit();
+			double maxOnTypeHit = Math.floor(maxHit * againstTypeModifier);
+
+			return maxOnTypeHit;
+		}
+
+		return 0; // No Type Bonus
 	}
 }

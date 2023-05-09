@@ -128,7 +128,7 @@ public class MaxHit {
         // Step 3: Calculate the bonus damage
         double specialBonusMultiplier = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
 
-        double maxHit = Math.floor(flooredBaseDamage * specialBonusMultiplier);
+        double maxHit = (flooredBaseDamage * specialBonusMultiplier);
 
         // Complete
         return maxHit;
@@ -211,7 +211,7 @@ public class MaxHit {
         // Step 2: Calculate the max hit
         double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
 
-        double maxHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+        double maxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
 
         // Step 3: Bonus damage from special attack and effects
         // Not used here.
@@ -320,7 +320,7 @@ public class MaxHit {
         // Step 2: Calculate the Magic Damage Bonus
         double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
 
-        double maxDamage = Math.floor(spellBaseMaxHit * magicDmgBonus);
+        double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
         // Step 3: Calculate Type Bonuses
         // Not used here.
