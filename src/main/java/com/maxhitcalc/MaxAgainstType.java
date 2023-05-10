@@ -28,6 +28,7 @@
 
 package com.maxhitcalc;
 
+import net.runelite.api.ChatMessageType; // for ingame debug
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.Item;
@@ -43,53 +44,24 @@ public class MaxAgainstType {
             // Vampires
             if(weaponName.contains("Blisterwood flail"))
             {
-                typeStatModifier += 0.25;
+                typeStatModifier *= 1.25;
             }
 
             if(weaponName.contains("Ivandis flail"))
             {
-                typeStatModifier += 0.2;
+                typeStatModifier *= 1.2;
             }
 
             // Kalphites, scarabs
             if(weaponName.contains("Keris"))
             {
-                typeStatModifier += 0.33;
+                typeStatModifier *= 1.33;
             }
 
             // Wilderness
             if(weaponName.contains("Viggora's"))
             {
-                typeStatModifier += 0.5;
-            }
-
-            // Slayer helm, does not stack with undead, take best
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet (e)"))
-            {
-                typeStatModifier += 0.2;
-            }
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
-            {
-                typeStatModifier += 0.2;
-            }
-            // Black mask, does not stack with undead, take best
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
-            {
-                typeStatModifier += 0.1667;
-            }
-            // Slayer helm, does not stack with undead, take best
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet"))
-            {
-                typeStatModifier += 0.1667;
-            }
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet"))
-            {
-                typeStatModifier += 0.1667;
-            }
-            // undead, does not stack with slayer, take best
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet"))
-            {
-                typeStatModifier += 0.15;
+                typeStatModifier *= 1.5;
             }
 
             // Inquisitor's armor
@@ -99,10 +71,41 @@ public class MaxAgainstType {
                 {
                     if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
                     {
-                        typeStatModifier += 0.025;
+                        typeStatModifier *= 1.025;
                     }
                 }
             }
+
+            // Slayer helm, does not stack with undead, take best
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet (e)"))
+            {
+                typeStatModifier *= 1.2;
+            }
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
+            {
+                typeStatModifier *= 1.2;
+            }
+            // Black mask, does not stack with undead, take best
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
+            {
+                typeStatModifier *= 1.1667;
+            }
+            // Slayer helm, does not stack with undead, take best
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet"))
+            {
+                typeStatModifier *= 1.1667;
+            }
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet"))
+            {
+                typeStatModifier *= 1.1667;
+            }
+            // undead, does not stack with slayer, take best
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet"))
+            {
+                typeStatModifier *= 1.15;
+            }
+
+
         }
         // Ranged Checks
         else if (attackStyle == AttackStyle.RANGING || attackStyle == AttackStyle.LONGRANGE)
@@ -110,30 +113,30 @@ public class MaxAgainstType {
             // Undead, does not stack with slayer
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
             {
-                typeStatModifier += 0.2;
+                typeStatModifier *= 1.2;
             }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
             {
                 if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
                 {
-                    typeStatModifier += 0.1667;
+                    typeStatModifier *= 1.1667;
                 }
             }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet (i)"))
             {
-                typeStatModifier += 0.1667;
+                typeStatModifier *= 1.1667;
             }
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet (i)"))
             {
-                typeStatModifier += 0.1667;
+                typeStatModifier *= 1.1667;
             }
 
             // Undead, does not stack with slayer
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
             {
-                typeStatModifier += 0.15;
+                typeStatModifier *= 1.15;
             }
         }
         // Magic Checks
@@ -142,31 +145,31 @@ public class MaxAgainstType {
             // Undead, does not stack with slayer
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
             {
-                typeStatModifier += 0.2;
+                typeStatModifier *= 1.2;
             }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
             {
                 if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
                 {
-                    typeStatModifier += 0.1667;
+                    typeStatModifier *= 1.1667;
                 }
             }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helm (i)"))
             {
-                typeStatModifier += 0.1667;
+                typeStatModifier *= 1.1667;
             }
             // Undead, does not stack with slayer
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
             {
-                typeStatModifier += 0.15;
+                typeStatModifier *= 1.15;
             }
 
             // Fire Spells
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName().contains("Tome of fire"))
             {
-                typeStatModifier += 0.5;
+                typeStatModifier *= 1.5;
             }
         }
 
