@@ -58,6 +58,12 @@ public class MaxAgainstType {
                 typeStatModifier *= 1.33;
             }
 
+            // Shades
+            if(weaponName.contains("Gadderhammer"))
+            {
+                typeStatModifier *= 1.25;
+            }
+
             // Wilderness
             if(weaponName.contains("Viggora's"))
             {
@@ -69,13 +75,19 @@ public class MaxAgainstType {
             {
                 typeStatModifier *= 1.7;
             }
-            if(weaponName.contains("Darklight"))
+            else if(weaponName.contains("Darklight"))
             {
                 typeStatModifier *= 1.65; // currently unknown, assumption
             }
-            if(weaponName.contains("Silverlight"))
+            else if(weaponName.contains("Silverlight"))
             {
                 typeStatModifier *= 1.6;
+            }
+
+            // Dragonbane
+            if(weaponName.contains("Dragon hunter"))
+            {
+                typeStatModifier *= 1.2;
             }
 
             // Inquisitor's armor
@@ -124,6 +136,12 @@ public class MaxAgainstType {
         // Ranged Checks
         else if (attackStyle == AttackStyle.RANGING || attackStyle == AttackStyle.LONGRANGE)
         {
+            // Dragonbane
+            if(weaponName.contains("Dragon hunter"))
+            {
+                typeStatModifier *= 1.25;
+            }
+
             // Undead, does not stack with slayer
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
             {
