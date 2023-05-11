@@ -115,29 +115,30 @@ public class MaxAgainstType {
             {
                 typeStatModifier *= 1.2;
             }
+            // Undead, does not stack with slayer
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
+            {
+                typeStatModifier *= 1.166666667;
+            }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
             {
                 if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
                 {
-                    typeStatModifier *= 1.1667;
+                    typeStatModifier *= 1.15;
                 }
             }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet (i)"))
             {
-                typeStatModifier *= 1.1667;
+                typeStatModifier *= 1.15;
             }
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet (i)"))
             {
-                typeStatModifier *= 1.1667;
-            }
-
-            // Undead, does not stack with slayer
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
-            {
                 typeStatModifier *= 1.15;
             }
+
+
         }
         // Magic Checks
         else if (attackStyle == AttackStyle.CASTING || attackStyle == AttackStyle.DEFENSIVE_CASTING)
@@ -152,13 +153,13 @@ public class MaxAgainstType {
             {
                 if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
                 {
-                    typeStatModifier *= 1.1667;
+                    typeStatModifier *= 1.15;
                 }
             }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helm (i)"))
             {
-                typeStatModifier *= 1.1667;
+                typeStatModifier *= 1.15;
             }
             // Undead, does not stack with slayer
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
