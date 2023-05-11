@@ -64,6 +64,20 @@ public class MaxAgainstType {
                 typeStatModifier *= 1.5;
             }
 
+            // Demonbane
+            if(weaponName.contains("Arclight"))
+            {
+                typeStatModifier *= 1.7;
+            }
+            if(weaponName.contains("Darklight"))
+            {
+                typeStatModifier *= 1.65; // currently unknown, assumption
+            }
+            if(weaponName.contains("Silverlight"))
+            {
+                typeStatModifier *= 1.6;
+            }
+
             // Inquisitor's armor
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
             {
