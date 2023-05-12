@@ -14,5 +14,6 @@ Jacob Burton, May 2023 <br>
 Resources Used: <br>
 https://runelite.net/ <br>
 https://oldschool.runescape.wiki/w/Maximum_hit <br>
+https://oldschool.runescape.wiki/w/Passive_effect <br>
 https://static.runelite.net/api/runelite-api/index.html <br>
 https://static.runelite.net/api/runelite-client/index.html <br>
