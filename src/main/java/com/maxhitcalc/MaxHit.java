@@ -386,6 +386,7 @@ public class MaxHit {
             CombatSpell selectedSpell = CombatSpell.getSpellBySpriteID(spellSpriteID);
 
             // Debug
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell Sprite ID: " + spellSpriteID, null);
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
 
             // Magic Dart Case
