@@ -176,11 +176,15 @@ public class MaxHitCalcPlugin extends Plugin
 
 		if(againstTypeModifier != 1)
 		{
+			// Round to two decimal places
+			double roundedResult = Math.round(againstTypeModifier * 100);
+			double scaledResult = (roundedResult/100);
+
 			// Get Max hit then calculate Type
 			double maxHit = calculateMaxHit();
-			double maxOnTypeHit = Math.floor(maxHit * againstTypeModifier);
+			double maxOnTypeHit = maxHit * scaledResult;
 
-			return maxOnTypeHit;
+			return Math.floor(maxOnTypeHit);
 		}
 
 		return 0; // No Type Bonus

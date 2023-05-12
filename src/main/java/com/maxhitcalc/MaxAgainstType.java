@@ -67,7 +67,16 @@ public class MaxAgainstType {
             // Wilderness
             if(weaponName.contains("Viggora's"))
             {
-                typeStatModifier *= 1.5;
+                if(!weaponName.contains("(u)"))
+                {
+                    typeStatModifier *= 1.5;
+                }
+            }
+
+            // Leaf-bladed Battleaxe vs Turoths and Kurasks
+            if(weaponName.contains("Leaf-bladed battleaxe"))
+            {
+                typeStatModifier *= 1.175;
             }
 
             // Demonbane
@@ -142,6 +151,15 @@ public class MaxAgainstType {
                 typeStatModifier *= 1.25;
             }
 
+            // Wilderness
+            if(weaponName.contains("Craw's bow"))
+            {
+                if(!weaponName.contains("(u)"))
+                {
+                    typeStatModifier *= 1.5;
+                }
+            }
+
             // Undead, does not stack with slayer
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
             {
@@ -150,7 +168,7 @@ public class MaxAgainstType {
             // Undead, does not stack with slayer
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
             {
-                typeStatModifier *= 1.166666667;
+                typeStatModifier *= 1.1667;
             }
             // Slayer, does not stack with undead
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
@@ -175,6 +193,21 @@ public class MaxAgainstType {
         // Magic Checks
         else if (attackStyle == AttackStyle.CASTING || attackStyle == AttackStyle.DEFENSIVE_CASTING)
         {
+            // Wilderness
+            if(weaponName.contains("Thammaron's sceptre"))
+            {
+                if(!weaponName.contains("(u)"))
+                {
+                    typeStatModifier *= 1.5;
+                }
+            }
+
+            // Fire Spells
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName().contains("Tome of fire"))
+            {
+                typeStatModifier *= 1.5;
+            }
+
             // Undead, does not stack with slayer
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
             {
@@ -198,14 +231,8 @@ public class MaxAgainstType {
             {
                 typeStatModifier *= 1.15;
             }
-
-            // Fire Spells
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName().contains("Tome of fire"))
-            {
-                typeStatModifier *= 1.5;
-            }
         }
 
-        return typeStatModifier;
+        return typeStatModifier; // two decimal places
     }
 }
