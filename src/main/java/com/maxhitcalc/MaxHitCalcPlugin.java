@@ -176,7 +176,7 @@ public class MaxHitCalcPlugin extends Plugin
 		// Debug Modifiers
 		//client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
 
-		if(typeModifiersList != null)
+		if(!typeModifiersList.isEmpty())
 		{
 			// Get Max hit
 			double maxHit = calculateMaxHit();
@@ -211,7 +211,7 @@ public class MaxHitCalcPlugin extends Plugin
 		// Get Type modifier
 		List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
 
-		if(typeModifiersList != null)
+		if(!typeModifiersList.isEmpty())
 		{
 			// Get Max hit then calculate Spec
 			double maxSpec = calculateMaxSpec();
