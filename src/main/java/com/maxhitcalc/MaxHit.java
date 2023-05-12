@@ -236,6 +236,7 @@ public class MaxHit {
     public static double getRangedStrengthBonus(Client client, ItemManager itemManager, Item[] playerEquipment)
     {
         double rangedStrengthBonus = 0;
+        double damagePercentBonus = 1;
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
@@ -244,14 +245,26 @@ public class MaxHit {
         boolean skipAmmo = false;
         int ammoID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
         // Cases to skip ammo
-        if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal bow"))
+        if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal bow") ||
+                client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("faerdhinen"))
         {
             skipAmmo = true;
-        }
 
-        if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("faerdhinen"))
-        {
-            skipAmmo = true;
+            // Crystal Armor Damage bonus
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal helm"))
+            {
+                damagePercentBonus += 1.025;
+            }
+
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal body"))
+            {
+                damagePercentBonus += 1.075;
+            }
+
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal legs"))
+            {
+                damagePercentBonus += 1.05;
+            }
         }
 
         if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("blowpipe"))
@@ -278,7 +291,7 @@ public class MaxHit {
             }
         }
 
-        return rangedStrengthBonus;
+        return (rangedStrengthBonus * damagePercentBonus);
     }
 
     public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)

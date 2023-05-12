@@ -172,19 +172,24 @@ public class MaxHitCalcPlugin extends Plugin
 		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
 		// Get Type modifier
-		double againstTypeModifier = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
+		List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
 
-		if(againstTypeModifier != 1)
+		// Debug Modifiers
+		//client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
+
+		if(typeModifiersList != null)
 		{
-			// Round to two decimal places
-			double roundedResult = Math.round(againstTypeModifier * 100);
-			double scaledResult = (roundedResult/100);
-
-			// Get Max hit then calculate Type
+			// Get Max hit
 			double maxHit = calculateMaxHit();
-			double maxOnTypeHit = maxHit * scaledResult;
+			double maxHitVsType = Math.floor(maxHit);
 
-			return Math.floor(maxOnTypeHit);
+			// Iterate through modifiers, flooring after multiplying
+			for (double modifier: typeModifiersList)
+			{
+				maxHitVsType = Math.floor(maxHitVsType * modifier);
+			}
+
+			return maxHitVsType;
 		}
 
 		return 0; // No Type Bonus
@@ -205,15 +210,21 @@ public class MaxHitCalcPlugin extends Plugin
 		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
 		// Get Type modifier
-		double againstTypeModifier = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
+		List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
 
-		if(againstTypeModifier != 1)
+		if(typeModifiersList != null)
 		{
 			// Get Max hit then calculate Spec
 			double maxSpec = calculateMaxSpec();
+
 			if(maxSpec != 0)
 			{
-				double maxSpecVsTypeHit = Math.floor(maxSpec * againstTypeModifier);
+				double maxSpecVsTypeHit = Math.floor(maxSpec);
+				// Iterate through modifiers, flooring after multiplying
+				for (double modifier: typeModifiersList)
+				{
+					maxSpecVsTypeHit = Math.floor(maxSpecVsTypeHit * modifier);
+				}
 
 				return maxSpecVsTypeHit;
 			}
