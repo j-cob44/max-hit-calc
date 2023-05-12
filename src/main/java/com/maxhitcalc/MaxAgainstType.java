@@ -32,7 +32,6 @@ import net.runelite.api.ChatMessageType; // for ingame debug
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.Item;
-
 import java.util.ArrayList;
 import java.util.List;
 
