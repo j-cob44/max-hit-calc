@@ -40,10 +40,16 @@ public class MaxAgainstType {
     {
         List<Double> typeBonusToApply = new ArrayList<Double>();
 
+        /*
+         Order bonuses by when the bonus was added to the game, not when the item was added
+         Except Slayer helm bonus, which from testing, always comes first?
+        */
+
         // Melee Checks
         if(attackStyle == AttackStyle.AGGRESSIVE || attackStyle == AttackStyle.CONTROLLED || attackStyle == AttackStyle.ACCURATE || attackStyle == AttackStyle.DEFENSIVE)
         {
-            // Slayer helm, does not stack with undead, take best
+            // Undead and Slayer checks, they are mutually exclusive
+            // Salve Amulet (e), Added 22 January 2007
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet (e)"))
             {
                 typeBonusToApply.add(1.2);
@@ -52,12 +58,12 @@ public class MaxAgainstType {
             {
                 typeBonusToApply.add(1.2);
             }
-            // Black mask, does not stack with undead, take best
+            // Black Mask, Added 4 July 2006
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
             {
                 typeBonusToApply.add(1.1667);
             }
-            // Slayer helm, does not stack with undead, take best
+            // Slayer Helm, same as black mask, Attribute Added 4 July 2006
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet"))
             {
                 typeBonusToApply.add(1.1667);
@@ -66,36 +72,53 @@ public class MaxAgainstType {
             {
                 typeBonusToApply.add(1.1667);
             }
-            // undead, does not stack with slayer, take best
+            // Salve Amulet, Added 21 December 2004
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet"))
             {
                 typeBonusToApply.add(1.15);
             }
 
-            // Vampires
-            if(weaponName.contains("Blisterwood flail"))
+            // Demonbane, added 4 January 2001
+            if(weaponName.contains("Silverlight"))
             {
-                typeBonusToApply.add(1.25);
+                typeBonusToApply.add(1.6) ;
+            }
+            else if(weaponName.contains("Darklight"))
+            {
+                typeBonusToApply.add(1.6); // same bonus as silverlight
             }
 
-            if(weaponName.contains("Ivandis flail"))
-            {
-                typeBonusToApply.add(1.2);
-            }
-
-            // Kalphites, scarabs
-            if(weaponName.contains("Keris"))
-            {
-                typeBonusToApply.add(1.33);
-            }
-
-            // Shades
+            // Shades, added 22 March 2006
             if(weaponName.contains("Gadderhammer"))
             {
                 typeBonusToApply.add(1.25);
             }
 
-            // Wilderness
+            // Demonbane, added 9 June 2016
+            if(weaponName.contains("Arclight"))
+            {
+                typeBonusToApply.add(1.7); // different from silverlight and darklight
+            }
+
+            // Leaf-bladed Battleaxe vs Turoths and Kurasks, 15 September 2016
+            if(weaponName.contains("Leaf-bladed battleaxe"))
+            {
+                typeBonusToApply.add(1.175);
+            }
+
+            // Dragonbane, added 5 January 2017
+            if(weaponName.contains("Dragon hunter"))
+            {
+                typeBonusToApply.add(1.2); // same as dragon hunter crossbow boost which was added first
+            }
+
+            // Vampyre, added 24 May 2018
+            if(weaponName.contains("Ivandis flail"))
+            {
+                typeBonusToApply.add(1.2);
+            }
+
+            // Wilderness, added 26 July 2018
             if(weaponName.contains("Viggora's"))
             {
                 if(!weaponName.contains("(u)"))
@@ -104,58 +127,64 @@ public class MaxAgainstType {
                 }
             }
 
-            // Leaf-bladed Battleaxe vs Turoths and Kurasks
-            if(weaponName.contains("Leaf-bladed battleaxe"))
-            {
-                typeBonusToApply.add(1.175);
-            }
-
-            // Demonbane
-            if(weaponName.contains("Arclight"))
-            {
-                typeBonusToApply.add(1.7);
-            }
-            else if(weaponName.contains("Darklight"))
-            {
-                typeBonusToApply.add(1.6); // currently unknown, assumption
-            }
-            else if(weaponName.contains("Silverlight"))
-            {
-                typeBonusToApply.add(1.6) ;
-            }
-
-            // Dragonbane
-            if(weaponName.contains("Dragon hunter"))
-            {
-                typeBonusToApply.add(1.2);
-            }
-
-            // Inquisitor's armor
+            // Inquisitor's armor, added 6 February 2020, set effect added 16 April 2020
+            int inquisitorPieces = 0;
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
             {
-                if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
-                {
-                    if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
-                    {
-                        typeBonusToApply.add(1.025);
-                    }
-                }
+                inquisitorPieces += 1;
+                typeBonusToApply.add(1.025);
             }
+
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
+            {
+                inquisitorPieces += 1;
+            }
+
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
+            {
+                inquisitorPieces += 1;
+            }
+
+            // Get total for inquisitors
+            if(inquisitorPieces != 0)
+            {
+                double inquisitorTotal = inquisitorPieces * 0.05;
+
+                if(inquisitorPieces == 3)
+                {
+                    inquisitorTotal += 0.1;
+                }
+
+                typeBonusToApply.add(inquisitorTotal);
+            }
+
+            // Vampyre, added 4 June 2020
+            if(weaponName.contains("Blisterwood flail"))
+            {
+                typeBonusToApply.add(1.25);
+            }
+
+            // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022
+            if(weaponName.contains("Keris"))
+            {
+                typeBonusToApply.add(1.33);
+            }
+
         }
         // Ranged Checks
         else if (attackStyle == AttackStyle.RANGING || attackStyle == AttackStyle.LONGRANGE)
         {
-            // Undead, does not stack with slayer
+            // Salve Amulet (ei), added 1 May 2014
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
-            // Undead, does not stack with slayer
+            // Salve Amulet (i), added 1 May 2014
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
             {
                 typeBonusToApply.add(1.1667) ;
             }
-            // Slayer, does not stack with undead
+            // Black Mask (i), added 26 September 2013
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
             {
                 if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
@@ -163,23 +192,23 @@ public class MaxAgainstType {
                     typeBonusToApply.add(1.15);
                 }
             }
-            // Slayer, does not stack with undead
+            // Slayer helm (i)
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet (i)"))
             {
-                typeBonusToApply.add(1.15);
+                typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet (i)"))
             {
-                typeBonusToApply.add(1.15);
+                typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
 
-            // Dragonbane
+            // Dragonbane, added 5 January 2017
             if(weaponName.contains("Dragon hunter"))
             {
                 typeBonusToApply.add(1.25);
             }
 
-            // Wilderness
+            // Wilderness, added 26 July 2018
             if(weaponName.contains("Craw's bow"))
             {
                 if(!weaponName.contains("(u)"))
@@ -192,31 +221,41 @@ public class MaxAgainstType {
         // Magic Checks
         else if (attackStyle == AttackStyle.CASTING || attackStyle == AttackStyle.DEFENSIVE_CASTING)
         {
-            // Undead, does not stack with slayer
+            // Salve Amulet (ei), added 1 May 2014
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
-            // Slayer, does not stack with undead
+            // Salve Amulet (i), added 1 May 2014
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
+            {
+                typeBonusToApply.add(1.1667) ;
+            }
+            // Black Mask (i), added 26 September 2013
             else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
             {
                 if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
                 {
-                    typeBonusToApply.add(1.15) ;
+                    typeBonusToApply.add(1.15);
                 }
             }
-            // Slayer, does not stack with undead
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helm (i)"))
+            // Slayer helm (i)
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet (i)"))
             {
-                typeBonusToApply.add(1.15);
+                typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
-            // Undead, does not stack with slayer
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
+            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet (i)"))
             {
-                typeBonusToApply.add(1.15);
+                typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
 
-            // Wilderness
+            // Fire Spells boost, added 8 September 2016
+            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName().contains("Tome of fire"))
+            {
+                typeBonusToApply.add(1.5);
+            }
+
+            // Wilderness, added 26 July 2018
             if(weaponName.contains("Thammaron's sceptre"))
             {
                 if(!weaponName.contains("(u)"))
@@ -224,13 +263,6 @@ public class MaxAgainstType {
                     typeBonusToApply.add(1.5);
                 }
             }
-
-            // Fire Spells
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName().contains("Tome of fire"))
-            {
-                typeBonusToApply.add(1.5);
-            }
-
         }
 
         return typeBonusToApply; // List of Modifiers
