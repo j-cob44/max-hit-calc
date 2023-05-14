@@ -545,7 +545,7 @@ public class MaxHit {
 
     public static double getVoidMagicBonus(Client client, Item[] playerEquipment)
     {
-        if (playerEquipment == null) return 1;
+        if (playerEquipment == null) return 0;
 
         // Check for set bonus
         if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
