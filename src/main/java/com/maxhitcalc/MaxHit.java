@@ -255,7 +255,7 @@ public class MaxHit {
             {
                 if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
                 {
-                    damagePercentBonus += 1.025;
+                    damagePercentBonus += 0.025;
                 }
             }
 
@@ -263,7 +263,7 @@ public class MaxHit {
             {
                 if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("(basic)"))
                 {
-                    damagePercentBonus += 1.075;
+                    damagePercentBonus += 0.075;
                 }
             }
 
@@ -271,7 +271,7 @@ public class MaxHit {
             {
                 if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("(basic)"))
                 {
-                    damagePercentBonus += 1.05;
+                    damagePercentBonus += 0.05;
                 }
             }
         }
