@@ -307,19 +307,28 @@ public class MaxHit {
             if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
                     && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal helm"))
             {
-                damagePercentBonus += 1.025;
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
+                {
+                    damagePercentBonus += 1.025;
+                }
             }
 
-            if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal body"))
+            if (playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
+                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Crystal body"))
             {
-                damagePercentBonus += 1.075;
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("(basic)"))
+                {
+                    damagePercentBonus += 1.075;
+                }
             }
 
-            if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal legs"))
+            if (playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
+                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Crystal legs"))
             {
-                damagePercentBonus += 1.05;
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("(basic)"))
+                {
+                    damagePercentBonus += 1.05;
+                }
             }
         }
 
@@ -446,7 +455,6 @@ public class MaxHit {
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
 
             // Magic Dart Case
-
             if (selectedSpell != null)
             {
                 if(selectedSpell.getName().equalsIgnoreCase("MAGIC DART"))
