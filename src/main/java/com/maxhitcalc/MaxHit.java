@@ -537,7 +537,38 @@ public class MaxHit {
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus, null);
 
+        // Get Void 2.5% bonus if necessary, otherwise +0
+        magicdamagebonus += getVoidMagicBonus(client, playerEquipment);
+
         return magicdamagebonus;
+    }
+
+    public static double getVoidMagicBonus(Client client, Item[] playerEquipment)
+    {
+        if (playerEquipment == null) return 1;
+
+        // Check for set bonus
+        if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
+                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Void mage"))
+        {
+            if (playerEquipment.length > EquipmentInventorySlot.GLOVES.getSlotIdx()
+                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.GLOVES.getSlotIdx()].getId()).getName().contains("Void"))
+            {
+                if (playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
+                        && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Elite void"))
+                {
+                    if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
+                            && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Elite void"))
+                    {
+                        // Elite void set
+                        return 0.025; // 2.5% magic dmg bonus
+                    }
+                }
+            }
+        }
+
+        // Elite Void Set incomplete, no bonus
+        return 0;
     }
 
     public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
