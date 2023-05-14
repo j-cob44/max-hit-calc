@@ -309,6 +309,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 	}
 
+
 	// Calculate Max Hit for an inventory item
 	public double calculateMaxHitFromInventory(int slotID, int itemID)
 	{

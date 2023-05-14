@@ -133,6 +133,7 @@ public class MaxHitCalcOverlay extends Overlay
             }
         }
 
+
         // Tooltip on item in inventory
         MenuEntry[] menu = client.getMenuEntries();
         int menuSize = menu.length;

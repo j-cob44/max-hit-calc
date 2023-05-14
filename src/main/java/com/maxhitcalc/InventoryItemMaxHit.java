@@ -2,8 +2,10 @@ package com.maxhitcalc;
 
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
-public class InventoryItemMaxHit extends MaxHit{
-    public static AttackStyle determineAttackStyle(Client client, int weaponID){
+public class InventoryItemMaxHit extends MaxHit
+{
+    public static AttackStyle determineAttackStyle(Client client, int weaponID)
+    {
         AttackStyle attackStyle;
 
         // Ranged

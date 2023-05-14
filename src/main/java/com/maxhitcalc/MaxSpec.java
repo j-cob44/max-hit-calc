@@ -79,6 +79,11 @@ public class MaxSpec
             return 1.1;
         }
 
+        if(weaponName.contains("Barrelchest"))
+        {
+            return 1.1;
+        }
+
         if(weaponName.contains("Dragon hasta"))
         {
             return 1.0 + (0.5 * ((double)client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) /1000));
