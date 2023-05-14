@@ -95,7 +95,6 @@ public interface MaxHitCalcConfig extends Config
 		return true;
 	}
 
-
 	// Show Predicted Max Hit when hovering over item in inventory
 	@ConfigItem(
 			keyName = "showInventoryTooltip",

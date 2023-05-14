@@ -275,7 +275,6 @@ public class MaxHit {
     public static double getRangedStrengthBonus(Client client, ItemManager itemManager, Item[] playerEquipment)
     {
         double rangedStrengthBonus = 0;
-        double damagePercentBonus = 1;
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
@@ -287,49 +286,26 @@ public class MaxHit {
             weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
         }
 
-        // Crystal bow and Blowpipe skip ammo
-        boolean skipAmmo = false;
+        String ammoItemName = "";
         int ammoID = -1;
-        if (playerEquipment.length > 13 && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null){
+        boolean skipAmmo = false;
+        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
+        {
+            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
             ammoID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
         }
-        else {
+        else
+        {
             skipAmmo = true;
         }
 
+        // Crystal bow and Blowpipe skip ammo
         // Cases to skip ammo
         if (weaponItemName.contains("Crystal bow")
                 || weaponItemName.contains("faerdhinen"))
         {
             skipAmmo = true;
-
-            // Crystal Armor Damage bonus
-            if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal helm"))
-            {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
-                {
-                    damagePercentBonus += 0.025;
-                }
-            }
-
-            if (playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Crystal body"))
-            {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("(basic)"))
-                {
-                    damagePercentBonus += 0.075;
-                }
-            }
-
-            if (playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Crystal legs"))
-            {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("(basic)"))
-                {
-                    damagePercentBonus += 0.05;
-                }
-            }
         }
 
         if(weaponItemName.contains("blowpipe"))
@@ -356,7 +332,72 @@ public class MaxHit {
             }
         }
 
-        return (rangedStrengthBonus * damagePercentBonus);
+        return rangedStrengthBonus;
+    }
+
+    // Get Gear Boost, for instance Crystal Armor set bonus
+    public static double getRangeGearBoost(Client client, Item[] playerEquipment){
+        double damagePercentBonus = 1;
+
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        String headItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()] != null)
+        {
+            headItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName();
+        }
+
+        String bodyItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()] != null)
+        {
+            bodyItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName();
+        }
+
+        String legsItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()] != null)
+        {
+            legsItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName();
+        }
+
+
+        if (weaponItemName.contains("Crystal bow")
+                || weaponItemName.contains("faerdhinen"))
+        {
+            // Crystal Armor Damage bonus
+            if (headItemName.contains("Crystal helm"))
+            {
+                if(!headItemName.contains("(basic)"))
+                {
+                    damagePercentBonus += 0.025;
+                }
+            }
+
+            if (bodyItemName.contains("Crystal body"))
+            {
+                if(!bodyItemName.contains("(basic)"))
+                {
+                    damagePercentBonus += 0.075;
+                }
+            }
+
+            if (legsItemName.contains("Crystal legs"))
+            {
+                if(!legsItemName.contains("(basic)"))
+                {
+                    damagePercentBonus += 0.05;
+                }
+            }
+        }
+
+        return damagePercentBonus;
     }
 
     public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
@@ -372,8 +413,9 @@ public class MaxHit {
 
         // Step 2: Calculate the max hit
         double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+        double gearBonus = getRangeGearBoost(client, playerEquipment);
 
-        double maxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+        double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
         // Step 3: Bonus damage from special attack and effects
         // Not used here.
@@ -495,7 +537,38 @@ public class MaxHit {
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus, null);
 
+        // Get Void 2.5% bonus if necessary, otherwise +0
+        magicdamagebonus += getVoidMagicBonus(client, playerEquipment);
+
         return magicdamagebonus;
+    }
+
+    public static double getVoidMagicBonus(Client client, Item[] playerEquipment)
+    {
+        if (playerEquipment == null) return 0;
+
+        // Check for set bonus
+        if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
+                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Void mage"))
+        {
+            if (playerEquipment.length > EquipmentInventorySlot.GLOVES.getSlotIdx()
+                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.GLOVES.getSlotIdx()].getId()).getName().contains("Void"))
+            {
+                if (playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
+                        && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Elite void"))
+                {
+                    if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
+                            && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Elite void"))
+                    {
+                        // Elite void set
+                        return 0.025; // 2.5% magic dmg bonus
+                    }
+                }
+            }
+        }
+
+        // Elite Void Set incomplete, no bonus
+        return 0;
     }
 
     public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
