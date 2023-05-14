@@ -335,8 +335,6 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 		else
 		{
-			if (playerEquipment == null) return -1; // No new max hit if no weapon
-
 			// Get Current Attack Style
 			WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
 			AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();

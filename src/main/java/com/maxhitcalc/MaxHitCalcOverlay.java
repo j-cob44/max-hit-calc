@@ -28,6 +28,7 @@
 
 package com.maxhitcalc;
 
+import net.runelite.api.ChatMessageType; // For debug
 import net.runelite.api.Client;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.widgets.Widget;

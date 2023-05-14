@@ -18,7 +18,6 @@ public class InventoryItemMaxHit extends MaxHit{
                 || client.getItemDefinition(weaponID).getName().contains("Toktz-xil-ul")
                 || client.getItemDefinition(weaponID).getName().contains("blowpipe"))
         {
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "RANGED", "");
             attackStyle = AttackStyle.RANGING;
         }
         // Magic
@@ -88,6 +87,8 @@ public class InventoryItemMaxHit extends MaxHit{
     public static Item[] changeEquipment(int slotID, int itemID, Item[] currentEquipment)
     {
         Item[] newEquipment = new Item[14];
+
+        newEquipment = currentEquipment; // Set old slots
 
         newEquipment[slotID] = new Item(itemID, 1);
 
