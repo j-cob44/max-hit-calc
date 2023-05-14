@@ -183,6 +183,10 @@ public class MaxHitCalcOverlay extends Overlay
                         {
                             tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("+" + deltaMax, Color.GREEN);
                         }
+                        else
+                        {
+                            return panelComponent.render(graphics);
+                        }
 
                         tooltipManager.add(new Tooltip(tooltip));
                     }

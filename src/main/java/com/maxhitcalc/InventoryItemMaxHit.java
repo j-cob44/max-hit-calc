@@ -3,7 +3,7 @@ package com.maxhitcalc;
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
 public class InventoryItemMaxHit extends MaxHit{
-    public static AttackStyle determineAttackStyle(Client client, Item weapon, int weaponID){
+    public static AttackStyle determineAttackStyle(Client client, int weaponID){
         AttackStyle attackStyle;
 
         // Ranged
@@ -15,8 +15,10 @@ public class InventoryItemMaxHit extends MaxHit{
                 || client.getItemDefinition(weaponID).getName().contains("dart")
                 || client.getItemDefinition(weaponID).getName().contains("knife")
                 || client.getItemDefinition(weaponID).getName().contains("thrownaxe")
-                || client.getItemDefinition(weaponID).getName().contains("Toktz-xil-ul"))
+                || client.getItemDefinition(weaponID).getName().contains("Toktz-xil-ul")
+                || client.getItemDefinition(weaponID).getName().contains("blowpipe"))
         {
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "RANGED", "");
             attackStyle = AttackStyle.RANGING;
         }
         // Magic
@@ -39,11 +41,70 @@ public class InventoryItemMaxHit extends MaxHit{
 
         return attackStyle;
     }
+
+    public static int getCorrectedSlotID(Client client, int slotToCheck){
+        int correctSlotID = 0;
+
+        switch (slotToCheck)
+        {
+            case 0:
+                correctSlotID = EquipmentInventorySlot.HEAD.getSlotIdx();
+                break;
+            case 1:
+                correctSlotID = EquipmentInventorySlot.CAPE.getSlotIdx();
+                break;
+            case 2:
+                correctSlotID = EquipmentInventorySlot.AMULET.getSlotIdx();
+                break;
+            case 3:
+                correctSlotID = EquipmentInventorySlot.WEAPON.getSlotIdx();
+                break;
+            case 4:
+                correctSlotID = EquipmentInventorySlot.BODY.getSlotIdx();
+                break;
+            case 5:
+                correctSlotID = EquipmentInventorySlot.SHIELD.getSlotIdx();
+                break;
+            case 7:
+                correctSlotID = EquipmentInventorySlot.LEGS.getSlotIdx();
+                break;
+            case 9:
+                correctSlotID = EquipmentInventorySlot.GLOVES.getSlotIdx();
+                break;
+            case 10:
+                correctSlotID = EquipmentInventorySlot.BOOTS.getSlotIdx();
+                break;
+            case 12:
+                correctSlotID = EquipmentInventorySlot.RING.getSlotIdx();
+                break;
+            case 13:
+                correctSlotID = EquipmentInventorySlot.AMMO.getSlotIdx();
+                break;
+        }
+
+        return correctSlotID;
+    }
+
     public static Item[] changeEquipment(int slotID, int itemID, Item[] currentEquipment)
     {
-        Item[] newEquipment = currentEquipment;
+        Item[] newEquipment = new Item[14];
 
         newEquipment[slotID] = new Item(itemID, 1);
+
+        int placeholderItem = 0;
+        for(int i = 0; i < newEquipment.length; i++)
+        {
+            if(i != 6 && i != 8 && i != 11)
+            {
+                if (newEquipment[i] == null)
+                {
+                    newEquipment[i] = new Item(-1, 1);
+
+                    //newEquipment[i] = new Item((11850+placeholderItem), 1);
+                    //placeholderItem++;
+                }
+            }
+        }
 
         return newEquipment;
     }

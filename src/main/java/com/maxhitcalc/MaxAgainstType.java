@@ -40,6 +40,41 @@ public class MaxAgainstType {
     {
         List<Double> typeBonusToApply = new ArrayList<>();
 
+        String amuletItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.AMULET.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()] != null)
+        {
+            amuletItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName();
+        }
+
+        String headItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()] != null)
+        {
+            headItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName();
+        }
+
+        String bodyItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()] != null)
+        {
+            bodyItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName();
+        }
+
+        String legsItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()] != null)
+        {
+            legsItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName();
+        }
+
+        String shieldItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.SHIELD.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()] != null)
+        {
+            shieldItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName();
+        }
+
         /*
          Order bonuses by when the bonus was added to the game, not when the item was added
          Except Slayer helm bonus, which from testing, always comes first?
@@ -50,30 +85,30 @@ public class MaxAgainstType {
         {
             // Undead and Slayer checks, they are mutually exclusive
             // Salve Amulet (e), Added 22 January 2007
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet (e)"))
+            if (amuletItemName.contains("Salve amulet (e)"))
             {
                 typeBonusToApply.add(1.2);
             }
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
+            else if (amuletItemName.contains("Salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
             // Black Mask, Added 4 July 2006
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
+            else if (headItemName.contains("Black mask"))
             {
                 typeBonusToApply.add(1.1667);
             }
             // Slayer Helm, same as black mask, Attribute Added 4 July 2006
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet"))
+            else if (headItemName.contains("Slayer helmet"))
             {
                 typeBonusToApply.add(1.1667);
             }
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet"))
+            else if (headItemName.contains("slayer helmet"))
             {
                 typeBonusToApply.add(1.1667);
             }
             // Salve Amulet, Added 21 December 2004
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet"))
+            else if (amuletItemName.contains("Salve amulet"))
             {
                 typeBonusToApply.add(1.15);
             }
@@ -129,18 +164,18 @@ public class MaxAgainstType {
 
             // Inquisitor's armor, added 6 February 2020, set effect added 16 April 2020
             int inquisitorPieces = 0;
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
+            if (headItemName.contains("Inquisitor's"))
             {
                 inquisitorPieces += 1;
                 typeBonusToApply.add(1.025);
             }
 
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
+            if (bodyItemName.contains("Inquisitor's"))
             {
                 inquisitorPieces += 1;
             }
 
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Inquisitor's"))
+            if (legsItemName.contains("Inquisitor's"))
             {
                 inquisitorPieces += 1;
             }
@@ -175,29 +210,29 @@ public class MaxAgainstType {
         else if (attackStyle == AttackStyle.RANGING || attackStyle == AttackStyle.LONGRANGE)
         {
             // Salve Amulet (ei), added 1 May 2014
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
+            if (amuletItemName.contains("Salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
             // Salve Amulet (i), added 1 May 2014
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
+            else if (amuletItemName.contains("Salve amulet(i)"))
             {
                 typeBonusToApply.add(1.1667) ;
             }
             // Black Mask (i), added 26 September 2013
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
+            else if (headItemName.contains("Black mask"))
             {
-                if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
+                if (headItemName.contains("(i)"))
                 {
                     typeBonusToApply.add(1.15);
                 }
             }
             // Slayer helm (i)
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet (i)"))
+            else if (headItemName.contains("Slayer helmet (i)"))
             {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet (i)"))
+            else if (headItemName.contains("slayer helmet (i)"))
             {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
@@ -222,35 +257,35 @@ public class MaxAgainstType {
         else if (attackStyle == AttackStyle.CASTING || attackStyle == AttackStyle.DEFENSIVE_CASTING)
         {
             // Salve Amulet (ei), added 1 May 2014
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(ei)"))
+            if (amuletItemName.contains("Salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
             // Salve Amulet (i), added 1 May 2014
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Salve amulet(i)"))
+            else if (amuletItemName.contains("Salve amulet(i)"))
             {
                 typeBonusToApply.add(1.1667) ;
             }
             // Black Mask (i), added 26 September 2013
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Black mask"))
+            else if (headItemName.contains("Black mask"))
             {
-                if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(i)"))
+                if (headItemName.contains("(i)"))
                 {
                     typeBonusToApply.add(1.15);
                 }
             }
             // Slayer helm (i)
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Slayer helmet (i)"))
+            else if (headItemName.contains("Slayer helmet (i)"))
             {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
-            else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("slayer helmet (i)"))
+            else if (headItemName.contains("slayer helmet (i)"))
             {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
 
             // Fire Spells boost, added 8 September 2016
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName().contains("Tome of fire"))
+            if (shieldItemName.contains("Tome of fire"))
             {
                 typeBonusToApply.add(1.5);
             }

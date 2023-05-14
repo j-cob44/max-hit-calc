@@ -106,7 +106,14 @@ public class MaxHitCalcPlugin extends Plugin
 		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			playerEquipment = null;
+		}
 
 		// Find what type to calculate
 		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
@@ -131,7 +138,15 @@ public class MaxHitCalcPlugin extends Plugin
 	public double calculateMaxSpec()
 	{
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			return 0;
+		}
+
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
 
 		// Get Spec modifier
@@ -156,7 +171,15 @@ public class MaxHitCalcPlugin extends Plugin
 	public double calculateMaxAgainstType()
 	{
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			return 0;
+		}
+
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
 
 		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
@@ -194,7 +217,15 @@ public class MaxHitCalcPlugin extends Plugin
 
 	public double calculateMaxSpecAgainstType(){
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			return 0;
+		}
+
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
 
 		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
@@ -241,7 +272,14 @@ public class MaxHitCalcPlugin extends Plugin
 		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			playerEquipment = null;
+		}
 
 		// Find what type to calculate
 		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
@@ -280,22 +318,34 @@ public class MaxHitCalcPlugin extends Plugin
 		AttackStyle attackStyle = null;
 
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			playerEquipment = null;
+		}
 
 		// Determine if Attack Style is correct
 		if(slotID == 3)
 		{
 			// IS A WEAPON
-			attackStyle = InventoryItemMaxHit.determineAttackStyle(client, playerEquipment[3], itemID);
+			attackStyle = InventoryItemMaxHit.determineAttackStyle(client, itemID);
 		}
 		else
 		{
+			if (playerEquipment == null) return -1; // No new max hit if no weapon
+
 			// Get Current Attack Style
 			WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
 			AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
 
 			attackStyle = weaponAttackStyles[attackStyleID];
 		}
+
+		// Get corrected slot ID if player is not fully equipped
+		//slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
 
 		// Find what type to calculate
 		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))

@@ -34,6 +34,14 @@ public class MaxSpec
 {
     public static double getSpecWeaponStat(Client client, String weaponName, Item[] playerEquipment)
     {
+        String ammoItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
+        {
+            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
+        }
+
+
         // Check if we even have a spec weapon
 
         // Melee Checks
@@ -117,58 +125,40 @@ public class MaxSpec
         // Ranged Checks
         if(weaponName.contains("Dark bow"))
         {
-            String ammoName = "";
-            if(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-            {
-                ammoName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-            }
-
-            if(ammoName.contains("Dragon arrow"))
+            if(ammoItemName.contains("Dragon arrow"))
             {
                 return 1.5;
             }
-            else if (ammoName.contains("arrow"))
+            else if (ammoItemName.contains("arrow"))
             {
                 return 1.3;
             }
         }
         if(weaponName.contains("Zaryte crossbow"))
         {
-            String ammoName = "";
-            if(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-            {
-                ammoName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-            }
-
-            if(ammoName.contains("bolts (e)"))
+            if(ammoItemName.contains("bolts (e)"))
             {
                 return 1.1;
             }
         }
         if(weaponName.contains("crossbow"))
         {
-            String ammoName = "";
-            if(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-            {
-                ammoName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-            }
-
-            if(ammoName.contains("Diamond bolts (e)"))
+            if(ammoItemName.contains("Diamond bolts (e)"))
             {
                 return 1.15;
             }
 
-            if(ammoName.contains("Dragonstone bolts (e)"))
+            if(ammoItemName.contains("Dragonstone bolts (e)"))
             {
                 return 1.45;
             }
 
-            if(ammoName.contains("Onyx bolts (e)"))
+            if(ammoItemName.contains("Onyx bolts (e)"))
             {
                 return 1.15;
             }
 
-            if(ammoName.contains("Opal bolts (e)"))
+            if(ammoItemName.contains("Opal bolts (e)"))
             {
                 return 1.25;
             }
