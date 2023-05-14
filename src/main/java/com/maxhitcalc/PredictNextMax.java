@@ -167,8 +167,9 @@ public class PredictNextMax extends MaxHit
 
             // Step 2: Calculate the max hit
             double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+            double gearBonus = getRangeGearBoost(client, playerEquipment);
 
-            double predictedMaxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
             // Step 3: Bonus damage from special attack and effects
             // Not used here.
@@ -195,8 +196,9 @@ public class PredictNextMax extends MaxHit
 
             // Step 2: Calculate the max hit
             double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+            double gearBonus = getRangeGearBoost(client, playerEquipment);
 
-            double predictedMaxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
             // Step 3: Bonus damage from special attack and effects
             // Not used here.
@@ -223,8 +225,9 @@ public class PredictNextMax extends MaxHit
 
             // Step 2: Calculate the max hit
             double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment) + i;
+            double gearBonus = getRangeGearBoost(client, playerEquipment);
 
-            double predictedMaxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
             // Step 3: Bonus damage from special attack and effects
             // Not used here.

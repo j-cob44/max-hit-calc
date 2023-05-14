@@ -275,10 +275,69 @@ public class MaxHit {
     public static double getRangedStrengthBonus(Client client, ItemManager itemManager, Item[] playerEquipment)
     {
         double rangedStrengthBonus = 0;
-        double damagePercentBonus = 1;
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
+
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        String ammoItemName = "";
+        int ammoID = -1;
+        boolean skipAmmo = false;
+        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
+        {
+            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
+            ammoID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
+        }
+        else
+        {
+            skipAmmo = true;
+        }
+
+        // Crystal bow and Blowpipe skip ammo
+        // Cases to skip ammo
+        if (weaponItemName.contains("Crystal bow")
+                || weaponItemName.contains("faerdhinen"))
+        {
+            skipAmmo = true;
+        }
+
+        if(weaponItemName.contains("blowpipe"))
+        {
+            skipAmmo = true;
+        }
+
+        // Get Ranged Strength Bonus of each equipped Item
+        for (Item equipmentItem: playerEquipment)
+        {
+            if (equipmentItem != null)
+            {
+                if(equipmentItem.getId() != -1)
+                {
+                    int equipmentID = equipmentItem.getId();
+
+                    int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
+
+                    if (equipmentID != ammoID || !skipAmmo) {
+                        rangedStrengthBonus += equipmentStrengthStat;
+                    }
+                    // else, ammo slot skip it
+                }
+            }
+        }
+
+        return rangedStrengthBonus;
+    }
+
+    // Get Gear Boost, for instance Crystal Armor set bonus
+    public static double getRangeGearBoost(Client client, Item[] playerEquipment){
+        double damagePercentBonus = 1;
 
         String weaponItemName = "";
         if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
@@ -308,27 +367,10 @@ public class MaxHit {
             legsItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName();
         }
 
-        String ammoItemName = "";
-        int ammoID = -1;
-        boolean skipAmmo = false;
-        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-        {
-            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-            ammoID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
-        }
-        else
-        {
-            skipAmmo = true;
-        }
 
-        // Crystal bow and Blowpipe skip ammo
-        // Cases to skip ammo
         if (weaponItemName.contains("Crystal bow")
                 || weaponItemName.contains("faerdhinen"))
         {
-            skipAmmo = true;
-
             // Crystal Armor Damage bonus
             if (headItemName.contains("Crystal helm"))
             {
@@ -355,31 +397,7 @@ public class MaxHit {
             }
         }
 
-        if(weaponItemName.contains("blowpipe"))
-        {
-            skipAmmo = true;
-        }
-
-        // Get Ranged Strength Bonus of each equipped Item
-        for (Item equipmentItem: playerEquipment)
-        {
-            if (equipmentItem != null)
-            {
-                if(equipmentItem.getId() != -1)
-                {
-                    int equipmentID = equipmentItem.getId();
-
-                    int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
-
-                    if (equipmentID != ammoID || !skipAmmo) {
-                        rangedStrengthBonus += equipmentStrengthStat;
-                    }
-                    // else, ammo slot skip it
-                }
-            }
-        }
-
-        return (rangedStrengthBonus * damagePercentBonus);
+        return damagePercentBonus;
     }
 
     public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
@@ -395,8 +413,9 @@ public class MaxHit {
 
         // Step 2: Calculate the max hit
         double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+        double gearBonus = getRangeGearBoost(client, playerEquipment);
 
-        double maxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+        double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
         // Step 3: Bonus damage from special attack and effects
         // Not used here.
