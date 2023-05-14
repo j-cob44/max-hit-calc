@@ -261,7 +261,7 @@ public class MaxHit {
 
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Crystal body"))
             {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("(basic)"))
                 {
                     damagePercentBonus += 1.075;
                 }
@@ -269,7 +269,7 @@ public class MaxHit {
 
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Crystal legs"))
             {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("(basic)"))
                 {
                     damagePercentBonus += 1.05;
                 }
