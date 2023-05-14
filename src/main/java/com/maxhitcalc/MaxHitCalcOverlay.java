@@ -28,9 +28,7 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
-import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
@@ -50,24 +48,24 @@ import java.util.List;
 
 public class MaxHitCalcOverlay extends Overlay
 {
-    private PanelComponent panelComponent = new PanelComponent();
-    private MaxHitCalcPlugin plugin;
-    private MaxHitCalcConfig config;
+    private final PanelComponent panelComponent = new PanelComponent();
+    private final MaxHitCalcPlugin plugin;
+    private final MaxHitCalcConfig config;
+    @Inject
     private TooltipManager tooltipManager;
+    @Inject
     private ItemManager itemManager;
+    @Inject
     private Client client;
 
     @Inject
-    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, TooltipManager tooltipManager, ItemManager itemManager, Client client)
+    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config)
     {
         setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
         setLayer(OverlayLayer.ABOVE_SCENE);
 
         this.plugin = plugin;
         this.config = config;
-        this.tooltipManager = tooltipManager;
-        this.itemManager = itemManager;
-        this.client = client; // For tooltip
     }
 
     @Override
@@ -75,10 +73,10 @@ public class MaxHitCalcOverlay extends Overlay
     {
         panelComponent.getChildren().clear();
 
-        int maxHit = (int)plugin.calculateMaxHit();
-        int maxSpec = (int)plugin.calculateMaxSpec();
-        int maxVsType = (int)plugin.calculateMaxAgainstType();
-        int maxSpecVsType = (int)plugin.calculateMaxSpecAgainstType();
+        int maxHit = (int)Math.floor(plugin.calculateMaxHit());
+        int maxSpec = (int)Math.floor(plugin.calculateMaxSpec());
+        int maxVsType = (int)Math.floor(plugin.calculateMaxAgainstType());
+        int maxSpecVsType = (int)Math.floor(plugin.calculateMaxSpecAgainstType());
 
         if(config.showMaxHit())
         {
@@ -179,11 +177,11 @@ public class MaxHitCalcOverlay extends Overlay
                         if(deltaMax < 0)
                         {
                             // Negative
-                            tooltip = ColorUtil.wrapWithColorTag("-" + Math.abs(deltaMax), Color.RED) + " Max hit";
+                            tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("-" + Math.abs(deltaMax), Color.RED);
                         }
                         else if (deltaMax > 0)
                         {
-                            tooltip = ColorUtil.wrapWithColorTag("+" + deltaMax, Color.GREEN) + " Max hit";
+                            tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("+" + deltaMax, Color.GREEN);
                         }
 
                         tooltipManager.add(new Tooltip(tooltip));

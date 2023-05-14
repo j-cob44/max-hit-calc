@@ -28,7 +28,7 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.ChatMessageType; // for ingame debug
+import net.runelite.api.ChatMessageType; // for in-game debug
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.Item;
@@ -38,7 +38,7 @@ import java.util.List;
 public class MaxAgainstType {
     public static List<Double> getTypeBonus(Client client, AttackStyle attackStyle, String weaponName, Item[] playerEquipment)
     {
-        List<Double> typeBonusToApply = new ArrayList<Double>();
+        List<Double> typeBonusToApply = new ArrayList<>();
 
         /*
          Order bonuses by when the bonus was added to the game, not when the item was added

@@ -32,10 +32,8 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.events.ChatMessage; // for debug
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -312,7 +310,8 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			double magicMaxHit = InventoryItemMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
 
-			if (magicMaxHit != -1){
+			// If -1, error skip
+			if (magicMaxHit > -1){
 				return magicMaxHit;
 			}
 		}

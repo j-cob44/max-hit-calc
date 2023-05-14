@@ -96,7 +96,7 @@ public class MaxHit {
                 int equipmentID = equipmentItem.getId();
                 int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
 
-                strengthBonus += (double)equipmentStrengthStat;
+                strengthBonus += equipmentStrengthStat;
             }
         }
 
@@ -183,7 +183,7 @@ public class MaxHit {
         int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
         double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
-        double effectiveStrength = Math.floor((Math.floor(Math.floor(strengthLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+        double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the base damage
         double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
@@ -280,14 +280,11 @@ public class MaxHit {
                 int equipmentID = equipmentItem.getId();
                 int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
 
-                if (equipmentID == ammoID && skipAmmo)
-                {
-                    // skip ammo slot
+                if (equipmentID != ammoID || !skipAmmo) {
+                    rangedStrengthBonus += equipmentStrengthStat;
                 }
-                else
-                {
-                    rangedStrengthBonus += (double)equipmentStrengthStat;
-                }
+                // else, skip ammo slot
+
             }
         }
 
@@ -303,7 +300,7 @@ public class MaxHit {
         int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
         double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
-        double effectiveRangedStrength = Math.floor((Math.floor(Math.floor(rangedLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+        double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the max hit
         double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
@@ -395,7 +392,7 @@ public class MaxHit {
             {
                 if(selectedSpell.getName().equalsIgnoreCase("MAGIC DART"))
                 {
-                    double magicDartDamage = Math.floor(magicLevel * (1/10)) + 10;
+                    double magicDartDamage = Math.floor(magicLevel * ((double)1/10)) + 10;
 
                     basehit = magicDartDamage;
                 }

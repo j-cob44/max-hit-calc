@@ -74,7 +74,7 @@ public class MaxSpec
 
         if(weaponName.contains("Dragon hasta"))
         {
-            return 1.0 + (0.5 * (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT)/1000));
+            return 1.0 + (0.5 * ((double)client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) /1000));
         }
 
         if(weaponName.contains("Dragon longsword"))
@@ -174,6 +174,6 @@ public class MaxSpec
             }
         }
 
-        return 0; // Not a spec weapon
+        return 0; // Not a spec weapon with a damage boost
     }
 }

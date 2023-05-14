@@ -1,11 +1,10 @@
 package com.maxhitcalc;
 
 import net.runelite.api.*;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.ItemManager;
-public class InventoryItemMaxHit{
+public class InventoryItemMaxHit extends MaxHit{
     public static AttackStyle determineAttackStyle(Client client, Item weapon, int weaponID){
-        AttackStyle attackStyle = null;
+        AttackStyle attackStyle;
 
         // Ranged
         if (client.getItemDefinition(weaponID).getName().contains("bow")
@@ -57,20 +56,20 @@ public class InventoryItemMaxHit{
         // Calculate Melee Max Hit
         // Step 1: Calculate effective Strength
         int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-        double prayerBonus = MaxHit.getPrayerBonus(client, weaponAttackStyle);
-        int styleBonus = MaxHit.getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-        double voidBonus = MaxHit.getVoidMeleeBonus(client, playerEquipment); // default 1;
+        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+        int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
+        double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
-        double effectiveStrength = Math.floor((Math.floor(Math.floor(strengthLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+        double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the base damage
-        double strengthBonus = MaxHit.getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
+        double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
 
         double baseDamage = (0.5 + effectiveStrength * ((strengthBonus + 64)/640));
         double flooredBaseDamage = Math.floor(baseDamage);
 
         // Step 3: Calculate the bonus damage
-        double specialBonusMultiplier = MaxHit.getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
+        double specialBonusMultiplier = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
 
         double maxHit = (flooredBaseDamage * specialBonusMultiplier);
 
@@ -86,14 +85,14 @@ public class InventoryItemMaxHit{
         // Calculate Ranged Max Hit
         // Step 1: Calculate effective ranged Strength
         int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-        double prayerBonus = MaxHit.getPrayerBonus(client, weaponAttackStyle);
-        int styleBonus = MaxHit.getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-        double voidBonus = MaxHit.getVoidRangedBonus(client, playerEquipment); // default 1;
+        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+        int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
+        double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
-        double effectiveRangedStrength = Math.floor((Math.floor(Math.floor(rangedLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+        double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the max hit
-        double equipmentRangedStrength = MaxHit.getRangedStrengthBonus(client, itemManager, playerEquipment);
+        double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
 
         double maxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
 
@@ -110,7 +109,7 @@ public class InventoryItemMaxHit{
 
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
-        double spellBaseMaxHit = MaxHit.getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
+        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
 
         if (spellBaseMaxHit == 0)
         {
@@ -118,7 +117,7 @@ public class InventoryItemMaxHit{
         }
 
         // Step 2: Calculate the Magic Damage Bonus
-        double magicDmgBonus = MaxHit.getMagicEquipmentBoost(client, itemManager, playerEquipment);
+        double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
