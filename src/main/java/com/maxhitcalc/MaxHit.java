@@ -241,42 +241,82 @@ public class MaxHit {
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
-        // Crystal bow and Blowpipe skip ammo
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        String headItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()] != null)
+        {
+            headItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName();
+        }
+
+        String bodyItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()] != null)
+        {
+            bodyItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName();
+        }
+
+        String legsItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()] != null)
+        {
+            legsItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName();
+        }
+
+        String ammoItemName = "";
+        int ammoID = -1;
         boolean skipAmmo = false;
-        int ammoID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
+        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
+        {
+            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
+            ammoID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
+        }
+        else
+        {
+            skipAmmo = true;
+        }
+
+        // Crystal bow and Blowpipe skip ammo
         // Cases to skip ammo
-        if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal bow") ||
-                client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("faerdhinen"))
+        if (weaponItemName.contains("Crystal bow")
+                || weaponItemName.contains("faerdhinen"))
         {
             skipAmmo = true;
 
             // Crystal Armor Damage bonus
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal helm"))
+            if (headItemName.contains("Crystal helm"))
             {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
+                if(!headItemName.contains("(basic)"))
                 {
                     damagePercentBonus += 0.025;
                 }
             }
 
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Crystal body"))
+            if (bodyItemName.contains("Crystal body"))
             {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("(basic)"))
+                if(!bodyItemName.contains("(basic)"))
                 {
                     damagePercentBonus += 0.075;
                 }
             }
 
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Crystal legs"))
+            if (legsItemName.contains("Crystal legs"))
             {
-                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("(basic)"))
+                if(!legsItemName.contains("(basic)"))
                 {
                     damagePercentBonus += 0.05;
                 }
             }
         }
 
-        if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("blowpipe"))
+        if(weaponItemName.contains("blowpipe"))
         {
             skipAmmo = true;
         }
