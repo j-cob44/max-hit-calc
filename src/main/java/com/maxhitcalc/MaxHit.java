@@ -253,17 +253,26 @@ public class MaxHit {
             // Crystal Armor Damage bonus
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Crystal helm"))
             {
-                damagePercentBonus += 1.025;
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
+                {
+                    damagePercentBonus += 1.025;
+                }
             }
 
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Crystal body"))
             {
-                damagePercentBonus += 1.075;
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
+                {
+                    damagePercentBonus += 1.075;
+                }
             }
 
             if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Crystal legs"))
             {
-                damagePercentBonus += 1.05;
+                if(!client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("(basic)"))
+                {
+                    damagePercentBonus += 1.05;
+                }
             }
         }
 
