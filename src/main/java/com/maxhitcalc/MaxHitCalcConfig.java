@@ -88,7 +88,7 @@ public interface MaxHitCalcConfig extends Config
 			keyName = "showPredictionTooltip",
 			name = "Tooltip for Predicted Next Max Hit",
 			description = "Hover over the panel for a prediction of requirements for next max hit.",
-			position = 3
+			position = 4
 	)
 	default boolean showPredictionTooltip()
 	{

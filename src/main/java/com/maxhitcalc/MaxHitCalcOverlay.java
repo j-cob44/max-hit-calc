@@ -28,6 +28,7 @@
 
 package com.maxhitcalc;
 
+import net.runelite.api.ChatMessageType; // For debug
 import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -36,29 +37,31 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
-
+import net.runelite.client.game.ItemManager;
 import javax.inject.Inject;
 import java.awt.*;
 import java.util.List;
 
 public class MaxHitCalcOverlay extends Overlay
 {
-    private PanelComponent panelComponent = new PanelComponent();
-    private MaxHitCalcPlugin plugin;
-    private MaxHitCalcConfig config;
+    private final PanelComponent panelComponent = new PanelComponent();
+    private final MaxHitCalcPlugin plugin;
+    private final MaxHitCalcConfig config;
+    @Inject
     private TooltipManager tooltipManager;
+    @Inject
+    private ItemManager itemManager;
+    @Inject
     private Client client;
 
     @Inject
-    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, TooltipManager tooltipManager, Client client)
+    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config)
     {
         setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
         setLayer(OverlayLayer.ABOVE_SCENE);
 
         this.plugin = plugin;
         this.config = config;
-        this.tooltipManager = tooltipManager;
-        this.client = client; // For tooltip
     }
 
     @Override
@@ -66,10 +69,10 @@ public class MaxHitCalcOverlay extends Overlay
     {
         panelComponent.getChildren().clear();
 
-        int maxHit = (int)plugin.calculateMaxHit();
-        int maxSpec = (int)plugin.calculateMaxSpec();
-        int maxVsType = (int)plugin.calculateMaxAgainstType();
-        int maxSpecVsType = (int)plugin.calculateMaxSpecAgainstType();
+        int maxHit = (int)Math.floor(plugin.calculateMaxHit());
+        int maxSpec = (int)Math.floor(plugin.calculateMaxSpec());
+        int maxVsType = (int)Math.floor(plugin.calculateMaxAgainstType());
+        int maxSpecVsType = (int)Math.floor(plugin.calculateMaxSpecAgainstType());
 
         if(config.showMaxHit())
         {

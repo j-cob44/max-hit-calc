@@ -28,7 +28,7 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.ChatMessageType; // debug
+import net.runelite.api.ChatMessageType; // for debug
 import net.runelite.api.Client;
 import net.runelite.api.Item;
 import net.runelite.api.Skill;
@@ -56,7 +56,7 @@ public class PredictNextMax extends MaxHit
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
-            double effectiveStrength = Math.floor((Math.floor(Math.floor(strengthLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+            double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the base damage
             double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
@@ -87,7 +87,7 @@ public class PredictNextMax extends MaxHit
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
-            double effectiveStrength = Math.floor((Math.floor(Math.floor(strengthLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+            double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the base damage
             double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment) + i; // default 0
@@ -118,7 +118,7 @@ public class PredictNextMax extends MaxHit
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
 
-            double effectiveStrength = Math.floor((Math.floor(Math.floor(strengthLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+            double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the base damage
             double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
@@ -163,7 +163,7 @@ public class PredictNextMax extends MaxHit
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
-            double effectiveRangedStrength = Math.floor((Math.floor(Math.floor(rangedLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+            double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
             double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
@@ -191,7 +191,7 @@ public class PredictNextMax extends MaxHit
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
-            double effectiveRangedStrength = Math.floor((Math.floor(Math.floor(rangedLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+            double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
             double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
@@ -219,7 +219,7 @@ public class PredictNextMax extends MaxHit
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
 
-            double effectiveRangedStrength = Math.floor((Math.floor(Math.floor(rangedLevel) * prayerBonus) + styleBonus + 8) * voidBonus);
+            double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
             double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment) + i;
@@ -297,8 +297,6 @@ public class PredictNextMax extends MaxHit
         }
 
         List<Object> results = Arrays.asList("magic", nextMagicLevel, nextMagicDamageBonus);
-
-
 
         // Complete
         return results;

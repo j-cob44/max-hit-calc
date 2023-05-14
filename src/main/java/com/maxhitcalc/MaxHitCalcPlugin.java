@@ -32,10 +32,8 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.events.ChatMessage; // for debug
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -108,7 +106,14 @@ public class MaxHitCalcPlugin extends Plugin
 		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			playerEquipment = null;
+		}
 
 		// Find what type to calculate
 		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
@@ -133,7 +138,15 @@ public class MaxHitCalcPlugin extends Plugin
 	public double calculateMaxSpec()
 	{
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			return 0;
+		}
+
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
 
 		// Get Spec modifier
@@ -158,7 +171,15 @@ public class MaxHitCalcPlugin extends Plugin
 	public double calculateMaxAgainstType()
 	{
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			return 0;
+		}
+
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
 
 		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
@@ -196,7 +217,15 @@ public class MaxHitCalcPlugin extends Plugin
 
 	public double calculateMaxSpecAgainstType(){
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			return 0;
+		}
+
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
 
 		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
@@ -243,7 +272,14 @@ public class MaxHitCalcPlugin extends Plugin
 		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
 		// Get Current Equipment
-		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			playerEquipment = null;
+		}
 
 		// Find what type to calculate
 		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
