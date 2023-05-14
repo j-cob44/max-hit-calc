@@ -272,4 +272,52 @@ public class MaxHitCalcPlugin extends Plugin
 			return null;
 		}
 	}
+
+	// Calculate Max Hit for an inventory item
+	public double calculateMaxHitFromInventory(int slotID, int itemID)
+	{
+		// Initialize Variables
+		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+		AttackStyle attackStyle = null;
+
+		// Get Current Equipment
+		Item[] playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+
+		// Determine if Attack Style is correct
+		if(slotID == 3)
+		{
+			// IS A WEAPON
+			attackStyle = InventoryItemMaxHit.determineAttackStyle(client, playerEquipment[3], itemID);
+		}
+		else
+		{
+			// Get Current Attack Style
+			WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+			AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+			attackStyle = weaponAttackStyles[attackStyleID];
+		}
+
+		// Find what type to calculate
+		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
+		{
+			return InventoryItemMaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+		}
+		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
+		{
+			return InventoryItemMaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+		}
+		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
+		{
+			double magicMaxHit = InventoryItemMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+
+			if (magicMaxHit != -1){
+				return magicMaxHit;
+			}
+		}
+
+		return -1;
+
+	}
 }

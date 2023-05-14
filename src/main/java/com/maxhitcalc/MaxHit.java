@@ -390,15 +390,19 @@ public class MaxHit {
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
 
             // Magic Dart Case
-            if(selectedSpell.getName().equalsIgnoreCase("MAGIC DART"))
-            {
-                double magicDartDamage = Math.floor(magicLevel * (1/10)) + 10;
 
-                basehit = magicDartDamage;
-            }
-            else
+            if (selectedSpell != null)
             {
-                basehit = selectedSpell.getBaseDamage();
+                if(selectedSpell.getName().equalsIgnoreCase("MAGIC DART"))
+                {
+                    double magicDartDamage = Math.floor(magicLevel * (1/10)) + 10;
+
+                    basehit = magicDartDamage;
+                }
+                else
+                {
+                    basehit = selectedSpell.getBaseDamage();
+                }
             }
         }
 

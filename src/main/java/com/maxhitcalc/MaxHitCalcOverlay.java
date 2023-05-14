@@ -28,7 +28,12 @@
 
 package com.maxhitcalc;
 
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.MenuEntry;
+import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -36,7 +41,9 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
-
+import net.runelite.client.util.ColorUtil;
+import net.runelite.http.api.item.ItemStats;
+import net.runelite.client.game.ItemManager;
 import javax.inject.Inject;
 import java.awt.*;
 import java.util.List;
@@ -47,10 +54,11 @@ public class MaxHitCalcOverlay extends Overlay
     private MaxHitCalcPlugin plugin;
     private MaxHitCalcConfig config;
     private TooltipManager tooltipManager;
+    private ItemManager itemManager;
     private Client client;
 
     @Inject
-    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, TooltipManager tooltipManager, Client client)
+    MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, TooltipManager tooltipManager, ItemManager itemManager, Client client)
     {
         setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
         setLayer(OverlayLayer.ABOVE_SCENE);
@@ -58,6 +66,7 @@ public class MaxHitCalcOverlay extends Overlay
         this.plugin = plugin;
         this.config = config;
         this.tooltipManager = tooltipManager;
+        this.itemManager = itemManager;
         this.client = client; // For tooltip
     }
 
@@ -123,6 +132,67 @@ public class MaxHitCalcOverlay extends Overlay
                     tooltipManager.add(new Tooltip(tooltipString));
                 }
             }
+        }
+
+        // Tooltip on item in inventory
+        MenuEntry[] menu = client.getMenuEntries();
+        int menuSize = menu.length;
+        if (menuSize == 0)
+        {
+            return panelComponent.render(graphics);
+        }
+
+        // Get Inventory
+        MenuEntry entry = menu[menuSize - 1];
+        Widget widget = entry.getWidget();
+        if (widget == null)
+        {
+            return panelComponent.render(graphics);
+        }
+
+        // Get Hovered Item
+        int itemID = -1;
+        if (widget.getId() == WidgetInfo.INVENTORY.getId())
+        {
+            itemID = widget.getItemId();
+        }
+        // Hovered Item ID grabber retrieved from net.runelite.client.plugins.itemstats
+
+        // Prepare Tooltip
+        if (config.showInventoryTooltip() && itemID != -1)
+        {
+            ItemStats stats = itemManager.getItemStats(itemID, false);
+            if(stats != null)
+            {
+                if(stats.getEquipment() != null)
+                {
+                    int slotID = stats.getEquipment().getSlot();
+
+                    int maxWithItem = (int)plugin.calculateMaxHitFromInventory(slotID, itemID);
+
+                    // If no error
+                    if (maxWithItem != -1){
+                        int deltaMax = maxWithItem - maxHit;
+
+                        // Display depending on Negative or Positive Increase
+                        String tooltip = "";
+                        if(deltaMax < 0)
+                        {
+                            // Negative
+                            tooltip = ColorUtil.wrapWithColorTag("-" + Math.abs(deltaMax), Color.RED) + " Max hit";
+                        }
+                        else if (deltaMax > 0)
+                        {
+                            tooltip = ColorUtil.wrapWithColorTag("+" + deltaMax, Color.GREEN) + " Max hit";
+                        }
+
+                        tooltipManager.add(new Tooltip(tooltip));
+                    }
+
+                }
+
+            }
+
         }
 
         return panelComponent.render(graphics);

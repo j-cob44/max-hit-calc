@@ -88,9 +88,21 @@ public interface MaxHitCalcConfig extends Config
 			keyName = "showPredictionTooltip",
 			name = "Tooltip for Predicted Next Max Hit",
 			description = "Hover over the panel for a prediction of requirements for next max hit.",
-			position = 3
+			position = 4
 	)
 	default boolean showPredictionTooltip()
+	{
+		return true;
+	}
+
+	// Show Predicted Max Hit when hovering over item in inventory
+	@ConfigItem(
+			keyName = "showInventoryTooltip",
+			name = "Tooltip on Inventory Item",
+			description = "Hover over an item in your inventory to see it's max hit impact when equipped.",
+			position = 5
+	)
+	default boolean showInventoryTooltip()
 	{
 		return true;
 	}
