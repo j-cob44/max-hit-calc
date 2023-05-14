@@ -41,7 +41,6 @@ public class MaxSpec
             ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
         }
 
-
         // Check if we even have a spec weapon
 
         // Melee Checks

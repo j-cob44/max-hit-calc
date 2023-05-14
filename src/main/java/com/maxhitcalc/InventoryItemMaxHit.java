@@ -88,24 +88,26 @@ public class InventoryItemMaxHit extends MaxHit{
     {
         Item[] newEquipment = new Item[14];
 
-        newEquipment = currentEquipment; // Set old slots
-
-        newEquipment[slotID] = new Item(itemID, 1);
-
-        int placeholderItem = 0;
         for(int i = 0; i < newEquipment.length; i++)
         {
+            if(currentEquipment != null)
+            {
+                if (currentEquipment[i] != null)
+                {
+                    newEquipment[i] = currentEquipment[i]; // Set new slot item to old slot item
+                }
+            }
+
             if(i != 6 && i != 8 && i != 11)
             {
                 if (newEquipment[i] == null)
                 {
                     newEquipment[i] = new Item(-1, 1);
-
-                    //newEquipment[i] = new Item((11850+placeholderItem), 1);
-                    //placeholderItem++;
                 }
             }
         }
+
+        newEquipment[slotID] = new Item(itemID, 1);
 
         return newEquipment;
     }

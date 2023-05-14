@@ -280,6 +280,13 @@ public class MaxHit {
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
         // Crystal bow and Blowpipe skip ammo
         boolean skipAmmo = false;
         int ammoID = -1;
@@ -290,11 +297,9 @@ public class MaxHit {
             skipAmmo = true;
         }
 
-
         // Cases to skip ammo
-        if (playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal bow") ||
-                client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("faerdhinen")))
+        if (weaponItemName.contains("Crystal bow")
+                || weaponItemName.contains("faerdhinen"))
         {
             skipAmmo = true;
 
@@ -318,8 +323,7 @@ public class MaxHit {
             }
         }
 
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("blowpipe"))
+        if(weaponItemName.contains("blowpipe"))
         {
             skipAmmo = true;
         }
@@ -338,8 +342,7 @@ public class MaxHit {
                     if (equipmentID != ammoID || !skipAmmo) {
                         rangedStrengthBonus += equipmentStrengthStat;
                     }
-                    // else, skip ammo slot
-
+                    // else, ammo slot skip it
                 }
             }
         }
