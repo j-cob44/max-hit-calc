@@ -86,7 +86,7 @@ public class InventoryItemMaxHit extends MaxHit
         return correctSlotID;
     }
 
-    public static Item[] changeEquipment(int slotID, int itemID, Item[] currentEquipment)
+    public static Item[] changeEquipment(Client client, int slotID, int itemID, Item[] currentEquipment)
     {
         Item[] newEquipment = new Item[14];
 
@@ -94,18 +94,18 @@ public class InventoryItemMaxHit extends MaxHit
         {
             if(currentEquipment != null)
             {
-                if (currentEquipment[i] != null)
+                if(i < currentEquipment.length)
                 {
-                    newEquipment[i] = currentEquipment[i]; // Set new slot item to old slot item
+                    if (currentEquipment[i] != null)
+                    {
+                        newEquipment[i] = currentEquipment[i]; // Set new slot item to old slot item
+                    }
                 }
             }
 
-            if(i != 6 && i != 8 && i != 11)
+            if (newEquipment[i] == null)
             {
-                if (newEquipment[i] == null)
-                {
-                    newEquipment[i] = new Item(-1, 1);
-                }
+                newEquipment[i] = new Item(-1, 1);
             }
         }
 
@@ -117,7 +117,7 @@ public class InventoryItemMaxHit extends MaxHit
     public static double calculateMeleeMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID)
     {
         // Change equipment slot to new item
-        Item[] playerEquipment = changeEquipment(slotID, itemID, currentPlayerEquipment);
+        Item[] playerEquipment = changeEquipment(client, slotID, itemID, currentPlayerEquipment);
 
         // Calculate Melee Max Hit
         // Step 1: Calculate effective Strength
@@ -146,7 +146,7 @@ public class InventoryItemMaxHit extends MaxHit
     public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID)
     {
         // Change equipment slot to new item
-        Item[] playerEquipment = changeEquipment(slotID, itemID, currentPlayerEquipment);
+        Item[] playerEquipment = changeEquipment(client, slotID, itemID, currentPlayerEquipment);
 
         // Calculate Ranged Max Hit
         // Step 1: Calculate effective ranged Strength
@@ -171,7 +171,7 @@ public class InventoryItemMaxHit extends MaxHit
     public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID)
     {
         // Change equipment slot to new item
-        Item[] playerEquipment = changeEquipment(slotID, itemID, currentPlayerEquipment);
+        Item[] playerEquipment = changeEquipment(client, slotID, itemID, currentPlayerEquipment);
 
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
