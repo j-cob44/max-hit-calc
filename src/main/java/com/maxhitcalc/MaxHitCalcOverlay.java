@@ -30,8 +30,12 @@ package com.maxhitcalc;
 
 import net.runelite.api.ChatMessageType; // For debug
 import net.runelite.api.Client;
+import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
+import net.runelite.client.RuneLite;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
@@ -42,9 +46,12 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.util.List;
 
-public class MaxHitCalcOverlay extends Overlay
+import static java.lang.Enum.valueOf;
+import static net.runelite.api.MenuAction.RUNELITE_OVERLAY_CONFIG;
+import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
+
+public class MaxHitCalcOverlay extends OverlayPanel
 {
-    private final PanelComponent panelComponent = new PanelComponent();
     private final MaxHitCalcPlugin plugin;
     private final MaxHitCalcConfig config;
     @Inject
@@ -62,6 +69,7 @@ public class MaxHitCalcOverlay extends Overlay
 
         this.plugin = plugin;
         this.config = config;
+
     }
 
     @Override
@@ -128,7 +136,7 @@ public class MaxHitCalcOverlay extends Overlay
             }
         }
 
-        return panelComponent.render(graphics);
+        return super.render(graphics);
     }
 
     private String predictedMaxHitTooltip()
