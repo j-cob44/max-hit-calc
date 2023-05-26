@@ -35,9 +35,9 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
-import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
 import net.runelite.client.util.ColorUtil;
@@ -47,9 +47,8 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.util.List;
 
-public class MaxHitCalcOverlay extends Overlay
+public class MaxHitCalcOverlay extends OverlayPanel
 {
-    private final PanelComponent panelComponent = new PanelComponent();
     private final MaxHitCalcPlugin plugin;
     private final MaxHitCalcConfig config;
     @Inject
@@ -133,7 +132,6 @@ public class MaxHitCalcOverlay extends Overlay
             }
         }
 
-
         // Tooltip on item in inventory
         MenuEntry[] menu = client.getMenuEntries();
         int menuSize = menu.length;
@@ -199,7 +197,7 @@ public class MaxHitCalcOverlay extends Overlay
 
         }
 
-        return panelComponent.render(graphics);
+        return super.render(graphics);
     }
 
     private String predictedMaxHitTooltip()
