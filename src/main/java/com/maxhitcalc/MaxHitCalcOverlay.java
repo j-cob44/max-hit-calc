@@ -137,7 +137,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         int menuSize = menu.length;
         if (menuSize == 0)
         {
-            return panelComponent.render(graphics);
+            return super.render(graphics);
         }
 
         // Get Inventory
@@ -145,7 +145,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         Widget widget = entry.getWidget();
         if (widget == null)
         {
-            return panelComponent.render(graphics);
+            return super.render(graphics);
         }
 
         // Get Hovered Item
@@ -185,7 +185,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
                         }
                         else
                         {
-                            return panelComponent.render(graphics);
+                            return super.render(graphics);
                         }
 
                         tooltipManager.add(new Tooltip(tooltip));
