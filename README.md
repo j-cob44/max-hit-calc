@@ -3,7 +3,7 @@
 ### Features:
 1. Calculates max hit for melee, ranged, and magic weapons.
    - Automatically grabs your currently auto-casted spell, no need for input anywhere
-   - Currently only blowpipe is not calculated. All other weapons should work perfectly.
+   - Currently only blowpipe is not automatic, used dart type must be set in plugin settings.
 2. Calculates max special attack hit for melee and ranged attacks.
 3. Calculates max hit against specific types (e.g. kalphites bonus, tome of fire bonus, wilderness bonus).
 4. Calculates max special attack against specific type bonuses (e.g. dragon longsword spec while against slayer task).
@@ -28,7 +28,7 @@ Spellbook Tooltips: <br>
 ![Spellbook Example 3](/assets/spellbook_example3.png)
 ![Spellbook Example 4](/assets/spellbook_example4.png)<br>
 
-Autocast Selection Tooltips: <br>
+Auto-cast Selection Tooltips: <br>
 ![Autocast Example 1](/assets/ac_selection_example1.png)
 ![Autocast Example 2](/assets/ac_selection_example2.png)
 ![Autocast Example 3](/assets/ac_selection_example3.png)

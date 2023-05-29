@@ -23,7 +23,7 @@ dependencies {
 	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 }
 
-group = 'com.github.j-cob44'
+group = 'com.maxhitcalc'
 version = '1.1.0'
 sourceCompatibility = '1.8'
 
