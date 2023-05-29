@@ -36,6 +36,7 @@ Auto-cast Selection Tooltips: <br>
 
 <hr>
 
-Leave any feedback here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
+Feedback can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
+Or as an issue in Github: https://github.com/j-cob44/max-hit-calc/issues <br>
 
-Jacob Burton, May 2023 <br>
+Jacob Burton (j-cob44), May 2023 <br>
