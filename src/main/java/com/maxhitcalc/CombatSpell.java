@@ -92,10 +92,23 @@ enum CombatSpell
 
     public static CombatSpell getSpellBySpriteID(int spriteID)
     {
-        // Spells that
         for (CombatSpell spell : CombatSpell.values())
         {
             if(spell.spriteID == spriteID){
+                return spell;
+            }
+        }
+
+        // error, failure
+        return null;
+    }
+
+    public static CombatSpell getSpellByDisabledSpriteID(int spriteID)
+    {
+        // Spells that
+        for (CombatSpell spell : CombatSpell.values())
+        {
+            if(spell.disabledSpriteID == spriteID){
                 return spell;
             }
         }
