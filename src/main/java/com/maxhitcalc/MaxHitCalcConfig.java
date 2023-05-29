@@ -32,14 +32,36 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.plugins.boosts.BoostsConfig;
 
 @ConfigGroup("MaxHitCalc")
 public interface MaxHitCalcConfig extends Config
 {
+	// Dart Types
+	enum BlowpipeDartType
+	{
+		MITHRIL,
+		ADAMANT,
+		RUNE,
+		AMETHYST,
+		DRAGON
+	}
+
+	@ConfigItem(
+			keyName = "blowpipeDartType",
+			name = "Blowpipe Dart Type",
+			description = "Sets the Dart type for calculation",
+			position = 0
+	)
+	default BlowpipeDartType blowpipeDartType()
+	{
+		return BlowpipeDartType.MITHRIL;
+	}
+
 	@ConfigSection(
 			name = "Main Panel",
 			description = "Settings relating to the Main Panel",
-			position =  0,
+			position =  1,
 			closedByDefault = false
 	)
 	String mainPanelSettings = "Main Panel";
@@ -47,7 +69,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigSection(
 			name = "Inventory Settings",
 			description = "Settings relating to tooltips on Inventory Items",
-			position =  1,
+			position =  2,
 			closedByDefault = false
 	)
 	String inventorySettings = "Inventory Settings";
@@ -55,7 +77,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigSection(
 			name = "Spell Settings",
 			description = "Settings relating to tooltips on Spells",
-			position =  2,
+			position =  3,
 			closedByDefault = false
 	)
 	String spellSettings = "Spell Settings";

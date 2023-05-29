@@ -172,7 +172,7 @@ public class InventoryItemMaxHit extends MaxHit
         return maxHit;
     }
 
-    public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID)
+    public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID, MaxHitCalcConfig.BlowpipeDartType dartType)
     {
         // Change equipment slot to new item
         Item[] playerEquipment = changeEquipment(client, slotID, itemID, currentPlayerEquipment);
@@ -187,7 +187,7 @@ public class InventoryItemMaxHit extends MaxHit
         double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the max hit
-        double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+        double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
 
         double maxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
 

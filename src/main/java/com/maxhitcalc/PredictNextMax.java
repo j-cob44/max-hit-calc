@@ -145,13 +145,13 @@ public class PredictNextMax extends MaxHit
         return results;
     }
 
-    public static List<Object> predictNextRangeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    public static List<Object> predictNextRangeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, MaxHitCalcConfig.BlowpipeDartType dartType)
     {
         int nextRangedLevel = 0;
         int nextRangeEquipmentBonus = 0;
         double nextPrayerBonus = 0;
 
-        double currentMaxHit = calculateRangedMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID);
+        double currentMaxHit = calculateRangedMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID, dartType);
 
         // Predict Next Ranged Level for Next Max Hit
         for(int i = 1; i <= 20; i++)
@@ -166,7 +166,7 @@ public class PredictNextMax extends MaxHit
             double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
-            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
             double gearBonus = getRangeGearBoost(client, playerEquipment);
 
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
@@ -195,7 +195,7 @@ public class PredictNextMax extends MaxHit
             double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
-            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
             double gearBonus = getRangeGearBoost(client, playerEquipment);
 
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
@@ -224,7 +224,7 @@ public class PredictNextMax extends MaxHit
             double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
-            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment) + i;
+            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType) + i;
             double gearBonus = getRangeGearBoost(client, playerEquipment);
 
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );

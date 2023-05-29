@@ -33,7 +33,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ChatMessage; // for debug
-import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.eventbus.Subscribe; // for debug
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
@@ -123,7 +123,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
 		{
-			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
 		}
 		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
 		{
@@ -292,7 +292,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
 		{
-			List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+			List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
 
 			// index: 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
 			return rangedResults;
@@ -353,7 +353,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
 		{
-			return InventoryItemMaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+			return InventoryItemMaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID, config.blowpipeDartType());
 		}
 		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
 		{
