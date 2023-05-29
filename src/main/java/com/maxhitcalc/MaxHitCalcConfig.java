@@ -106,4 +106,16 @@ public interface MaxHitCalcConfig extends Config
 	{
 		return true;
 	}
+
+	// Show Predicted Max Hit when hovering over item in inventory
+	@ConfigItem(
+			keyName = "showSpellbookTooltip",
+			name = "Tooltip on Spells in Spellbook",
+			description = "Hover over a spell in the spellbook to see its current max hit.",
+			position = 6
+	)
+	default boolean showSpellbookTooltip()
+	{
+		return true;
+	}
 }

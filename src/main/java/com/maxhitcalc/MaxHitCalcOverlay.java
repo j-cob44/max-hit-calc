@@ -28,10 +28,9 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.ChatMessageType; // For debug
-import net.runelite.api.Client;
-import net.runelite.api.MenuEntry;
+import net.runelite.api.*;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -132,69 +131,16 @@ public class MaxHitCalcOverlay extends OverlayPanel
             }
         }
 
-        // Tooltip on item in inventory
-        MenuEntry[] menu = client.getMenuEntries();
-        int menuSize = menu.length;
-        if (menuSize == 0)
+        // Inventory Item Hover
+        if (config.showInventoryTooltip())
         {
-            return super.render(graphics);
+            getInventoryMaxHitTooltip(maxHit);
         }
 
-        // Get Inventory
-        MenuEntry entry = menu[menuSize - 1];
-        Widget widget = entry.getWidget();
-        if (widget == null)
+        // Spellbook Spell Hover
+        if (config.showSpellbookTooltip())
         {
-            return super.render(graphics);
-        }
-
-        // Get Hovered Item
-        int itemID = -1;
-        if (widget.getId() == WidgetInfo.INVENTORY.getId())
-        {
-            itemID = widget.getItemId();
-        }
-        // Hovered Item ID grabber retrieved from net.runelite.client.plugins.itemstats
-
-        // Prepare Tooltip
-        if (config.showInventoryTooltip() && itemID != -1)
-        {
-            ItemStats stats = itemManager.getItemStats(itemID, false);
-            if(stats != null)
-            {
-                if(stats.getEquipment() != null)
-                {
-                    int slotID = stats.getEquipment().getSlot();
-
-                    int maxWithItem = (int)plugin.calculateMaxHitFromInventory(slotID, itemID);
-
-                    // If no error
-                    if (maxWithItem != -1){
-                        int deltaMax = maxWithItem - maxHit;
-
-                        // Display depending on Negative or Positive Increase
-                        String tooltip = "";
-                        if(deltaMax < 0)
-                        {
-                            // Negative
-                            tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("-" + Math.abs(deltaMax), Color.RED);
-                        }
-                        else if (deltaMax > 0)
-                        {
-                            tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("+" + deltaMax, Color.GREEN);
-                        }
-                        else
-                        {
-                            return super.render(graphics);
-                        }
-
-                        tooltipManager.add(new Tooltip(tooltip));
-                    }
-
-                }
-
-            }
-
+            getSpellbookMaxHitTooltip();
         }
 
         return super.render(graphics);
@@ -224,6 +170,134 @@ public class MaxHitCalcOverlay extends OverlayPanel
         else
         {
             return null;
+        }
+    }
+
+    private void getInventoryMaxHitTooltip(int maxHit){
+        // Tooltip on item in inventory
+        MenuEntry[] menu = client.getMenuEntries();
+        int menuSize = menu.length;
+        if (menuSize == 0)
+        {
+            return;
+        }
+
+        // Get Inventory
+        MenuEntry entry = menu[menuSize - 1];
+        Widget widget = entry.getWidget();
+        if (widget == null)
+        {
+            return;
+        }
+
+        // Get Hovered Item
+        int itemID = -1;
+        if (widget.getId() == WidgetInfo.INVENTORY.getId())
+        {
+            itemID = widget.getItemId();
+        }
+        // Hovered Item ID grabber retrieved from net.runelite.client.plugins.itemstats
+
+        // Prepare Tooltip
+        if (itemID != -1)
+        {
+            ItemStats stats = itemManager.getItemStats(itemID, false);
+            if(stats != null)
+            {
+                if(stats.getEquipment() != null)
+                {
+                    int slotID = stats.getEquipment().getSlot();
+
+                    int maxWithItem = (int)plugin.calculateMaxHitFromInventory(slotID, itemID);
+
+                    // If no error
+                    if (maxWithItem != -1){
+                        int deltaMax = maxWithItem - maxHit;
+
+                        // Display depending on Negative or Positive Increase
+                        String tooltip = "";
+                        if(deltaMax < 0)
+                        {
+                            // Negative
+                            tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("-" + Math.abs(deltaMax), Color.RED);
+                        }
+                        else if (deltaMax > 0)
+                        {
+                            tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("+" + deltaMax, Color.GREEN);
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+                        tooltipManager.add(new Tooltip(tooltip));
+                    }
+
+                }
+
+            }
+
+        }
+    }
+
+    private void getSpellbookMaxHitTooltip(){
+        // Tooltip on item in inventory
+        MenuEntry[] menu = client.getMenuEntries();
+        int menuSize = menu.length;
+        if (menuSize == 0)
+        {
+            return;
+        }
+
+        // Get Spellbook
+        MenuEntry entry = menu[menuSize - 1];
+        Widget widget = entry.getWidget();
+        if (widget == null)
+        {
+            return;
+        }
+
+        final int group = WidgetInfo.TO_GROUP(widget.getId());
+        int spellSpriteID = -1;
+
+        // Get Spell Sprite ID if actually in Spellbook
+        if(group == WidgetID.SPELLBOOK_GROUP_ID)
+        {
+            spellSpriteID = widget.getSpriteId();
+
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + spellSpriteID, "");
+        }
+
+        // Prepare Tooltip
+        if (spellSpriteID != -1)
+        {
+            // Get Combat Spell Info
+            CombatSpell spell = CombatSpell.getSpellBySpriteID(spellSpriteID);
+
+            if(spell != null)
+            {
+                // Spell is a combat spell, continue with calc
+
+                // Get Current Equipment
+                Item[] playerEquipment;
+                if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+                {
+                    playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+                }
+                else {
+                    playerEquipment = null;
+                }
+
+                // Calculate Max Hit
+                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, AttackStyle.CASTING, 0, spell);
+
+                // Error Check
+                if (spellbookMaxHit > 0)
+                {
+                    String tooltip = "Max hit: " + spellbookMaxHit;
+                    tooltipManager.add(new Tooltip(tooltip));
+                }
+            }
         }
     }
 }
