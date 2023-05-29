@@ -11,8 +11,10 @@
 6. Predicts new max hit when hovering over an item in your inventory and displays as a tooltip.
 7. Calculates max hit of a combat spell when hovered over in the spell book and displays as a tooltip.
 
+<hr>
+
 ### Screenshots:
-Main Panel and tooltip: <br>
+Main Panel and Tooltip: <br>
 ![Main Panel](/assets/melee_example.png) <br>
 
 Inventory Tooltips: <br>
@@ -21,7 +23,10 @@ Inventory Tooltips: <br>
 
 Spellbook Tooltips: <br>
 ![Spellbook Example 1](/assets/spellbook_example1.png)
-![Spellbook Example 2](/assets/spellbook_example2.png) <br>
+![Spellbook Example 2](/assets/spellbook_example2.png)
+![Spellbook Example 3](/assets/spellbook_example3.png) <br>
+
+<hr>
 
 Leave any feedback here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 
