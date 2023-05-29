@@ -7,10 +7,10 @@
 2. Calculates max special attack hit for melee and ranged attacks.
 3. Calculates max hit against specific types (e.g. kalphites bonus, tome of fire bonus, wilderness bonus).
 4. Calculates max special attack against specific type bonuses (e.g. dragon longsword spec while against slayer task).
-5. Predicts required stats for next max hit (tooltip).
-6. Predicts new max hit when hovering over inventory items (tooltip).
-7. Calculates max hit of a combat spell in the spell book (tooltip).
-8. Calculates max hit of a combat spell in the autocast selection screen (tooltip).
+5. Provides tooltip displaying required stats for next max hit.
+6. Provides tooltip predicting new max hit when hovering over equipment items in inventory.
+7. Provides tooltip displaying max hit of a combat spell in the spell book.
+8. Provides tooltip showing max hit of a combat spell in the auto-cast selection screen.
 
 <hr>
 
