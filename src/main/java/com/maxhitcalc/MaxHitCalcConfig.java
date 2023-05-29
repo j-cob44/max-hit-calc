@@ -130,4 +130,16 @@ public interface MaxHitCalcConfig extends Config
 	{
 		return true;
 	}
+
+	// Show Predicted Max Hit when hovering over spell in Autocast Seleciton
+	@ConfigItem(
+			keyName = "showTooltipOnDisabledSpells",
+			name = "Tooltip on Disabled Spells",
+			description = "Show max hit on spells you don't have the runes to use.",
+			position = 7
+	)
+	default boolean showTooltipOnDisabledSpells()
+	{
+		return true;
+	}
 }

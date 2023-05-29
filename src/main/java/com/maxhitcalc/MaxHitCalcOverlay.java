@@ -282,6 +282,11 @@ public class MaxHitCalcOverlay extends OverlayPanel
             // Get Combat Spell Info
             CombatSpell spell = CombatSpell.getSpellBySpriteID(spellSpriteID);
 
+            // Check if spell is disabled
+            if (spell == null && config.showTooltipOnDisabledSpells()){
+                spell = CombatSpell.getSpellByDisabledSpriteID(spellSpriteID);
+            }
+
             if(spell != null)
             {
                 // Spell is a combat spell, continue with calc
@@ -343,6 +348,11 @@ public class MaxHitCalcOverlay extends OverlayPanel
         {
             // Get Combat Spell Info
             CombatSpell spell = CombatSpell.getSpellBySpriteID(spellSpriteID);
+
+            // Check if spell is disabled
+            if (spell == null && config.showTooltipOnDisabledSpells()){
+                spell = CombatSpell.getSpellByDisabledSpriteID(spellSpriteID);
+            }
 
             if(spell != null)
             {
