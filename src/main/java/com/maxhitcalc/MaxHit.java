@@ -480,6 +480,12 @@ public class MaxHit {
         // Autocasted Spell
         else
         {
+            // Check if casting without spell selected
+            if(client.getWidget(WidgetInfo.COMBAT_SPELL_ICON) == null)
+            {
+                return -1; // error
+            }
+
             // Get Spell Sprite ID
             if (weaponAttackStyle.equals(AttackStyle.CASTING))
             {

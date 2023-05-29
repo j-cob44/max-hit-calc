@@ -77,7 +77,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
         int maxVsType = (int)Math.floor(plugin.calculateMaxAgainstType());
         int maxSpecVsType = (int)Math.floor(plugin.calculateMaxSpecAgainstType());
 
-        if(config.showMaxHit())
+        // Don't Display if 0, or -1 (error)
+        if(maxHit > 0 && config.showMaxHit())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Hit:")
@@ -86,7 +87,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         }
 
         // Don't Display if 0 (not useful) or turned off
-        if(maxSpec != 0 && config.showSpec())
+        if(maxSpec > 0 && config.showSpec())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Spec Hit:")
@@ -95,7 +96,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         }
 
         // Don't Display if 0 (not useful) or turned off
-        if(maxVsType != 0 && config.showType())
+        if(maxVsType > 0 && config.showType())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Hit vs Type:")
@@ -104,7 +105,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         }
 
         // Don't Display if 0 (not useful) or turned off
-        if(maxSpecVsType != 0 && config.showSpecVsType())
+        if(maxSpecVsType > 0 && config.showSpecVsType())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Spec vs Type:")
