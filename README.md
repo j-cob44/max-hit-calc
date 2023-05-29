@@ -25,12 +25,14 @@ Inventory Tooltips: <br>
 Spellbook Tooltips: <br>
 ![Spellbook Example 1](/assets/spellbook_example1.png)
 ![Spellbook Example 2](/assets/spellbook_example2.png)
-![Spellbook Example 3](/assets/spellbook_example3.png) <br>
+![Spellbook Example 3](/assets/spellbook_example3.png)
+![Spellbook Example 4](/assets/spellbook_example4.png)<br>
 
 Autocast Selection Tooltips: <br>
 ![Autocast Example 1](/assets/ac_selection_example1.png)
 ![Autocast Example 2](/assets/ac_selection_example2.png)
-![Autocast Example 3](/assets/ac_selection_example3.png)<br>
+![Autocast Example 3](/assets/ac_selection_example3.png)
+![Autocast Example 4](/assets/ac_selection_example4.png)<br>
 
 <hr>
 
