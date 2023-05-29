@@ -265,7 +265,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         {
             spellSpriteID = widget.getSpriteId();
 
-            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + spellSpriteID, "");
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + spellSpriteID, ""); // DEBUG
         }
 
         // Prepare Tooltip
