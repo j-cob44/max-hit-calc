@@ -107,7 +107,7 @@ public interface MaxHitCalcConfig extends Config
 		return true;
 	}
 
-	// Show Predicted Max Hit when hovering over item in inventory
+	// Show Predicted Max Hit when hovering over spell in Spellbook
 	@ConfigItem(
 			keyName = "showSpellbookTooltip",
 			name = "Tooltip on Spells in Spellbook",
@@ -115,6 +115,18 @@ public interface MaxHitCalcConfig extends Config
 			position = 6
 	)
 	default boolean showSpellbookTooltip()
+	{
+		return true;
+	}
+
+	// Show Predicted Max Hit when hovering over spell in Autocast Seleciton
+	@ConfigItem(
+			keyName = "showAutocastSelectionTooltip",
+			name = "Tooltip on Spells in Autocast Selection",
+			description = "Hover over a spell in the autocast selection to see its current max hit.",
+			position = 6
+	)
+	default boolean showAutocastSelectionTooltip()
 	{
 		return true;
 	}

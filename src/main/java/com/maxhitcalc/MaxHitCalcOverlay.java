@@ -132,16 +132,22 @@ public class MaxHitCalcOverlay extends OverlayPanel
             }
         }
 
-        // Inventory Item Hover
+        // Inventory Item Tooltip
         if (config.showInventoryTooltip())
         {
             getInventoryMaxHitTooltip(maxHit);
         }
 
-        // Spellbook Spell Hover
+        // Spellbook Spell Tooltip
         if (config.showSpellbookTooltip())
         {
             getSpellbookMaxHitTooltip();
+        }
+
+        // Autocast Selection Tooltip
+        if(config.showAutocastSelectionTooltip())
+        {
+            getAutocastSelectionMaxHitTooltip();
         }
 
         return super.render(graphics);
@@ -261,12 +267,75 @@ public class MaxHitCalcOverlay extends OverlayPanel
         final int group = WidgetInfo.TO_GROUP(widget.getId());
         int spellSpriteID = -1;
 
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Group ID: " + group, ""); // DEBUG
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + widget.getSpriteId(), ""); // DEBUG
+
         // Get Spell Sprite ID if actually in Spellbook
         if(group == WidgetID.SPELLBOOK_GROUP_ID)
         {
             spellSpriteID = widget.getSpriteId();
+        }
 
-            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + spellSpriteID, ""); // DEBUG
+        // Prepare Tooltip
+        if (spellSpriteID != -1)
+        {
+            // Get Combat Spell Info
+            CombatSpell spell = CombatSpell.getSpellBySpriteID(spellSpriteID);
+
+            if(spell != null)
+            {
+                // Spell is a combat spell, continue with calc
+
+                // Get Current Equipment
+                Item[] playerEquipment;
+                if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+                {
+                    playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+                }
+                else {
+                    playerEquipment = null;
+                }
+
+                // Calculate Max Hit
+                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, AttackStyle.CASTING, 0, spell);
+
+                // Error Check
+                if (spellbookMaxHit > 0)
+                {
+                    String tooltip = "Max hit: " + spellbookMaxHit;
+                    tooltipManager.add(new Tooltip(tooltip));
+                }
+            }
+        }
+    }
+
+    private void getAutocastSelectionMaxHitTooltip(){
+        // Tooltip on item in inventory
+        MenuEntry[] menu = client.getMenuEntries();
+        int menuSize = menu.length;
+        if (menuSize == 0)
+        {
+            return;
+        }
+
+        // Get Autocast Selection Screen
+        MenuEntry entry = menu[menuSize - 1];
+        Widget widget = entry.getWidget();
+        if (widget == null)
+        {
+            return;
+        }
+
+        final int group = WidgetInfo.TO_GROUP(widget.getId());
+        int spellSpriteID = -1;
+
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Group ID: " + group, ""); // DEBUG
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + widget.getSpriteId(), ""); // DEBUG
+
+        // Get Spell Sprite ID if actually in Autocast Selection
+        if(group == 201)
+        {
+            spellSpriteID = widget.getSpriteId();
         }
 
         // Prepare Tooltip

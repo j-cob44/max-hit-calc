@@ -10,6 +10,7 @@
 5. Predicts required stats for next max hit and displays as a tooltip of the panel.
 6. Predicts new max hit when hovering over an item in your inventory and displays as a tooltip.
 7. Calculates max hit of a combat spell when hovered over in the spell book and displays as a tooltip.
+8. Calculates max hit of a combat spell when hovered over in the autocast selection screen and displays as a tooltip.
 
 <hr>
 
@@ -25,6 +26,11 @@ Spellbook Tooltips: <br>
 ![Spellbook Example 1](/assets/spellbook_example1.png)
 ![Spellbook Example 2](/assets/spellbook_example2.png)
 ![Spellbook Example 3](/assets/spellbook_example3.png) <br>
+
+Autocast Selection Tooltips: <br>
+![Autocast Example 1](/assets/ac_selection_example1.png)
+![Autocast Example 2](/assets/ac_selection_example2.png)
+![Autocast Example 3](/assets/ac_selection_example3.png)<br>
 
 <hr>
 
