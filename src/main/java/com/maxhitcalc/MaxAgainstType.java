@@ -162,6 +162,15 @@ public class MaxAgainstType {
                 }
             }
 
+            // Wilderness, added 26 July 2018
+            if(weaponName.contains("Ursine chainmace"))
+            {
+                if(!weaponName.contains("(u)"))
+                {
+                    typeBonusToApply.add(1.5);
+                }
+            }
+
             // Inquisitor's armor, added 6 February 2020, set effect added 16 April 2020
             int inquisitorPieces = 0;
             if (headItemName.contains("Inquisitor's"))
@@ -252,6 +261,15 @@ public class MaxAgainstType {
                 }
             }
 
+            // Wilderness, added 26 July 2018
+            if(weaponName.contains("Webweaver bow"))
+            {
+                if(!weaponName.contains("(u)"))
+                {
+                    typeBonusToApply.add(1.5);
+                }
+            }
+
         }
         // Magic Checks
         else if (attackStyle == AttackStyle.CASTING || attackStyle == AttackStyle.DEFENSIVE_CASTING)
@@ -294,6 +312,15 @@ public class MaxAgainstType {
             if(weaponName.contains("Thammaron's sceptre"))
             {
                 if(!weaponName.contains("(u)"))
+                {
+                    typeBonusToApply.add(1.5);
+                }
+            }
+
+            // Wilderness, added 26 July 2018
+            if(weaponName.contains("Accursed sceptre"))
+            {
+                if(!weaponName.contains("u)"))
                 {
                     typeBonusToApply.add(1.5);
                 }
