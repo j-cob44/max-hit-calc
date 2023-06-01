@@ -272,7 +272,7 @@ public class MaxHit {
     }
 
     // Get Ranged Strength Bonus from Equipment
-    public static double getRangedStrengthBonus(Client client, ItemManager itemManager, Item[] playerEquipment)
+    public static double getRangedStrengthBonus(Client client, ItemManager itemManager, Item[] playerEquipment, MaxHitCalcConfig.BlowpipeDartType dartType)
     {
         double rangedStrengthBonus = 0;
 
@@ -311,6 +311,28 @@ public class MaxHit {
         if(weaponItemName.contains("blowpipe"))
         {
             skipAmmo = true;
+
+            if(dartType == MaxHitCalcConfig.BlowpipeDartType.ADAMANT)
+            {
+                rangedStrengthBonus += 17;
+            }
+            else if(dartType == MaxHitCalcConfig.BlowpipeDartType.RUNE)
+            {
+                rangedStrengthBonus += 26;
+            }
+            else if(dartType == MaxHitCalcConfig.BlowpipeDartType.AMETHYST)
+            {
+                rangedStrengthBonus += 28;
+            }
+            else if(dartType == MaxHitCalcConfig.BlowpipeDartType.DRAGON)
+            {
+                rangedStrengthBonus += 35;
+            }
+            else
+            {
+                rangedStrengthBonus += 9; // default and lowest (mithril)
+            }
+
         }
 
         // Get Ranged Strength Bonus of each equipped Item
@@ -400,7 +422,7 @@ public class MaxHit {
         return damagePercentBonus;
     }
 
-    public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, MaxHitCalcConfig.BlowpipeDartType dartType)
     {
         // Calculate Ranged Max Hit
         // Step 1: Calculate effective ranged Strength
@@ -412,7 +434,7 @@ public class MaxHit {
         double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the max hit
-        double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment);
+        double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
         double gearBonus = getRangeGearBoost(client, playerEquipment);
 
         double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
@@ -480,6 +502,12 @@ public class MaxHit {
         // Autocasted Spell
         else
         {
+            // Check if casting without spell selected
+            if(client.getWidget(WidgetInfo.COMBAT_SPELL_ICON) == null)
+            {
+                return -1; // error
+            }
+
             // Get Spell Sprite ID
             if (weaponAttackStyle.equals(AttackStyle.CASTING))
             {

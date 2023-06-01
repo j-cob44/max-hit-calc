@@ -31,16 +31,65 @@ package com.maxhitcalc;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
+import net.runelite.client.plugins.boosts.BoostsConfig;
 
 @ConfigGroup("MaxHitCalc")
 public interface MaxHitCalcConfig extends Config
 {
+	// Dart Types
+	enum BlowpipeDartType
+	{
+		MITHRIL,
+		ADAMANT,
+		RUNE,
+		AMETHYST,
+		DRAGON
+	}
+
+	@ConfigItem(
+			keyName = "blowpipeDartType",
+			name = "Blowpipe Dart Type",
+			description = "Sets the Dart type for calculation",
+			position = 0
+	)
+	default BlowpipeDartType blowpipeDartType()
+	{
+		return BlowpipeDartType.MITHRIL;
+	}
+
+	@ConfigSection(
+			name = "Main Panel",
+			description = "Settings relating to the Main Panel",
+			position =  1,
+			closedByDefault = false
+	)
+	String mainPanelSettings = "Main Panel";
+
+	@ConfigSection(
+			name = "Inventory Settings",
+			description = "Settings relating to tooltips on Inventory Items",
+			position =  2,
+			closedByDefault = false
+	)
+	String inventorySettings = "Inventory Settings";
+
+	@ConfigSection(
+			name = "Spell Settings",
+			description = "Settings relating to tooltips on Spells",
+			position =  3,
+			closedByDefault = false
+	)
+	String spellSettings = "Spell Settings";
+
+
 	// Show Max Hit
 	@ConfigItem(
 			keyName = "showMaxHit",
 			name = "Display Max Hit",
 			description = "Shows your Max Hit with equipped item.",
-			position = 1
+			position = 0,
+			section = mainPanelSettings
 	)
 	default boolean showMaxHit()
 	{
@@ -52,7 +101,8 @@ public interface MaxHitCalcConfig extends Config
 		keyName = "showSpec",
 		name = "Display Max Spec",
 		description = "Shows your Max Spec with equipped items.",
-		position = 1
+		position = 1,
+		section = mainPanelSettings
 	)
 	default boolean showSpec()
 	{
@@ -64,7 +114,8 @@ public interface MaxHitCalcConfig extends Config
 			keyName = "showType",
 			name = "Display Max Hit vs Type",
 			description = "Shows your Max Hit vs current Type bonus.",
-			position = 2
+			position = 2,
+			section = mainPanelSettings
 	)
 	default boolean showType()
 	{
@@ -76,7 +127,8 @@ public interface MaxHitCalcConfig extends Config
 			keyName = "showSpecVsType",
 			name = "Display Max Spec vs Type",
 			description = "Shows your Max Spec vs current Type bonus.",
-			position = 3
+			position = 3,
+			section = mainPanelSettings
 	)
 	default boolean showSpecVsType()
 	{
@@ -88,9 +140,62 @@ public interface MaxHitCalcConfig extends Config
 			keyName = "showPredictionTooltip",
 			name = "Tooltip for Predicted Next Max Hit",
 			description = "Hover over the panel for a prediction of requirements for next max hit.",
-			position = 4
+			position = 4,
+			section = mainPanelSettings
 	)
 	default boolean showPredictionTooltip()
+	{
+		return true;
+	}
+
+	// Show Predicted Max Hit when hovering over item in inventory
+	@ConfigItem(
+			keyName = "showInventoryTooltip",
+			name = "Tooltip on Inventory Item",
+			description = "Hover over an item in your inventory to see it's max hit impact when equipped.",
+			position = 0,
+			section = inventorySettings
+	)
+	default boolean showInventoryTooltip()
+	{
+		return true;
+	}
+
+	// Show Predicted Max Hit when hovering over spell in Spellbook
+	@ConfigItem(
+			keyName = "showSpellbookTooltip",
+			name = "Tooltip on Spells in Spellbook",
+			description = "Hover over a spell in the spellbook to see its current max hit.",
+			position = 0,
+			section = spellSettings
+	)
+	default boolean showSpellbookTooltip()
+	{
+		return true;
+	}
+
+	// Show Predicted Max Hit when hovering over spell in Autocast Seleciton
+	@ConfigItem(
+			keyName = "showAutocastSelectionTooltip",
+			name = "Tooltip on Spells in Autocast Selection",
+			description = "Hover over a spell in the autocast selection to see its current max hit.",
+			position = 1,
+			section = spellSettings
+	)
+	default boolean showAutocastSelectionTooltip()
+	{
+		return true;
+	}
+
+	// Show Predicted Max Hit for spells that are currently disabled (not enough runes)
+	@ConfigItem(
+			keyName = "showTooltipOnDisabledSpells",
+			name = "Tooltip on Disabled Spells",
+			description = "Show max hit on spells you don't have the runes to use.",
+			position = 2,
+			section = spellSettings
+	)
+	default boolean showTooltipOnDisabledSpells()
 	{
 		return true;
 	}

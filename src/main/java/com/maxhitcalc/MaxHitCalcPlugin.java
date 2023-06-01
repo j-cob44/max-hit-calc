@@ -33,7 +33,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ChatMessage; // for debug
-import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.eventbus.Subscribe; // for debug
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
@@ -123,7 +123,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
 		{
-			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
 		}
 		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
 		{
@@ -160,7 +160,7 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			// Get Max hit then calculate Spec
 			double maxHit = calculateMaxHit();
-			double maxSpecHit = Math.floor(maxHit) * specialAttackWeapon;
+			double maxSpecHit = maxHit * specialAttackWeapon;
 
 			return maxSpecHit;
 		}
@@ -292,7 +292,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
 		{
-			List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+			List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
 
 			// index: 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
 			return rangedResults;
@@ -308,5 +308,64 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			return null;
 		}
+	}
+
+	// Calculate Max Hit for an inventory item
+	public double calculateMaxHitFromInventory(int slotID, int itemID)
+	{
+		// Initialize Variables
+		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+		AttackStyle attackStyle = null;
+
+		// Get Current Equipment
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			playerEquipment = null;
+		}
+
+		// Determine if Attack Style is correct
+		if(slotID == 3)
+		{
+			// IS A WEAPON
+			attackStyle = InventoryItemMaxHit.determineAttackStyle(client, itemID);
+		}
+		else
+		{
+			// Get Current Attack Style
+			WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+			AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+			attackStyle = weaponAttackStyles[attackStyleID];
+		}
+
+		// Get corrected slot ID if player is not fully equipped
+		//slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
+
+		// Find what type to calculate
+		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
+		{
+			return InventoryItemMaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+		}
+		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
+		{
+			return InventoryItemMaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID, config.blowpipeDartType());
+		}
+		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
+		{
+			double magicMaxHit = InventoryItemMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+
+			// If -1, error skip
+			if (magicMaxHit > -1){
+				return magicMaxHit;
+			}
+		}
+
+		return -1;
+
 	}
 }
