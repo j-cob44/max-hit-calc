@@ -15,8 +15,11 @@
 <hr>
 
 ### Screenshots:
-Main Panel and Tooltip: <br>
-![Main Panel](/assets/melee_example.png) <br>
+Main Panel and Tooltip examples: <br>
+![Main Panel](/assets/normal_panel_example.png)
+![Main Panel with some enabled](/assets/some_panel_example.png)
+![Main Panel with all enabled](/assets/full_panel_example.png)
+![Tooltip Example](/assets/tooltip_example.png) <br>
 
 Inventory Tooltips: <br>
 ![Inventory Example 1](/assets/inventory_example1.png)
@@ -33,6 +36,9 @@ Auto-cast Selection Tooltips: <br>
 ![Autocast Example 2](/assets/ac_selection_example2.png)
 ![Autocast Example 3](/assets/ac_selection_example3.png)
 ![Autocast Example 4](/assets/ac_selection_example4.png)<br>
+
+Config: <br>
+![Config Example](/assets/settings_example.png)<br>
 
 <hr>
 
