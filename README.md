@@ -4,7 +4,7 @@
 1. Calculates max hit for melee, ranged, and magic weapons.
    - Automatically grabs your currently auto-casted spell, no need for input anywhere
    - Currently only blowpipe is not automatic, used dart type must be set in plugin settings.
-2. Calculates max special attack hit for melee and ranged attacks.
+2. Calculates max special attack hit for all damage boosting special attacks.
 3. Calculates max hit against specific types (e.g. kalphites bonus, tome of fire bonus, wilderness bonus).
 4. Calculates max special attack against specific type bonuses (e.g. dragon longsword spec while against slayer task).
 5. Provides tooltip displaying required stats for next max hit.
