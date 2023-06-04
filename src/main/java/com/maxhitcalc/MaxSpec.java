@@ -126,6 +126,16 @@ public class MaxSpec
             return 1.25;
         }
 
+        if(weaponName.contains("Vesta's longsword"))
+        {
+            return 1.20;
+        }
+
+        if(weaponName.contains("Statius's warhammer"))
+        {
+            return 1.25;
+        }
+
         // Ranged Checks
         if(weaponName.contains("Dark bow"))
         {
@@ -166,6 +176,11 @@ public class MaxSpec
             {
                 return 1.25;
             }
+        }
+
+        if(weaponName.contains("Morrigan's throwing axe"))
+        {
+            return 1.25;
         }
 
         return 0; // Not a spec weapon with a damage boost
