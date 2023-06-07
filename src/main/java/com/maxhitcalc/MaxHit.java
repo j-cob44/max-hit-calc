@@ -450,52 +450,66 @@ public class MaxHit {
         int spellSpriteID = -1;
         double basehit = 0;
 
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        String capeItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
+        {
+            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
+        }
+
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
         // Powered Staff Check
         // Trident of the Seas
-        if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("of the seas"))
+        if(weaponItemName.contains("of the seas"))
         {
             basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
         }
         // Trident of the Swamp
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("of the swamp"))
+        else if(weaponItemName.contains("of the swamp"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
         }
         // Sanquinesti Staff
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Sanguinesti"))
+        else if(weaponItemName.contains("Sanguinesti"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 3) / 3))), 4); // Corrected, thanks to Mod Ash
         }
         // Thammaron's Sceptre
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Thammaron's"))
+        else if(weaponItemName.contains("Thammaron's"))
         {
             basehit = (Math.floor(magicLevel/3) - 8);
         }
         // Accursed Sceptre
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Accursed"))
+        else if(weaponItemName.contains("Accursed"))
         {
             basehit = (Math.floor(magicLevel/3) - 6);
         }
         // Tumeken's Shadow
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Tumeken"))
+        else if(weaponItemName.contains("Tumeken"))
         {
             basehit = (Math.floor(magicLevel/3) + 1);
         }
         // Crystal staff (basic)
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal staff (basic)"))
+        else if(weaponItemName.contains("Crystal staff (basic)"))
         {
             basehit = 23;
         }
         // Crystal staff (attuned)
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal staff (attuned)"))
+        else if(weaponItemName.contains("Crystal staff (attuned)"))
         {
             basehit = 31;
         }
         // Crystal staff (perfected)
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal staff (perfected)"))
+        else if(weaponItemName.contains("Crystal staff (perfected)"))
         {
             basehit = 39;
         }
@@ -524,10 +538,11 @@ public class MaxHit {
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell Sprite ID: " + spellSpriteID, null);
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
 
-            // Magic Dart Case
+            // Specific Selected Spell Cases
             if (selectedSpell != null)
             {
-                if(selectedSpell.getName().equalsIgnoreCase("MAGIC DART"))
+                // Magic Dart Case
+                if(selectedSpell == CombatSpell.MAGIC_DART)
                 {
                     double magicDartDamage = Math.floor(magicLevel * ((double)1/10)) + 10;
 
@@ -536,6 +551,37 @@ public class MaxHit {
                 else
                 {
                     basehit = selectedSpell.getBaseDamage();
+                }
+
+                // God Spell Cases with Charge
+                if((selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK) || (selectedSpell == CombatSpell.CLAWS_OF_GUTHIX) || (selectedSpell == CombatSpell.SARADOMIN_STRIKE))
+                {
+                    if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+                    {
+                        if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
+                                (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else if(selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK &&
+                                (capeItemName.toLowerCase().contains("zamorak cape") || capeItemName.toLowerCase().contains("zamorak max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else if(selectedSpell == CombatSpell.SARADOMIN_STRIKE &&
+                                (capeItemName.toLowerCase().contains("saradomin cape") || capeItemName.toLowerCase().contains("saradomin max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else
+                        {
+                            basehit = 20;
+                        }
+                    }
+                    else
+                    {
+                        basehit = 20;
+                    }
                 }
             }
         }

@@ -28,14 +28,14 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.ChatMessageType; // for in-game debug
-import net.runelite.api.Client;
-import net.runelite.api.EquipmentInventorySlot;
-import net.runelite.api.Item;
+import net.runelite.api.*;
+import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.client.game.ItemManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaxAgainstType {
+public class MaxAgainstType extends MaxHit {
     public static List<Double> getTypeBonus(Client client, AttackStyle attackStyle, String weaponName, Item[] playerEquipment)
     {
         List<Double> typeBonusToApply = new ArrayList<>();
@@ -328,5 +328,212 @@ public class MaxAgainstType {
         }
 
         return typeBonusToApply; // List of Modifiers
+    }
+
+    // Needed in Magic for Slayer Staff (e)
+    public static double getSpellBaseHit(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
+    {
+        int spellSpriteID = -1;
+        double basehit = 0;
+
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        String capeItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
+        {
+            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
+        }
+
+        // Debug
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
+
+        // Powered Staff Check
+        // Trident of the Seas
+        if(weaponItemName.contains("of the seas"))
+        {
+            basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
+        }
+        // Trident of the Swamp
+        else if(weaponItemName.contains("of the swamp"))
+        {
+            basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
+        }
+        // Sanquinesti Staff
+        else if(weaponItemName.contains("Sanguinesti"))
+        {
+            basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 3) / 3))), 4); // Corrected, thanks to Mod Ash
+        }
+        // Thammaron's Sceptre
+        else if(weaponItemName.contains("Thammaron's"))
+        {
+            basehit = (Math.floor(magicLevel/3) - 8);
+        }
+        // Accursed Sceptre
+        else if(weaponItemName.contains("Accursed"))
+        {
+            basehit = (Math.floor(magicLevel/3) - 6);
+        }
+        // Tumeken's Shadow
+        else if(weaponItemName.contains("Tumeken"))
+        {
+            basehit = (Math.floor(magicLevel/3) + 1);
+        }
+        // Crystal staff (basic)
+        else if(weaponItemName.contains("Crystal staff (basic)"))
+        {
+            basehit = 23;
+        }
+        // Crystal staff (attuned)
+        else if(weaponItemName.contains("Crystal staff (attuned)"))
+        {
+            basehit = 31;
+        }
+        // Crystal staff (perfected)
+        else if(weaponItemName.contains("Crystal staff (perfected)"))
+        {
+            basehit = 39;
+        }
+        // Autocasted Spell
+        else
+        {
+            // Check if casting without spell selected
+            if(client.getWidget(WidgetInfo.COMBAT_SPELL_ICON) == null)
+            {
+                return -1; // error
+            }
+
+            // Get Spell Sprite ID
+            if (weaponAttackStyle.equals(AttackStyle.CASTING))
+            {
+                spellSpriteID = client.getWidget(WidgetInfo.COMBAT_SPELL_ICON).getSpriteId();
+            }
+            else if (weaponAttackStyle.equals(AttackStyle.DEFENSIVE_CASTING))
+            {
+                spellSpriteID = client.getWidget(WidgetInfo.COMBAT_DEFENSIVE_SPELL_ICON).getSpriteId();
+            }
+
+            CombatSpell selectedSpell = CombatSpell.getSpellBySpriteID(spellSpriteID);
+
+            // Debug
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell Sprite ID: " + spellSpriteID, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
+
+            // Specific Selected Spell Cases
+            if (selectedSpell != null)
+            {
+                // Magic Dart Case
+                if(selectedSpell == CombatSpell.MAGIC_DART)
+                {
+                    double magicDartDamage = Math.floor(magicLevel * ((double)1/10)) + 10;
+
+                    if(weaponItemName.contains("Slayer's staff (e)"))
+                    {
+                        magicDartDamage = Math.floor(magicLevel * ((double)1/6)) + 13;
+                    }
+
+                    basehit = magicDartDamage;
+                }
+                else
+                {
+                    basehit = selectedSpell.getBaseDamage();
+                }
+
+                // God Spell Cases with Charge
+                if((selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK) || (selectedSpell == CombatSpell.CLAWS_OF_GUTHIX) || (selectedSpell == CombatSpell.SARADOMIN_STRIKE))
+                {
+                    if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+                    {
+                        if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
+                                (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else if(selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK &&
+                                (capeItemName.toLowerCase().contains("zamorak cape") || capeItemName.toLowerCase().contains("zamorak max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else if(selectedSpell == CombatSpell.SARADOMIN_STRIKE &&
+                                (capeItemName.toLowerCase().contains("saradomin cape") || capeItemName.toLowerCase().contains("saradomin max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else
+                        {
+                            basehit = 20;
+                        }
+                    }
+                    else
+                    {
+                        basehit = 20;
+                    }
+                }
+            }
+        }
+
+        return basehit;
+    }
+
+    public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    {
+        // Calculate Magic Max Hit
+        // Step 1: Find the base hit of the spell
+        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
+
+        // Step 2: Calculate the Magic Damage Bonus
+        double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
+
+        double maxDamage = (spellBaseMaxHit * magicDmgBonus);
+
+        // Step 3: Calculate Type Bonuses
+        // Not used here.
+
+        return maxDamage;
+    }
+
+    public static double calculateMaxHit(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    {
+        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+
+        // Get Current Attack Style
+        WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+        AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+        AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+        // Get Current Equipment
+        Item[] playerEquipment;
+        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        {
+            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+        }
+        else {
+            playerEquipment = null;
+        }
+
+        // Find what type to calculate
+        if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
+        {
+            return calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+        }
+        else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
+        {
+            return calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
+        }
+        else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
+        {
+            return calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+        }
+        else
+        {
+            return -1;
+        }
     }
 }

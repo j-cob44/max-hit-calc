@@ -29,18 +29,75 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.Client;
-import net.runelite.api.Item;
-import net.runelite.api.Skill;
+import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
 
 public class SpellbookSpellMaxHit extends MaxHit
 {
+    public static double getSpellBaseHit(Client client, Item[] playerEquipment, int magicLevel, CombatSpell spell)
+    {
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        String capeItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
+        {
+            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
+        }
+
+        // God Spells Cases
+        if((spell == CombatSpell.FLAMES_OF_ZAMORAK) || (spell == CombatSpell.CLAWS_OF_GUTHIX) || (spell == CombatSpell.SARADOMIN_STRIKE))
+        {
+            if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+            {
+                if(spell == CombatSpell.CLAWS_OF_GUTHIX &&
+                        (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
+                {
+                    return 30;
+                }
+                else if(spell == CombatSpell.FLAMES_OF_ZAMORAK &&
+                        (capeItemName.toLowerCase().contains("zamorak cape") || capeItemName.toLowerCase().contains("zamorak max cape")))
+                {
+                    return 30;
+                }
+                else if(spell == CombatSpell.SARADOMIN_STRIKE &&
+                        (capeItemName.toLowerCase().contains("saradomin cape") || capeItemName.toLowerCase().contains("saradomin max cape")))
+                {
+                    return 30;
+                }
+                else
+                {
+                    return 20;
+                }
+            }
+            else
+            {
+                return 20;
+            }
+        }
+        // Magic Dart Case
+        else if(spell == CombatSpell.MAGIC_DART)
+        {
+            double magicDartDamage = Math.floor(magicLevel * ((double)1/10)) + 10;
+
+            return magicDartDamage;
+        }
+        else
+        {
+            return spell.getBaseDamage();
+        }
+    }
+
     public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, CombatSpell spell)
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
-        double spellBaseMaxHit = spell.getBaseDamage();
+        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, client.getBoostedSkillLevel(Skill.MAGIC), spell);
 
         // Step 2: Calculate the Magic Damage Bonus
         double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
