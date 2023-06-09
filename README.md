@@ -1,4 +1,4 @@
-# Max Hit Calculator Runelite Plugin
+# Max Hit Calculator Plugin
 
 ### Features:
 1. Calculates max hit for melee, ranged, and magic weapons.
@@ -45,4 +45,5 @@ Config: <br>
 Feedback can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 Or as an issue in Github: https://github.com/j-cob44/max-hit-calc/issues <br>
 
-Jacob Burton (j-cob44), May 2023 <br>
+Jacob Burton (j-cob44), June 2023 <br>
+Version 1.1.2
