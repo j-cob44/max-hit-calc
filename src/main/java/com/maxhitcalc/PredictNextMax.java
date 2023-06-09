@@ -65,9 +65,17 @@ public class PredictNextMax extends MaxHit
             double flooredBaseDamage = Math.floor(baseDamage);
 
             // Step 3: Calculate the bonus damage
-            double specialBonusMultiplier = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
+            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
 
-            double predictedMaxHit = (flooredBaseDamage * specialBonusMultiplier);
+            double predictedMaxHit = flooredBaseDamage;
+
+            if(!specialBonusMultipliers.isEmpty())
+            {
+                for (double bonus: specialBonusMultipliers)
+                {
+                    predictedMaxHit += Math.floor(predictedMaxHit * bonus);
+                }
+            }
 
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
@@ -96,9 +104,17 @@ public class PredictNextMax extends MaxHit
             double flooredBaseDamage = Math.floor(baseDamage);
 
             // Step 3: Calculate the bonus damage
-            double specialBonusMultiplier = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
+            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
 
-            double predictedMaxHit = (flooredBaseDamage * specialBonusMultiplier);
+            double predictedMaxHit = flooredBaseDamage;
+
+            if(!specialBonusMultipliers.isEmpty())
+            {
+                for (double bonus: specialBonusMultipliers)
+                {
+                    predictedMaxHit += Math.floor(predictedMaxHit * bonus);
+                }
+            }
 
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
@@ -127,9 +143,17 @@ public class PredictNextMax extends MaxHit
             double flooredBaseDamage = Math.floor(baseDamage);
 
             // Step 3: Calculate the bonus damage
-            double specialBonusMultiplier = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
+            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
 
-            double predictedMaxHit = (flooredBaseDamage * specialBonusMultiplier);
+            double predictedMaxHit = flooredBaseDamage;
+
+            if(!specialBonusMultipliers.isEmpty())
+            {
+                for (double bonus: specialBonusMultipliers)
+                {
+                    predictedMaxHit += Math.floor(predictedMaxHit * bonus);
+                }
+            }
 
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)

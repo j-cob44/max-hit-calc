@@ -32,6 +32,9 @@ import net.runelite.api.*;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.ItemManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MaxHit {
     // Get Prayer Bonus for Max Hit Calculation
     public static double getPrayerBonus(Client client, AttackStyle weaponAttackStyle)
@@ -148,12 +151,22 @@ public class MaxHit {
     }
 
     // Passive Melee Set effects
-    public static double getMeleeSpecialBonusMultiplier(Client client, Item[] playerEquipment)
+    public static List<Double> getMeleeSpecialBonusMultiplier(Client client, Item[] playerEquipment)
     {
-        if (playerEquipment == null) return 1;
+        List<Double> specialBonusesToApply = new ArrayList<>();
+
+        if (playerEquipment == null) return specialBonusesToApply;
 
         double specialBonus = 1; // Initialize Variable
 
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        // SPECIAL BONUSES MUST BE ORDERED CORRECTLY.
         // Dharok's Set Check
         if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
                 && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Dharok's"))
@@ -170,20 +183,11 @@ public class MaxHit {
                         // Passed Check, Dharok's Set Equipped, Apply Effect
                         double baseHP = client.getRealSkillLevel(Skill.HITPOINTS);
                         double currentHP = client.getBoostedSkillLevel(Skill.HITPOINTS);
-                        specialBonus = (1 + (((baseHP - currentHP) / 100) * (baseHP / 100)));
+                        double dharokBonus = ((((baseHP - currentHP) / 100) * (baseHP / 100)));
+
+                        specialBonusesToApply.add(dharokBonus);
                     }
                 }
-            }
-        }
-
-        // Berserker Necklace and Obisidian Melee Check
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("ket"))
-        {
-            if(playerEquipment.length > EquipmentInventorySlot.AMULET.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Berserker"))
-            {
-                specialBonus += 0.2;
             }
         }
 
@@ -197,19 +201,28 @@ public class MaxHit {
                 if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
                         && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Obsidian"))
                 {
-                    if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                            && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("ket"))
+                    if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
                     {
-                        specialBonus += 0.1;
+                        specialBonusesToApply.add(0.1);
                     }
                 }
+            }
+        }
+
+        // Berserker Necklace and Obisidian Melee Check
+        if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
+        {
+            if(playerEquipment.length > EquipmentInventorySlot.AMULET.getSlotIdx()
+                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Berserker"))
+            {
+                specialBonusesToApply.add(0.2);
             }
         }
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Special Bonus: " + specialBonus, null);
 
-        return specialBonus;
+        return specialBonusesToApply;
     }
 
     // Calculate Melee Max Hit
@@ -231,9 +244,17 @@ public class MaxHit {
         double flooredBaseDamage = Math.floor(baseDamage);
 
         // Step 3: Calculate the bonus damage
-        double specialBonusMultiplier = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
+        List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
 
-        double maxHit = (flooredBaseDamage * specialBonusMultiplier);
+        double maxHit = flooredBaseDamage;
+
+        if(!specialBonusMultipliers.isEmpty())
+        {
+            for (double bonus: specialBonusMultipliers)
+            {
+                maxHit += Math.floor(maxHit * bonus);
+            }
+        }
 
         // Complete
         return maxHit;
@@ -450,52 +471,66 @@ public class MaxHit {
         int spellSpriteID = -1;
         double basehit = 0;
 
+        String weaponItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
+        {
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        }
+
+        String capeItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
+        {
+            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
+        }
+
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
         // Powered Staff Check
         // Trident of the Seas
-        if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("of the seas"))
+        if(weaponItemName.contains("of the seas"))
         {
             basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
         }
         // Trident of the Swamp
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("of the swamp"))
+        else if(weaponItemName.contains("of the swamp"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
         }
         // Sanquinesti Staff
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Sanguinesti"))
+        else if(weaponItemName.contains("Sanguinesti"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 3) / 3))), 4); // Corrected, thanks to Mod Ash
         }
         // Thammaron's Sceptre
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Thammaron's"))
+        else if(weaponItemName.contains("Thammaron's"))
         {
             basehit = (Math.floor(magicLevel/3) - 8);
         }
         // Accursed Sceptre
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Accursed"))
+        else if(weaponItemName.contains("Accursed"))
         {
             basehit = (Math.floor(magicLevel/3) - 6);
         }
         // Tumeken's Shadow
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Tumeken"))
+        else if(weaponItemName.contains("Tumeken"))
         {
             basehit = (Math.floor(magicLevel/3) + 1);
         }
         // Crystal staff (basic)
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal staff (basic)"))
+        else if(weaponItemName.contains("Crystal staff (basic)"))
         {
             basehit = 23;
         }
         // Crystal staff (attuned)
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal staff (attuned)"))
+        else if(weaponItemName.contains("Crystal staff (attuned)"))
         {
             basehit = 31;
         }
         // Crystal staff (perfected)
-        else if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Crystal staff (perfected)"))
+        else if(weaponItemName.contains("Crystal staff (perfected)"))
         {
             basehit = 39;
         }
@@ -524,10 +559,11 @@ public class MaxHit {
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell Sprite ID: " + spellSpriteID, null);
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
 
-            // Magic Dart Case
+            // Specific Selected Spell Cases
             if (selectedSpell != null)
             {
-                if(selectedSpell.getName().equalsIgnoreCase("MAGIC DART"))
+                // Magic Dart Case
+                if(selectedSpell == CombatSpell.MAGIC_DART)
                 {
                     double magicDartDamage = Math.floor(magicLevel * ((double)1/10)) + 10;
 
@@ -536,6 +572,37 @@ public class MaxHit {
                 else
                 {
                     basehit = selectedSpell.getBaseDamage();
+                }
+
+                // God Spell Cases with Charge
+                if((selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK) || (selectedSpell == CombatSpell.CLAWS_OF_GUTHIX) || (selectedSpell == CombatSpell.SARADOMIN_STRIKE))
+                {
+                    if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+                    {
+                        if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
+                                (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else if(selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK &&
+                                (capeItemName.toLowerCase().contains("zamorak cape") || capeItemName.toLowerCase().contains("zamorak max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else if(selectedSpell == CombatSpell.SARADOMIN_STRIKE &&
+                                (capeItemName.toLowerCase().contains("saradomin cape") || capeItemName.toLowerCase().contains("saradomin max cape")))
+                        {
+                            basehit = 30;
+                        }
+                        else
+                        {
+                            basehit = 20;
+                        }
+                    }
+                    else
+                    {
+                        basehit = 20;
+                    }
                 }
             }
         }

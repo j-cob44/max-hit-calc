@@ -31,6 +31,8 @@ package com.maxhitcalc;
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
 
+import java.util.List;
+
 public class InventoryItemMaxHit extends MaxHit
 {
     public static AttackStyle determineAttackStyle(Client client, int weaponID)
@@ -164,9 +166,17 @@ public class InventoryItemMaxHit extends MaxHit
         double flooredBaseDamage = Math.floor(baseDamage);
 
         // Step 3: Calculate the bonus damage
-        double specialBonusMultiplier = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default 1
+        List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
 
-        double maxHit = (flooredBaseDamage * specialBonusMultiplier);
+        double maxHit = flooredBaseDamage;
+
+        if(!specialBonusMultipliers.isEmpty())
+        {
+            for (double bonus: specialBonusMultipliers)
+            {
+                maxHit += Math.floor(maxHit * bonus);
+            }
+        }
 
         // Complete
         return maxHit;

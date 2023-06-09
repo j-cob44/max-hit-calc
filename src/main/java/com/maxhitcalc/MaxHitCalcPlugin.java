@@ -198,22 +198,28 @@ public class MaxHitCalcPlugin extends Plugin
 		// Debug Modifiers
 		//client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
 
+		// Get Max hit
+		double maxHit = calculateMaxHit(); // Normal Max
+		double maxHitVsType = Math.floor(MaxAgainstType.calculateMaxHit(client, itemManager, config)); // Vs Type Max
+
+		// Iterate through modifiers, flooring after multiplying
 		if(!typeModifiersList.isEmpty())
 		{
-			// Get Max hit
-			double maxHit = calculateMaxHit();
-			double maxHitVsType = Math.floor(maxHit);
-
-			// Iterate through modifiers, flooring after multiplying
 			for (double modifier: typeModifiersList)
 			{
 				maxHitVsType = Math.floor(maxHitVsType * modifier);
 			}
+		}
 
+		if(maxHit >= maxHitVsType)
+		{
+			return 0; // No Type Bonus
+		}
+		else
+		{
 			return maxHitVsType;
 		}
 
-		return 0; // No Type Bonus
 	}
 
 	public double calculateMaxSpecAgainstType(){
