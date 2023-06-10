@@ -302,12 +302,6 @@ public class MaxAgainstType extends MaxHit {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
 
-            // Fire Spells boost, added 8 September 2016
-            if (shieldItemName.contains("Tome of fire"))
-            {
-                typeBonusToApply.add(1.5);
-            }
-
             // Wilderness, added 26 July 2018
             if(weaponName.contains("Thammaron's sceptre"))
             {
@@ -490,6 +484,10 @@ public class MaxAgainstType extends MaxHit {
         double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
+
+        // Get Tome Bonuses
+        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+        maxDamage = maxDamage * correctTomeSpellBonus;
 
         // Step 3: Calculate Type Bonuses
         // Not used here.
