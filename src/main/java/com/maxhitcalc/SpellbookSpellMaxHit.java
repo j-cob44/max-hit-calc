@@ -140,12 +140,10 @@ public class SpellbookSpellMaxHit extends MaxHit
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
-        // Get Tome Bonuses
+        // Step 3: Calculate Bonuses
+        // Tome Bonuses
         double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, spell); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
-
-        // Step 3: Calculate Type Bonuses
-        // Not used here.
 
         return maxDamage;
     }

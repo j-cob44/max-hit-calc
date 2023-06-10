@@ -282,7 +282,7 @@ public class MaxAgainstType extends MaxHit {
             // Salve Amulet (i), added 1 May 2014
             else if (amuletItemName.contains("Salve amulet(i)"))
             {
-                typeBonusToApply.add(1.1667) ;
+                typeBonusToApply.add(1.15) ;
             }
             // Black Mask (i), added 26 September 2013
             else if (headItemName.contains("Black mask"))
@@ -485,12 +485,10 @@ public class MaxAgainstType extends MaxHit {
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
-        // Get Tome Bonuses
+        // Step 3: Calculate Bonuses
+        // Tome Bonuses
         double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
-
-        // Step 3: Calculate Type Bonuses
-        // Not used here.
 
         return maxDamage;
     }
