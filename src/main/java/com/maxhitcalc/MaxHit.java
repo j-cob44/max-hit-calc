@@ -31,7 +31,6 @@ package com.maxhitcalc;
 import net.runelite.api.*;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.ItemManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
