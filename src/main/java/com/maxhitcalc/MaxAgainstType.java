@@ -31,7 +31,6 @@ package com.maxhitcalc;
 import net.runelite.api.*;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.ItemManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +76,6 @@ public class MaxAgainstType extends MaxHit {
 
         /*
          Order bonuses by when the bonus was added to the game, not when the item was added
-         Except Slayer helm bonus, which from testing, always comes first?
         */
 
         // Melee Checks
@@ -206,6 +204,12 @@ public class MaxAgainstType extends MaxHit {
             if(weaponName.contains("Blisterwood flail"))
             {
                 typeBonusToApply.add(1.25);
+            }
+
+            // Golem bonus, added 14 April 2021, updated on 28 April 2021
+            if(weaponName.contains("Barronite mace"))
+            {
+                typeBonusToApply.add(1.15);
             }
 
             // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022
