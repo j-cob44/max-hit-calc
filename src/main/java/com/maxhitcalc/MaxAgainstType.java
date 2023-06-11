@@ -31,7 +31,6 @@ package com.maxhitcalc;
 import net.runelite.api.*;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.ItemManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +76,6 @@ public class MaxAgainstType extends MaxHit {
 
         /*
          Order bonuses by when the bonus was added to the game, not when the item was added
-         Except Slayer helm bonus, which from testing, always comes first?
         */
 
         // Melee Checks
@@ -208,6 +206,12 @@ public class MaxAgainstType extends MaxHit {
                 typeBonusToApply.add(1.25);
             }
 
+            // Golem bonus, added 14 April 2021, updated on 28 April 2021
+            if(weaponName.contains("Barronite mace"))
+            {
+                typeBonusToApply.add(1.15);
+            }
+
             // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022
             if(weaponName.contains("Keris"))
             {
@@ -282,7 +286,7 @@ public class MaxAgainstType extends MaxHit {
             // Salve Amulet (i), added 1 May 2014
             else if (amuletItemName.contains("Salve amulet(i)"))
             {
-                typeBonusToApply.add(1.1667) ;
+                typeBonusToApply.add(1.15) ;
             }
             // Black Mask (i), added 26 September 2013
             else if (headItemName.contains("Black mask"))
@@ -300,12 +304,6 @@ public class MaxAgainstType extends MaxHit {
             else if (headItemName.contains("slayer helmet (i)"))
             {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
-            }
-
-            // Fire Spells boost, added 8 September 2016
-            if (shieldItemName.contains("Tome of fire"))
-            {
-                typeBonusToApply.add(1.5);
             }
 
             // Wilderness, added 26 July 2018
@@ -491,8 +489,10 @@ public class MaxAgainstType extends MaxHit {
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
-        // Step 3: Calculate Type Bonuses
-        // Not used here.
+        // Step 3: Calculate Bonuses
+        // Tome Bonuses
+        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+        maxDamage = maxDamage * correctTomeSpellBonus;
 
         return maxDamage;
     }

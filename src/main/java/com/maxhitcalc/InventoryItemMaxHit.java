@@ -30,7 +30,6 @@ package com.maxhitcalc;
 
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
-
 import java.util.List;
 
 public class InventoryItemMaxHit extends MaxHit
@@ -226,8 +225,10 @@ public class InventoryItemMaxHit extends MaxHit
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
-        // Step 3: Calculate Type Bonuses
-        // Not used here.
+        // Step 3: Calculate Bonuses
+        // Tome Bonuses
+        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+        maxDamage = maxDamage * correctTomeSpellBonus;
 
         return maxDamage;
     }

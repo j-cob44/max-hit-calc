@@ -93,6 +93,42 @@ public class SpellbookSpellMaxHit extends MaxHit
         }
     }
 
+    public static double getTomeSpellBonus(Client client, Item[] playerEquipment, CombatSpell spell)
+    {
+        String shieldItemName = "";
+        if(playerEquipment.length > EquipmentInventorySlot.SHIELD.getSlotIdx()
+                && playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()] != null)
+        {
+            shieldItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName();
+        }
+
+        if (spell.getName().toLowerCase().contains("fire"))
+        {
+            // Check for tome of fire
+            if (shieldItemName.contains("Tome of fire"))
+            {
+                if (!shieldItemName.contains("(empty)"))
+                {
+                    return 1.5;
+                }
+            }
+        }
+
+        if (spell.getName().toLowerCase().contains("water"))
+        {
+            // Check for tome of water
+            if (shieldItemName.contains("Tome of water"))
+            {
+                if (!shieldItemName.contains("(empty)"))
+                {
+                    return 1.2;
+                }
+            }
+        }
+
+        return 1;
+    }
+
     public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, CombatSpell spell)
     {
         // Calculate Magic Max Hit
@@ -104,8 +140,10 @@ public class SpellbookSpellMaxHit extends MaxHit
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
-        // Step 3: Calculate Type Bonuses
-        // Not used here.
+        // Step 3: Calculate Bonuses
+        // Tome Bonuses
+        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, spell); // default 1
+        maxDamage = maxDamage * correctTomeSpellBonus;
 
         return maxDamage;
     }
