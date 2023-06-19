@@ -69,6 +69,11 @@ public class MaxSpec
             return 1.15;
         }
 
+        if(weaponName.contains("Dragon sword"))
+        {
+            return 1.25;
+        }
+
         if(weaponName.contains("Dragon halberd"))
         {
             return 1.1;
@@ -191,6 +196,8 @@ public class MaxSpec
         return 0; // Not a spec weapon with a damage boost
     }
 
+    // Returns the maximum hit of a spec weapon that hits multiple times in one move.
+    // Returns 0 if not a multi hit spec weapon.
     public static int getSpecMultiHit(Client client, String weaponName, int hit)
     {
         // Melee Double Hit Spec Weapons
