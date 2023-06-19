@@ -207,10 +207,10 @@ public class MaxSpec
             int fourth = third + 1;
 
             // Debug
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "First: " + first, null);
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Second: " + second, null);
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Third: " + third, null);
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Fourth: " + fourth, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "First: " + first, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Second: " + second, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Third: " + third, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Fourth: " + fourth, null);
 
             return first + second + third + fourth;
         }
