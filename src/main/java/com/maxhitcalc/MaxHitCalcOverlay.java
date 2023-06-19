@@ -72,10 +72,29 @@ public class MaxHitCalcOverlay extends OverlayPanel
     {
         panelComponent.getChildren().clear();
 
+        String weaponName = plugin.getWeaponName();
+
         int maxHit = (int)Math.floor(plugin.calculateMaxHit());
         int maxSpec = (int)Math.floor(plugin.calculateMaxSpec());
+        if(config.displayDoubleHitWeaponsAsOneHit())
+        {
+            if(MaxSpec.checkForDoubleHitWeapon(client, weaponName))
+            {
+                maxSpec = (int)(Math.floor(maxSpec) * 2);
+            }
+        }
+
         int maxVsType = (int)Math.floor(plugin.calculateMaxAgainstType());
+
+
         int maxSpecVsType = (int)Math.floor(plugin.calculateMaxSpecAgainstType());
+        if(config.displayDoubleHitWeaponsAsOneHit())
+        {
+            if(MaxSpec.checkForDoubleHitWeapon(client, weaponName))
+            {
+                maxSpecVsType = (int)(Math.floor(maxSpecVsType) * 2);
+            }
+        }
 
         // Don't Display if 0, or -1 (error)
         if(maxHit > 0 && config.showMaxHit())

@@ -185,4 +185,27 @@ public class MaxSpec
 
         return 0; // Not a spec weapon with a damage boost
     }
+
+    public static boolean checkForDoubleHitWeapon(Client client, String weaponName)
+    {
+        // Melee Double Hit Spec Weapons
+        if(weaponName.contains("Dragon dagger"))
+        {
+            return true;
+        }
+
+        // Range Double Hit Spec Weapons
+        if(weaponName.contains("Magic shortbow"))
+        {
+            return true;
+        }
+
+        if (weaponName.contains("Dragon knife"))
+        {
+            return true;
+        }
+
+        // else
+        return false;
+    }
 }

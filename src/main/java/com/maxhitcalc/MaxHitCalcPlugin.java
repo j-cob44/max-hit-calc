@@ -94,6 +94,23 @@ public class MaxHitCalcPlugin extends Plugin
 		overlayManager.remove(pluginOverlay);
 	}
 
+	// Get Weapon Name
+	public String getWeaponName()
+	{
+		// Get Current Equipment
+		Item[] playerEquipment;
+		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		{
+			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+		}
+		else {
+			return "";
+		}
+
+		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+		return weaponName;
+	}
+
 	// Calculate Normal Max Hit
 	public double calculateMaxHit()
 	{
@@ -150,6 +167,9 @@ public class MaxHitCalcPlugin extends Plugin
 
 		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
 
+		// Get Config Settings
+		boolean doubleHitSetting = config.displayDoubleHitWeaponsAsOneHit();
+
 		// Get Spec modifier
 		double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, weaponName, playerEquipment);
 
@@ -163,6 +183,13 @@ public class MaxHitCalcPlugin extends Plugin
 			double maxSpecHit = maxHit * specialAttackWeapon;
 
 			return maxSpecHit;
+		}
+		else if (doubleHitSetting && MaxSpec.checkForDoubleHitWeapon(client, weaponName))
+		{
+			// Niche cases where Special Attack does not increase Damage, but does hit twice. E.g: Dragon Knives, Magic Shortbow
+			double maxHit = calculateMaxHit();
+
+			return maxHit;
 		}
 
 		return 0; // No spec attack on weapon

@@ -67,9 +67,17 @@ public interface MaxHitCalcConfig extends Config
 	String mainPanelSettings = "Main Panel";
 
 	@ConfigSection(
+			name = "Special Attack Settings",
+			description = "Settings for Special Attacks and Weapons",
+			position =  2,
+			closedByDefault = false
+	)
+	String specSettings = "Special Attack Settings";
+
+	@ConfigSection(
 			name = "Inventory Settings",
 			description = "Settings relating to tooltips on Inventory Items",
-			position =  2,
+			position =  3,
 			closedByDefault = false
 	)
 	String inventorySettings = "Inventory Settings";
@@ -77,7 +85,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigSection(
 			name = "Spell Settings",
 			description = "Settings relating to tooltips on Spells",
-			position =  3,
+			position =  4,
 			closedByDefault = false
 	)
 	String spellSettings = "Spell Settings";
@@ -144,6 +152,19 @@ public interface MaxHitCalcConfig extends Config
 			section = mainPanelSettings
 	)
 	default boolean showPredictionTooltip()
+	{
+		return true;
+	}
+
+	// Show Predicted Requirements for next Max Hit
+	@ConfigItem(
+			keyName = "displayDoubleHitWeaponsAsOneHit",
+			name = "Combine Two Hit Specs as One Hit",
+			description = "Weapons like the DDS will display as one hit calculation.",
+			position = 0,
+			section = specSettings
+	)
+	default boolean displayDoubleHitWeaponsAsOneHit()
 	{
 		return true;
 	}
