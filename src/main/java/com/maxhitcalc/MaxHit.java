@@ -673,7 +673,7 @@ public class MaxHit {
         }
 
         // Debug
-        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus*100 + "%", null);
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus*100 + "%", null);
 
         return 1 + magicdamagebonus; // Default is 1.
     }
