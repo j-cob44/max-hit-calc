@@ -272,6 +272,13 @@ public class MaxHit {
             }
         }
 
+        // Osmumten's Fang Decrease
+        String weaponName = getWeaponName(client);
+        if (weaponName.contains("Osmumten's fang"))
+        {
+            maxHit = maxHit * 0.85 + 1;
+        }
+
         // Complete
         return maxHit;
     }

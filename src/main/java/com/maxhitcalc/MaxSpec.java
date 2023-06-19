@@ -141,6 +141,11 @@ public class MaxSpec
             return 1.25;
         }
 
+        if (weaponName.contains("Osmumten's fang"))
+        {
+            return 1.16666667;
+        }
+
         if(weaponName.contains("Voidwaker"))
         {
             return 1.5;
