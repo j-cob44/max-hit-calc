@@ -533,6 +533,21 @@ public class MaxHit {
         {
             basehit = 39;
         }
+        // Corrupted staff (basic)
+        else if(weaponItemName.contains("Corrupted staff (basic)"))
+        {
+            basehit = 23;
+        }
+        // Corrupted staff (attuned)
+        else if(weaponItemName.contains("Corrupted staff (attuned)"))
+        {
+            basehit = 31;
+        }
+        // Corrupted staff (perfected)
+        else if(weaponItemName.contains("Corrupted staff (perfected)"))
+        {
+            basehit = 39;
+        }
         // Autocasted Spell
         else
         {

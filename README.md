@@ -42,8 +42,8 @@ Config: <br>
 
 <hr>
 
-Feedback can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
-Or as an issue in Github: https://github.com/j-cob44/max-hit-calc/issues <br>
+Any feedback/issues can be made through Github: https://github.com/j-cob44/max-hit-calc/issues <br>
+And suggestions can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 
 Jacob Burton (j-cob44), June 2023 <br>
-Version 1.1.3
+Version 1.1.4
