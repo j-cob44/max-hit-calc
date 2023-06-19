@@ -215,6 +215,11 @@ public class MaxSpec
             return first + second + third + fourth;
         }
 
+        if(weaponName.contains("Abyssal dagger"))
+        {
+            return hit * 2;
+        }
+
         // Range Double Hit Spec Weapons
         if(weaponName.contains("Magic shortbow"))
         {
