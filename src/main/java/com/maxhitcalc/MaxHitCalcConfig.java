@@ -159,12 +159,12 @@ public interface MaxHitCalcConfig extends Config
 	// Show Predicted Requirements for next Max Hit
 	@ConfigItem(
 			keyName = "displayDoubleHitWeaponsAsOneHit",
-			name = "Combine Two Hit Specs as One Hit",
+			name = "Combine Multi Hit Specs as One Hit",
 			description = "Weapons like the DDS will display as one hit calculation.",
 			position = 0,
 			section = specSettings
 	)
-	default boolean displayDoubleHitWeaponsAsOneHit()
+	default boolean displayMultiHitWeaponsAsOneHit()
 	{
 		return true;
 	}

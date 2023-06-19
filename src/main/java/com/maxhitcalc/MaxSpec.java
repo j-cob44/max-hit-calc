@@ -183,29 +183,55 @@ public class MaxSpec
             return 1.25;
         }
 
+        if(weaponName.contains("Webweaver bow"))
+        {
+            return 1.4;
+        }
+
         return 0; // Not a spec weapon with a damage boost
     }
 
-    public static boolean checkForDoubleHitWeapon(Client client, String weaponName)
+    public static int getSpecMultiHit(Client client, String weaponName, int hit)
     {
         // Melee Double Hit Spec Weapons
         if(weaponName.contains("Dragon dagger"))
         {
-            return true;
+            return hit * 2;
+        }
+
+        if(weaponName.contains("Dragon claws"))
+        {
+            int first = hit - 1;
+            int second = (hit - (hit/2)) - 1;
+            int third = (hit - ((hit*3/4))) - 1;
+            int fourth = third + 1;
+
+            // Debug
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "First: " + first, null);
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Second: " + second, null);
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Third: " + third, null);
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Fourth: " + fourth, null);
+
+            return first + second + third + fourth;
         }
 
         // Range Double Hit Spec Weapons
         if(weaponName.contains("Magic shortbow"))
         {
-            return true;
+            return hit * 2;
         }
 
         if (weaponName.contains("Dragon knife"))
         {
-            return true;
+            return hit * 2;
+        }
+
+        if(weaponName.contains("Webweaver bow"))
+        {
+            return hit * 4;
         }
 
         // else
-        return false;
+        return 0;
     }
 }
