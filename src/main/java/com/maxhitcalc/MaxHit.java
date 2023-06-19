@@ -669,11 +669,11 @@ public class MaxHit {
         {
             magicdamagebonus *= 3;
 
-            magicdamagebonus = Math.min(magicdamagebonus, 100);
+            magicdamagebonus = Math.min(magicdamagebonus, 1);
         }
 
         // Debug
-        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage %: " + magicdamagebonus, null);
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus*100 + "%", null);
 
         return 1 + magicdamagebonus; // Default is 1.
     }
