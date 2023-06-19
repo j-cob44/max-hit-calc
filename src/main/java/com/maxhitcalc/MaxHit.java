@@ -35,6 +35,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MaxHit {
+    // Get Weapon Name
+    public static String getWeaponName(Client client)
+    {
+        // Get Current Equipment
+        Item[] playerEquipment;
+        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        {
+            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+        }
+        else {
+            return "";
+        }
+
+        String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        return weaponName;
+    }
+
     // Get Prayer Bonus for Max Hit Calculation
     public static double getPrayerBonus(Client client, AttackStyle weaponAttackStyle)
     {
@@ -626,7 +643,8 @@ public class MaxHit {
 
     public static double getMagicEquipmentBoost(Client client, ItemManager itemManager, Item[] playerEquipment)
     {
-        double magicdamagebonus = 1;
+        String weaponName = getWeaponName(client);
+        double magicdamagebonus = 0;
 
         // Get Magic Strength Bonus of each equipped Item
         for (Item equipmentItem: playerEquipment)
@@ -643,13 +661,21 @@ public class MaxHit {
             }
         }
 
-        // Debug
-        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus, null);
-
         // Get Void 2.5% bonus if necessary, otherwise +0
         magicdamagebonus += getVoidMagicBonus(client, playerEquipment);
 
-        return magicdamagebonus;
+        // Get Tumeken's Shadow Bonus
+        if(weaponName.contains("Tumeken"))
+        {
+            magicdamagebonus *= 3;
+
+            magicdamagebonus = Math.min(magicdamagebonus, 100);
+        }
+
+        // Debug
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage %: " + magicdamagebonus, null);
+
+        return 1 + magicdamagebonus; // Default is 1.
     }
 
     public static double getVoidMagicBonus(Client client, Item[] playerEquipment)

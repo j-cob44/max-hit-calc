@@ -72,7 +72,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
     {
         panelComponent.getChildren().clear();
 
-        String weaponName = plugin.getWeaponName();
+        String weaponName = MaxHit.getWeaponName(client);
 
         int maxHit = (int)Math.floor(plugin.calculateMaxHit());
         int maxSpec = (int)Math.floor(plugin.calculateMaxSpec());

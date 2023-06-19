@@ -94,23 +94,6 @@ public class MaxHitCalcPlugin extends Plugin
 		overlayManager.remove(pluginOverlay);
 	}
 
-	// Get Weapon Name
-	public String getWeaponName()
-	{
-		// Get Current Equipment
-		Item[] playerEquipment;
-		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-		{
-			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-		}
-		else {
-			return "";
-		}
-
-		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-		return weaponName;
-	}
-
 	// Calculate Normal Max Hit
 	public double calculateMaxHit()
 	{
