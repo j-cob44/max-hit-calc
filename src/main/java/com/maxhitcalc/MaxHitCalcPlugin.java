@@ -163,7 +163,7 @@ public class MaxHitCalcPlugin extends Plugin
 		if(specialAttackWeapon != 0)
 		{
 			// Get Max hit then calculate Spec
-			double maxSpecHit = maxHit * specialAttackWeapon;
+			double maxSpecHit = Math.floor(maxHit) * specialAttackWeapon;
 
 			return maxSpecHit;
 		}

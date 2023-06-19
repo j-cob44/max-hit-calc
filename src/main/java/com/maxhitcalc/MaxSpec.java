@@ -49,6 +49,11 @@ public class MaxSpec
             return 1.375;
         }
 
+        if(weaponName.contains("Ancient godsword"))
+        {
+            return 1.1;
+        }
+
         if(weaponName.contains("Bandos godsword"))
         {
             return 1.21;
@@ -60,6 +65,11 @@ public class MaxSpec
         }
 
         if(weaponName.contains("Zamorak godsword"))
+        {
+            return 1.1;
+        }
+
+        if(weaponName.contains("Saradomin sword"))
         {
             return 1.1;
         }
@@ -131,6 +141,11 @@ public class MaxSpec
             return 1.25;
         }
 
+        if(weaponName.contains("Voidwaker"))
+        {
+            return 1.5;
+        }
+
         if(weaponName.contains("Vesta's longsword"))
         {
             return 1.20;
@@ -190,7 +205,12 @@ public class MaxSpec
 
         if(weaponName.contains("Webweaver bow"))
         {
-            return 1.4;
+            return 0.4;
+        }
+
+        if(weaponName.contains("Toxic blowpipe"))
+        {
+            return 1.5;
         }
 
         return 0; // Not a spec weapon with a damage boost
@@ -225,6 +245,11 @@ public class MaxSpec
         if(weaponName.contains("Abyssal dagger"))
         {
             return hit * 2;
+        }
+
+        if(weaponName.contains("Saradomin sword"))
+        {
+            return hit + 16;
         }
 
         // Range Double Hit Spec Weapons
