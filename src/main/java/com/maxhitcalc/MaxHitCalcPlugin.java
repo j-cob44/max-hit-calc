@@ -360,20 +360,23 @@ public class MaxHitCalcPlugin extends Plugin
 		// Get corrected slot ID if player is not fully equipped
 		//slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
 
+		// Change equipment slot to new item
+		playerEquipment = InventoryItemMaxHit.changeEquipment(client, slotID, itemID, playerEquipment);
+
 		// Find what type to calculate
 		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
 		{
-			return InventoryItemMaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+			return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
 		}
 		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
 		{
-			return InventoryItemMaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID, config.blowpipeDartType());
+			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
 		}
 		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
 		{
-			double magicMaxHit = InventoryItemMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, slotID, itemID);
+			double magicMaxHit = MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
 
-			// If -1, error skip
+			// If -1, error, skip
 			if (magicMaxHit > -1){
 				return magicMaxHit;
 			}

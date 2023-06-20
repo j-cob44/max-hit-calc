@@ -783,6 +783,11 @@ public class MaxHit {
         // Step 1: Find the base hit of the spell
         double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
 
+        if (spellBaseMaxHit == 0)
+        {
+            return -1;
+        }
+
         // Step 2: Calculate the Magic Damage Bonus
         double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
 
