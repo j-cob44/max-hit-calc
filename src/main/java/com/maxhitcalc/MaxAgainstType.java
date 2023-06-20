@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MaxAgainstType extends MaxHit {
-    public static List<Double> getTypeBonus(Client client, AttackStyle attackStyle, String weaponName, Item[] playerEquipment)
+    static List<Double> getTypeBonus(Client client, AttackStyle attackStyle, String weaponName, Item[] playerEquipment)
     {
         List<Double> typeBonusToApply = new ArrayList<>();
 
@@ -497,7 +497,7 @@ public class MaxAgainstType extends MaxHit {
         return maxDamage;
     }
 
-    public static double calculateMaxHit(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    private static double calculateTypeMaxHit(Client client, ItemManager itemManager, MaxHitCalcConfig config)
     {
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
@@ -535,5 +535,60 @@ public class MaxAgainstType extends MaxHit {
         {
             return -1;
         }
+    }
+
+    // Calculate Max Hit against Type bonus
+    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    {
+        // Get Current Equipment
+        Item[] playerEquipment;
+        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        {
+            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+        }
+        else
+        {
+            return 0;
+        }
+
+        String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+
+        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+
+        // Get Current Attack Style
+        WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+        AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+        AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+        // Get Type modifier
+        List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
+
+        // Debug Modifiers
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
+
+        // Get Max hit
+        double maxHit = MaxHit.calculate(client, itemManager, config); // Normal Max
+        double maxHitVsType = Math.floor(calculateTypeMaxHit(client, itemManager, config)); // Vs Type Max
+
+        // Iterate through modifiers, flooring after multiplying
+        if(!typeModifiersList.isEmpty())
+        {
+            for (double modifier: typeModifiersList)
+            {
+                maxHitVsType = Math.floor(maxHitVsType * modifier);
+            }
+        }
+
+        if(maxHit >= maxHitVsType)
+        {
+            return 0; // No Type Bonus
+        }
+        else
+        {
+            return maxHitVsType;
+        }
+
     }
 }

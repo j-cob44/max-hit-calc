@@ -34,7 +34,7 @@ import java.util.List;
 
 public class InventoryItemMaxHit extends MaxHit
 {
-    public static AttackStyle determineAttackStyle(Client client, int weaponID)
+    private static AttackStyle determineAttackStyle(Client client, int weaponID)
     {
         AttackStyle attackStyle;
 
@@ -73,50 +73,7 @@ public class InventoryItemMaxHit extends MaxHit
         return attackStyle;
     }
 
-    public static int getCorrectedSlotID(Client client, int slotToCheck){
-        int correctSlotID = 0;
-
-        switch (slotToCheck)
-        {
-            case 0:
-                correctSlotID = EquipmentInventorySlot.HEAD.getSlotIdx();
-                break;
-            case 1:
-                correctSlotID = EquipmentInventorySlot.CAPE.getSlotIdx();
-                break;
-            case 2:
-                correctSlotID = EquipmentInventorySlot.AMULET.getSlotIdx();
-                break;
-            case 3:
-                correctSlotID = EquipmentInventorySlot.WEAPON.getSlotIdx();
-                break;
-            case 4:
-                correctSlotID = EquipmentInventorySlot.BODY.getSlotIdx();
-                break;
-            case 5:
-                correctSlotID = EquipmentInventorySlot.SHIELD.getSlotIdx();
-                break;
-            case 7:
-                correctSlotID = EquipmentInventorySlot.LEGS.getSlotIdx();
-                break;
-            case 9:
-                correctSlotID = EquipmentInventorySlot.GLOVES.getSlotIdx();
-                break;
-            case 10:
-                correctSlotID = EquipmentInventorySlot.BOOTS.getSlotIdx();
-                break;
-            case 12:
-                correctSlotID = EquipmentInventorySlot.RING.getSlotIdx();
-                break;
-            case 13:
-                correctSlotID = EquipmentInventorySlot.AMMO.getSlotIdx();
-                break;
-        }
-
-        return correctSlotID;
-    }
-
-    public static Item[] changeEquipment(Client client, int slotID, int itemID, Item[] currentEquipment)
+    private static Item[] changeEquipment(Client client, int slotID, int itemID, Item[] currentEquipment)
     {
         Item[] newEquipment = new Item[14];
 
@@ -142,5 +99,68 @@ public class InventoryItemMaxHit extends MaxHit
         newEquipment[slotID] = new Item(itemID, 1);
 
         return newEquipment;
+    }
+
+
+    // Calculate Max Hit for an inventory item
+    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config, int slotID, int itemID)
+    {
+        // Initialize Variables
+        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+        AttackStyle attackStyle = null;
+
+        // Get Current Equipment
+        Item[] playerEquipment;
+        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        {
+            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+        }
+        else {
+            playerEquipment = null;
+        }
+
+        // Determine if Attack Style is correct
+        if(slotID == 3)
+        {
+            // IS A WEAPON
+            attackStyle = InventoryItemMaxHit.determineAttackStyle(client, itemID);
+        }
+        else
+        {
+            // Get Current Attack Style
+            WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+            AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+            attackStyle = weaponAttackStyles[attackStyleID];
+        }
+
+        // Get corrected slot ID if player is not fully equipped
+        //slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
+
+        // Change equipment slot to new item
+        playerEquipment = InventoryItemMaxHit.changeEquipment(client, slotID, itemID, playerEquipment);
+
+        // Find what type to calculate
+        if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
+        {
+            return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+        }
+        else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
+        {
+            return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
+        }
+        else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
+        {
+            double magicMaxHit = MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+
+            // If -1, error, skip
+            if (magicMaxHit > -1){
+                return magicMaxHit;
+            }
+        }
+
+        return -1;
+
     }
 }

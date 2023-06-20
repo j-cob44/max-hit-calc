@@ -33,6 +33,10 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ChatMessage; // for debug
+import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.VarbitChanged;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe; // for debug
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
@@ -59,10 +63,19 @@ public class MaxHitCalcPlugin extends Plugin
 	private Client client;
 
 	@Inject
+	private ClientThread clientThread;
+
+	@Inject
 	private MaxHitCalcConfig config;
 
 	@Inject
 	private ItemManager itemManager;
+
+	// Public Max Hit variables, calculated when Equipment changes
+	public int maxHit = 0;
+	public int maxSpec = 0;
+	public int maxVsType = 0;
+	public int maxSpecVsType = 0;
 
 //	DEBUG
 //	@Subscribe
@@ -70,9 +83,7 @@ public class MaxHitCalcPlugin extends Plugin
 //	{
 //		if(chatMessageReceived.getMessage().equals("!Checkmax"))
 //		{
-//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Hit: " + Math.floor(calculateMaxHit()), null);
-//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Spec Hit: " + calculateMaxSpec(), null);
-//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Current Max Against Type: " + calculateMaxAgainstType(), null);
+//
 //		}
 //	}
 
@@ -94,295 +105,69 @@ public class MaxHitCalcPlugin extends Plugin
 		overlayManager.remove(pluginOverlay);
 	}
 
-	// Calculate Normal Max Hit
-	public double calculateMaxHit()
-	{
-		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
-
-		// Get Current Attack Style
-		WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-		AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
-		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
-
-		// Get Current Equipment
-		Item[] playerEquipment;
-		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-		{
-			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-		}
-		else {
-			playerEquipment = null;
-		}
-
-		// Find what type to calculate
-		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
-		{
-			return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-		}
-		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
-		{
-			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
-		}
-		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
-		{
-			return MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-		}
-		else
-		{
-			return -1;
+	@Subscribe
+	public void onGameStateChanged(GameStateChanged event) {
+		if (event.getGameState() == GameState.LOGGED_IN) {
+			onLogIn();
 		}
 	}
 
-	// Calculate Max Spec Hit
-	public double calculateMaxSpec()
+	// Run Thread on login which waits for first game tick
+	private void onLogIn()
 	{
-		// Get Current Equipment
-		Item[] playerEquipment;
-		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		clientThread.invokeLater(() ->
 		{
-			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-		}
-		else {
-			return 0;
-		}
+			int tick = client.getTickCount();
 
-		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-
-		// Get Config Settings
-		boolean doubleHitSetting = config.displayMultiHitWeaponsAsOneHit();
-
-		// Get Spec modifier
-		double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, weaponName, playerEquipment);
-
-		// Debug
-		//client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
-
-		double maxHit = calculateMaxHit();
-		if(specialAttackWeapon != 0)
-		{
-			// Get Max hit then calculate Spec
-			double maxSpecHit = Math.floor(maxHit) * specialAttackWeapon;
-
-			return maxSpecHit;
-		}
-		else if (doubleHitSetting && (MaxSpec.getSpecMultiHit(client, weaponName, (int)Math.floor(maxHit)) != 0))
-		{
-			// Niche cases where Special Attack does not increase Damage, but does hit twice. E.g: Dragon Knives, Magic Shortbow
-			return maxHit;
-		}
-
-		return 0; // No spec attack on weapon
-	}
-
-	// Calculate Max Hit against Type bonus
-	public double calculateMaxAgainstType()
-	{
-		// Get Current Equipment
-		Item[] playerEquipment;
-		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-		{
-			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-		}
-		else {
-			return 0;
-		}
-
-		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-
-		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
-
-		// Get Current Attack Style
-		WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-		AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
-		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
-
-		// Get Type modifier
-		List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
-
-		// Debug Modifiers
-		//client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
-
-		// Get Max hit
-		double maxHit = calculateMaxHit(); // Normal Max
-		double maxHitVsType = Math.floor(MaxAgainstType.calculateMaxHit(client, itemManager, config)); // Vs Type Max
-
-		// Iterate through modifiers, flooring after multiplying
-		if(!typeModifiersList.isEmpty())
-		{
-			for (double modifier: typeModifiersList)
+			// If not first tick, retry
+			if(tick < 1)
 			{
-				maxHitVsType = Math.floor(maxHitVsType * modifier);
+				return false; // Reschedule task
 			}
-		}
 
-		if(maxHit >= maxHitVsType)
-		{
-			return 0; // No Type Bonus
-		}
-		else
-		{
-			return maxHitVsType;
-		}
-
+			calculateMaxes();
+			return true; // Do not reschedule
+		});
 	}
 
-	public double calculateMaxSpecAgainstType(){
-		// Get Current Equipment
-		Item[] playerEquipment;
-		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-		{
-			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-		}
-		else {
-			return 0;
-		}
-
-		String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-
-		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
-
-		// Get Current Attack Style
-		WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-		AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
-		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
-
-		// Get Type modifier
-		List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, weaponName, playerEquipment);
-
-		if(!typeModifiersList.isEmpty())
-		{
-			// Get Max hit then calculate Spec
-			double maxSpec = calculateMaxSpec();
-
-			if(maxSpec != 0)
-			{
-				double maxSpecVsTypeHit = Math.floor(maxSpec);
-				// Iterate through modifiers, flooring after multiplying
-				for (double modifier: typeModifiersList)
-				{
-					maxSpecVsTypeHit = Math.floor(maxSpecVsTypeHit * modifier);
-				}
-
-				return maxSpecVsTypeHit;
-			}
-		}
-
-		return 0; // No Type Bonus
-	}
-
-	public List<Object> predictNextMaxHit(){
-		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
-
-		// Get Current Attack Style
-		WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-		AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
-		AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
-
-		// Get Current Equipment
-		Item[] playerEquipment;
-		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-		{
-			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-		}
-		else {
-			playerEquipment = null;
-		}
-
-		// Find what type to calculate
-		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
-		{
-			List<Object> meleeResults = PredictNextMax.predictNextMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-
-			// index: 0 = "melee", 1 = strength level, 2 = equipment strength bonus, 3 = prayer percent bonus
-			return meleeResults;
-		}
-		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
-		{
-			List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
-
-			// index: 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
-			return rangedResults;
-		}
-		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
-		{
-			List<Object> mageResults = PredictNextMax.predictNextMageMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-
-			// index: 0 = "magic", 1 = magic level, 2 = mage equipment damage bonus
-			return mageResults;
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	// Calculate Max Hit for an inventory item
-	public double calculateMaxHitFromInventory(int slotID, int itemID)
+	// OnItemContainerChanged looking for equipment container
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged event)
 	{
-		// Initialize Variables
-		int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-		int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
-		AttackStyle attackStyle = null;
-
-		// Get Current Equipment
-		Item[] playerEquipment;
-		if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+		// On Item Equip
+		if(event.getContainerId() == InventoryID.EQUIPMENT.getId())
 		{
-			playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-		}
-		else {
-			playerEquipment = null;
-		}
+			calculateMaxes();
 
-		// Determine if Attack Style is correct
-		if(slotID == 3)
+		}
+	}
+
+	// Calculates all panel display maxes.
+	public void calculateMaxes()
+	{
+		String weaponName = MaxHit.getWeaponName(client);
+
+		maxHit = (int)Math.floor(MaxHit.calculate(client, itemManager, config));
+		maxSpec = (int)Math.floor(MaxSpec.calculate(client, itemManager, config));
+		if(config.displayMultiHitWeaponsAsOneHit())
 		{
-			// IS A WEAPON
-			attackStyle = InventoryItemMaxHit.determineAttackStyle(client, itemID);
-		}
-		else
-		{
-			// Get Current Attack Style
-			WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-			AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
-			attackStyle = weaponAttackStyles[attackStyleID];
-		}
-
-		// Get corrected slot ID if player is not fully equipped
-		//slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
-
-		// Change equipment slot to new item
-		playerEquipment = InventoryItemMaxHit.changeEquipment(client, slotID, itemID, playerEquipment);
-
-		// Find what type to calculate
-		if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
-		{
-			return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-		}
-		else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
-		{
-			return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
-		}
-		else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
-		{
-			double magicMaxHit = MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
-
-			// If -1, error, skip
-			if (magicMaxHit > -1){
-				return magicMaxHit;
+			int multiHitSpec = MaxSpec.getSpecMultiHit(client, weaponName, maxSpec);
+			if(multiHitSpec != 0)
+			{
+				maxSpec = multiHitSpec;
 			}
 		}
 
-		return -1;
+		maxVsType = (int)Math.floor(MaxAgainstType.calculate(client, itemManager, config));
 
+		maxSpecVsType = (int)Math.floor(MaxSpecAgainstType.calculate(client, itemManager, config));
+		if(config.displayMultiHitWeaponsAsOneHit())
+		{
+			int multiHitSpec = MaxSpec.getSpecMultiHit(client, weaponName, maxSpecVsType);
+			if(multiHitSpec != 0)
+			{
+				maxSpecVsType = multiHitSpec;
+			}
+		}
 	}
 }

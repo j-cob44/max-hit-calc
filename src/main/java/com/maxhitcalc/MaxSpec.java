@@ -29,10 +29,12 @@
 package com.maxhitcalc;
 
 import net.runelite.api.*;
+import net.runelite.client.game.ItemManager;
+
 
 public class MaxSpec
 {
-    public static double getSpecWeaponStat(Client client, String weaponName, Item[] playerEquipment)
+    static double getSpecWeaponStat(Client client, String weaponName, Item[] playerEquipment)
     {
         String ammoItemName = "";
         if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
@@ -275,5 +277,46 @@ public class MaxSpec
 
         // else
         return 0;
+    }
+
+    // Calculate Max Spec Hit
+    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    {
+        // Get Current Equipment
+        Item[] playerEquipment;
+        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        {
+            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+        }
+        else {
+            return 0;
+        }
+
+        String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+
+        // Get Config Settings
+        boolean doubleHitSetting = config.displayMultiHitWeaponsAsOneHit();
+
+        // Get Spec modifier
+        double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, weaponName, playerEquipment);
+
+        // Debug
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
+
+        double maxHit = MaxHit.calculate(client, itemManager, config);
+        if(specialAttackWeapon != 0)
+        {
+            // Get Max hit then calculate Spec
+            double maxSpecHit = Math.floor(maxHit) * specialAttackWeapon;
+
+            return maxSpecHit;
+        }
+        else if (doubleHitSetting && (MaxSpec.getSpecMultiHit(client, weaponName, (int)Math.floor(maxHit)) != 0))
+        {
+            // Niche cases where Special Attack does not increase Damage, but does hit twice. E.g: Dragon Knives, Magic Shortbow
+            return maxHit;
+        }
+
+        return 0; // No spec attack on weapon
     }
 }
