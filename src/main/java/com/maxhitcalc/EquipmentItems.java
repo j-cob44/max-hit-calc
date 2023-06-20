@@ -1,124 +1,105 @@
+/* EquipmentItems.java
+ * Contains Functions for retrieving information about currently equipped items.
+ *
+ *
+ * Copyright (c) 2023, Jacob Burton <https://github.com/j-cob44>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.maxhitcalc;
 
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 
 public class EquipmentItems
 {
-    // All Item Slots Name Strings
-    public String headName = "";
-    public String capeName = "";
-    public String amuletName = "";
-    public String ammoName = "";
-    public String weaponName = "";
-    public String bodyName = "";
-    public String shieldName = "";
-    public String legsName = "";
-    public String glovesName = "";
-    public String bootName = "";
-    public String ringName = "";
-
-    public void getCurrentEquipment(Client client, Item[] playerEquipment){
-        // Head
-        String headItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()] != null)
+    /**
+     * Gets Currently Equipped Items
+     *
+     * @param client
+     *
+     * @return Item[] of all Equipped Items
+     */
+    public static Item[] getCurrentlyEquipped(Client client)
+    {
+        Item[] playerEquipment;
+        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
         {
-            headItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName();
+            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
         }
-        this.headName = headItemName;
-
-        // Cape
-        String capeItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
+        else
         {
-            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
+            playerEquipment = null;
         }
-        this.capeName = capeItemName;
 
-        // Amulet
-        String amuletItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.AMULET.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()] != null)
-        {
-            amuletItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName();
-        }
-        this.amuletName = amuletItemName;
-
-        // Ammo
-        String ammoItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-        {
-            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-        }
-        this.ammoName = ammoItemName;
-
-        // Weapon
-        String weaponItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
-        {
-            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-        }
-        this.weaponName = weaponItemName;
-
-        // Body
-        String bodyItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()] != null)
-        {
-            bodyItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName();
-        }
-        this.bodyName = bodyItemName;
-
-        // Shield
-        String shieldItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.SHIELD.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()] != null)
-        {
-            shieldItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName();
-        }
-        this.shieldName = shieldItemName;
-
-        // Legs
-        String legsItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()] != null)
-        {
-            legsItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName();
-        }
-        this.legsName = legsItemName;
-
-        // Gloves
-        String glovesItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.GLOVES.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.GLOVES.getSlotIdx()] != null)
-        {
-            glovesItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.GLOVES.getSlotIdx()].getId()).getName();
-        }
-        this.glovesName = glovesItemName;
-
-        // Boot
-        String bootItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.BOOTS.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.BOOTS.getSlotIdx()] != null)
-        {
-            bootItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BOOTS.getSlotIdx()].getId()).getName();
-        }
-        this.bootName = bootItemName;
-
-        // Ring
-        String ringItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.RING.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.RING.getSlotIdx()] != null)
-        {
-            ringItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.RING.getSlotIdx()].getId()).getName();
-        }
-        this.ringName = ringItemName;
-
+        return playerEquipment;
     }
 
+    /**
+     * Get Item Name in Specific Slot of Specified Equipment Set <br>
+     *
+     * @param client
+     * @param ITEMSLOT the item slot id that will be checked
+     * @param playerEquipment specified Item list
+     * @return string of item name, returns empty string if ITEMSLOT is empty
+     */
+    public static String getItemNameInGivenSetSlot(Client client, Item[] playerEquipment, EquipmentInventorySlot ITEMSLOT)
+    {
+        String itemName = "";
+
+        if(playerEquipment != null){
+            if(playerEquipment.length > ITEMSLOT.getSlotIdx()
+                    && playerEquipment[ITEMSLOT.getSlotIdx()] != null)
+            {
+                itemName = client.getItemDefinition(playerEquipment[ITEMSLOT.getSlotIdx()].getId()).getName();
+            }
+        }
+
+        return itemName;
+    }
+
+    /**
+     * Get Item ID in Specific Slot with a specified equipment list <br>
+     *
+     * @param playerEquipment specified Item list
+     * @param ITEMSLOT the item slot id that will be checked
+     *
+     * @return int of item id, returns -1 if empty
+     */
+    public static int getItemIdInGivenSetSlot(Item[] playerEquipment, EquipmentInventorySlot ITEMSLOT)
+    {
+        int itemID = -1;
+
+        if(playerEquipment != null){
+            if(playerEquipment.length > ITEMSLOT.getSlotIdx()
+                    && playerEquipment[ITEMSLOT.getSlotIdx()] != null)
+            {
+                itemID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
+            }
+        }
+
+        return itemID;
+    }
 }

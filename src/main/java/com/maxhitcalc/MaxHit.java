@@ -28,31 +28,16 @@
 
 package com.maxhitcalc;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import net.runelite.api.*;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.ItemManager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains functions for calculating standard max hit.
+ */
 public class MaxHit {
-    // Get Weapon Name
-    public static String getWeaponName(Client client)
-    {
-        // Get Current Equipment
-        Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-        {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-        }
-        else {
-            return "";
-        }
-
-        String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-        return weaponName;
-    }
-
     // Get Prayer Bonus for Max Hit Calculation
     protected static double getPrayerBonus(Client client, AttackStyle weaponAttackStyle)
     {
@@ -132,29 +117,29 @@ public class MaxHit {
     {
         if (playerEquipment == null) return 1;
 
+        // Get required items for void check
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
+
         // Check for set bonus
-        if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Void melee"))
+        if (headItemName.contains("Void melee"))
         {
-            if (playerEquipment.length > EquipmentInventorySlot.GLOVES.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.GLOVES.getSlotIdx()].getId()).getName().contains("Void"))
+            if (glovesItemName.contains("Void"))
             {
                 // Melee helm and gloves, check for elite or not
-                if (playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                        && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Void"))
+                if (bodyItemName.contains("Void"))
                 {
-                    if (playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                            && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Void"))
+                    if (legsItemName.contains("Void"))
                     {
                         // Normal void set
                         return 1.1;
                     }
                 }
-                else if (playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                        && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Elite void"))
+                else if (bodyItemName.contains("Elite void"))
                 {
-                    if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                            && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Elite void"))
+                    if(legsItemName.contains("Elite void"))
                     {
                         // Elite void set
                         return 1.1; // same for melee
@@ -174,28 +159,21 @@ public class MaxHit {
 
         if (playerEquipment == null) return specialBonusesToApply;
 
-        double specialBonus = 1; // Initialize Variable
-
-        String weaponItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
-        {
-            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-        }
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+        String ammuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
 
         // SPECIAL BONUSES MUST BE ORDERED CORRECTLY.
         // Dharok's Set Check
-        if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Dharok's"))
+        if (headItemName.contains("Dharok's"))
         {
-            if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Dharok's"))
+            if(bodyItemName.contains("Dharok's"))
             {
-                if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                        && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Dharok's"))
+                if(legsItemName.contains("Dharok's"))
                 {
-                    if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                            && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().contains("Dharok's"))
+                    if(weaponItemName.contains("Dharok's"))
                     {
                         // Passed Check, Dharok's Set Equipped, Apply Effect
                         double baseHP = client.getRealSkillLevel(Skill.HITPOINTS);
@@ -209,14 +187,11 @@ public class MaxHit {
         }
 
         // Obsidian Set Check
-        if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Obsidian"))
+        if (headItemName.contains("Obsidian"))
         {
-            if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Obsidian"))
+            if(bodyItemName.contains("Obsidian"))
             {
-                if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                        && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Obsidian"))
+                if(legsItemName.contains("Obsidian"))
                 {
                     if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
                     {
@@ -229,8 +204,7 @@ public class MaxHit {
         // Berserker Necklace and Obisidian Melee Check
         if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
         {
-            if(playerEquipment.length > EquipmentInventorySlot.AMULET.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName().contains("Berserker"))
+            if(ammuletItemName.contains("Berserker"))
             {
                 specialBonusesToApply.add(0.2);
             }
@@ -274,7 +248,7 @@ public class MaxHit {
         }
 
         // Osmumten's Fang Decrease
-        String weaponName = getWeaponName(client);
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponName.contains("Osmumten's fang"))
         {
             maxHit = maxHit * 0.85 + 1;
@@ -287,23 +261,29 @@ public class MaxHit {
     // Get Ranged Void Bonus for Elite and Normal Sets
     protected static double getVoidRangedBonus(Client client, Item[] playerEquipment)
     {
+        // Get required items for void check
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
+
         // Check for set bonus
-        if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Void ranger"))
+        if (headItemName.contains("Void ranger"))
         {
-            if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.GLOVES.getSlotIdx()].getId()).getName().contains("Void"))
+            if (glovesItemName.contains("Void"))
             {
                 // Ranged helm and gloves, check for elite or not
-                if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Void"))
+                if (bodyItemName.contains("Void"))
                 {
-                    if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Void"))
+                    if (legsItemName.contains("Void"))
                     {
                         // Normal void set
                         return 1.1;
                     }
                 }
-                else if (client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Elite void"))
+                else if (bodyItemName.contains("Elite void"))
                 {
-                    if(client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Elite void"))
+                    if(legsItemName.contains("Elite void"))
                     {
                         // Elite void set
                         return 1.125;
@@ -324,26 +304,11 @@ public class MaxHit {
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
-        String weaponItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
-        {
-            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-        }
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
+        int ammoID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.AMMO);
 
-        String ammoItemName = "";
-        int ammoID = -1;
         boolean skipAmmo = false;
-        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-        {
-            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-            ammoID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
-        }
-        else
-        {
-            skipAmmo = true;
-        }
 
         // Crystal bow and Blowpipe skip ammo
         // Cases to skip ammo
@@ -352,8 +317,7 @@ public class MaxHit {
         {
             skipAmmo = true;
         }
-
-        if(weaponItemName.contains("blowpipe"))
+        else if(weaponItemName.contains("blowpipe"))
         {
             skipAmmo = true;
 
@@ -392,9 +356,9 @@ public class MaxHit {
                     int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
 
                     if (equipmentID != ammoID || !skipAmmo) {
+                        // If equipment ID == Ammo, skip if skipAmmo is true
                         rangedStrengthBonus += equipmentStrengthStat;
                     }
-                    // else, ammo slot skip it
                 }
             }
         }
@@ -406,42 +370,21 @@ public class MaxHit {
     protected static double getRangeGearBoost(Client client, Item[] playerEquipment){
         double damagePercentBonus = 1;
 
-        String weaponItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
-        {
-            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-        }
-
-        String headItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()] != null)
-        {
-            headItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName();
-        }
-
-        String bodyItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()] != null)
-        {
-            bodyItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName();
-        }
-
-        String legsItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()] != null)
-        {
-            legsItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName();
-        }
+        // Get Required Item Names for checks
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
 
 
-        if (weaponItemName.contains("Crystal bow")
-                || weaponItemName.contains("faerdhinen"))
+        if (weaponItemName.contains("Crystal bow") || weaponItemName.contains("faerdhinen"))
         {
             // Crystal Armor Damage bonus
             if (headItemName.contains("Crystal helm"))
             {
-                if(!headItemName.contains("(basic)"))
+                if(!headItemName.contains("(basic)")
+                        || !headItemName.contains("(attuned)")
+                        || !headItemName.contains("(perfected)"))
                 {
                     damagePercentBonus += 0.025;
                 }
@@ -449,7 +392,9 @@ public class MaxHit {
 
             if (bodyItemName.contains("Crystal body"))
             {
-                if(!bodyItemName.contains("(basic)"))
+                if(!bodyItemName.contains("(basic)")
+                        || !bodyItemName.contains("(attuned)")
+                        || !bodyItemName.contains("(perfected)"))
                 {
                     damagePercentBonus += 0.075;
                 }
@@ -457,7 +402,9 @@ public class MaxHit {
 
             if (legsItemName.contains("Crystal legs"))
             {
-                if(!legsItemName.contains("(basic)"))
+                if(!legsItemName.contains("(basic)")
+                        || !legsItemName.contains("(attuned)")
+                        || !legsItemName.contains("(perfected)"))
                 {
                     damagePercentBonus += 0.05;
                 }
@@ -495,19 +442,8 @@ public class MaxHit {
         int spellSpriteID = -1;
         double basehit = 0;
 
-        String weaponItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
-        {
-            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-        }
-
-        String capeItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
-        {
-            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
-        }
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
@@ -651,7 +587,9 @@ public class MaxHit {
 
     protected static double getMagicEquipmentBoost(Client client, ItemManager itemManager, Item[] playerEquipment)
     {
-        String weaponName = getWeaponName(client);
+        if (playerEquipment == null) return 1;
+
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         double magicdamagebonus = 0;
 
         // Get Magic Strength Bonus of each equipped Item
@@ -673,7 +611,7 @@ public class MaxHit {
         magicdamagebonus += getVoidMagicBonus(client, playerEquipment);
 
         // Get Tumeken's Shadow Bonus
-        if(weaponName.contains("Tumeken"))
+        if(weaponItemName.contains("Tumeken"))
         {
             magicdamagebonus *= 3;
 
@@ -690,18 +628,20 @@ public class MaxHit {
     {
         if (playerEquipment == null) return 0;
 
+        // Get required items for void check
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
+
         // Check for set bonus
-        if (playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName().contains("Void mage"))
+        if (headItemName.contains("Void mage"))
         {
-            if (playerEquipment.length > EquipmentInventorySlot.GLOVES.getSlotIdx()
-                    && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.GLOVES.getSlotIdx()].getId()).getName().contains("Void"))
+            if (glovesItemName.contains("Void"))
             {
-                if (playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                        && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName().contains("Elite void"))
+                if (bodyItemName.contains("Elite void"))
                 {
-                    if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                            && client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName().contains("Elite void"))
+                    if(legsItemName.contains("Elite void"))
                     {
                         // Elite void set
                         return 0.025; // 2.5% magic dmg bonus
@@ -718,12 +658,7 @@ public class MaxHit {
     {
         int spellSpriteID = -1;
 
-        String shieldItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.SHIELD.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()] != null)
-        {
-            shieldItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName();
-        }
+        String shieldItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.SHIELD);
 
         // Check if casting without spell selected
         if(client.getWidget(WidgetInfo.COMBAT_SPELL_ICON) == null)
@@ -779,7 +714,7 @@ public class MaxHit {
     }
 
     // Public Function, Calculate Standard Magic Max Hit
-    protected static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    protected static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
@@ -803,7 +738,14 @@ public class MaxHit {
         return maxDamage;
     }
 
-    // Calculate Normal Max Hit
+    /**
+     * Calculates the standard max hit based on current equipment and player status.
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @return Max Hit as Double
+     */
     public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
     {
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
@@ -816,14 +758,7 @@ public class MaxHit {
         AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
         // Get Current Equipment
-        Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-        {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-        }
-        else {
-            playerEquipment = null;
-        }
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
@@ -836,7 +771,7 @@ public class MaxHit {
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
         {
-            return MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+            return MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle);
         }
         else
         {

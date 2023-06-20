@@ -35,7 +35,7 @@ import java.util.List;
 
 public class PredictNextMax extends MaxHit
 {
-    public static List<Object> predictNextMeleeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    private static List<Object> predictNextMeleeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
         int nextStrengthLevel = 0;
         int nextStrengthBonus = 0;
@@ -166,7 +166,7 @@ public class PredictNextMax extends MaxHit
         return results;
     }
 
-    public static List<Object> predictNextRangeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, MaxHitCalcConfig.BlowpipeDartType dartType)
+    private static List<Object> predictNextRangeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, MaxHitCalcConfig.BlowpipeDartType dartType)
     {
         int nextRangedLevel = 0;
         int nextRangeEquipmentBonus = 0;
@@ -267,12 +267,12 @@ public class PredictNextMax extends MaxHit
         return results;
     }
 
-    public static List<Object> predictNextMageMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    private static List<Object> predictNextMageMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
         int nextMagicLevel = 0;
         double nextMagicDamageBonus = 0;
 
-        double currentMaxHit = calculateMagicMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID);
+        double currentMaxHit = calculateMagicMaxHit(client, itemManager, playerEquipment, weaponAttackStyle);
 
         // Predict Next Magic Level for Next Max Hit
         for(int i = 1; i <= 20; i++)
@@ -326,7 +326,17 @@ public class PredictNextMax extends MaxHit
         return results;
     }
 
-
+    /**
+     * Calculates a prediction of stat increases required for a new max hit.<br><br>
+     * Predictions for Melee: Strength Level, Equipment Strength Bonus, and Prayer Bonus <br>
+     * Predictions for Ranged: Ranged Level, Ranged Equipment Strength Bonus, and Prayer Bonus <br>
+     * Predictions for Magic: Magic Level, and Magic Equipment Damage Bonus <br><br>
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @return List of predictions
+     */
     public static List<Object> predict(Client client, ItemManager itemManager, MaxHitCalcConfig config){
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
@@ -338,14 +348,7 @@ public class PredictNextMax extends MaxHit
         AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
         // Get Current Equipment
-        Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-        {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-        }
-        else {
-            playerEquipment = null;
-        }
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))

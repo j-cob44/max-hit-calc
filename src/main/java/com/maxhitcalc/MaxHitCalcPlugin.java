@@ -37,13 +37,12 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.callback.ClientThread;
-import net.runelite.client.eventbus.Subscribe; // for debug
+import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
-import java.util.List;
 
 @Slf4j
 @PluginDescriptor(
@@ -130,28 +129,37 @@ public class MaxHitCalcPlugin extends Plugin
 		});
 	}
 
-	// OnItemContainerChanged looking for equipment container
+	// OnItemContainerChanged, waiting for equipment container
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
-		// On Item Equip
+		// On Item Equip/de-equip
 		if(event.getContainerId() == InventoryID.EQUIPMENT.getId())
 		{
 			calculateMaxes();
+		}
+	}
 
+	// OnVarbitChanged, waiting for change in prayer
+	@Subscribe
+	public void onVarbitChanged(VarbitChanged event)
+	{
+		// On prayer change
+		if (event.getVarpId() == 83)
+		{
+			calculateMaxes();
 		}
 	}
 
 	// Calculates all panel display maxes.
 	public void calculateMaxes()
 	{
-		String weaponName = MaxHit.getWeaponName(client);
-
 		maxHit = (int)Math.floor(MaxHit.calculate(client, itemManager, config));
+
 		maxSpec = (int)Math.floor(MaxSpec.calculate(client, itemManager, config));
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{
-			int multiHitSpec = MaxSpec.getSpecMultiHit(client, weaponName, maxSpec);
+			int multiHitSpec = MaxSpec.getSpecMultiHit(client, maxSpec);
 			if(multiHitSpec != 0)
 			{
 				maxSpec = multiHitSpec;
@@ -163,7 +171,7 @@ public class MaxHitCalcPlugin extends Plugin
 		maxSpecVsType = (int)Math.floor(MaxSpecAgainstType.calculate(client, itemManager, config));
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{
-			int multiHitSpec = MaxSpec.getSpecMultiHit(client, weaponName, maxSpecVsType);
+			int multiHitSpec = MaxSpec.getSpecMultiHit(client, maxSpecVsType);
 			if(multiHitSpec != 0)
 			{
 				maxSpecVsType = multiHitSpec;

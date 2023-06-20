@@ -30,10 +30,10 @@ package com.maxhitcalc;
 
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
-import java.util.List;
 
-public class InventoryItemMaxHit extends MaxHit
+public class InventoryItemMaxHit
 {
+    // Crudely determines attack style based on an item's name
     private static AttackStyle determineAttackStyle(Client client, int weaponID)
     {
         AttackStyle attackStyle;
@@ -73,7 +73,7 @@ public class InventoryItemMaxHit extends MaxHit
         return attackStyle;
     }
 
-    private static Item[] changeEquipment(Client client, int slotID, int itemID, Item[] currentEquipment)
+    private static Item[] changeEquipment(Client client, Item[] currentEquipment, int itemID, int slotID)
     {
         Item[] newEquipment = new Item[14];
 
@@ -102,8 +102,17 @@ public class InventoryItemMaxHit extends MaxHit
     }
 
 
-    // Calculate Max Hit for an inventory item
-    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config, int slotID, int itemID)
+    /**
+     * Predicts max hit of a given item if it is equipped.
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @param itemID int of Item ID to do prediction on
+     * @param slotID int of slot the item will replace
+     * @return Max Hit Prediction as Double
+     */
+    public static double predict(Client client, ItemManager itemManager, MaxHitCalcConfig config, int itemID, int slotID)
     {
         // Initialize Variables
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
@@ -111,14 +120,7 @@ public class InventoryItemMaxHit extends MaxHit
         AttackStyle attackStyle = null;
 
         // Get Current Equipment
-        Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-        {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-        }
-        else {
-            playerEquipment = null;
-        }
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
         // Determine if Attack Style is correct
         if(slotID == 3)
@@ -139,7 +141,7 @@ public class InventoryItemMaxHit extends MaxHit
         //slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
 
         // Change equipment slot to new item
-        playerEquipment = InventoryItemMaxHit.changeEquipment(client, slotID, itemID, playerEquipment);
+        playerEquipment = InventoryItemMaxHit.changeEquipment(client, playerEquipment, itemID, slotID);
 
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
@@ -152,7 +154,7 @@ public class InventoryItemMaxHit extends MaxHit
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
         {
-            double magicMaxHit = MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+            double magicMaxHit = MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle);
 
             // If -1, error, skip
             if (magicMaxHit > -1){

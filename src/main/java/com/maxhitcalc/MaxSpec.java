@@ -31,20 +31,17 @@ package com.maxhitcalc;
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
 
-
+/**
+ * Contains functions for calculating max hit from a special attack weapon.
+ */
 public class MaxSpec
 {
-    static double getSpecWeaponStat(Client client, String weaponName, Item[] playerEquipment)
+    static double getSpecWeaponStat(Client client, Item[] playerEquipment)
     {
-        String ammoItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-        {
-            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-        }
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
 
         // Check if we even have a spec weapon
-
         // Melee Checks
         if(weaponName.contains("Armadyl godsword"))
         {
@@ -225,8 +222,13 @@ public class MaxSpec
 
     // Returns the maximum hit of a spec weapon that hits multiple times in one move.
     // Returns 0 if not a multi hit spec weapon.
-    public static int getSpecMultiHit(Client client, String weaponName, int hit)
+    public static int getSpecMultiHit(Client client, int hit)
     {
+        // Get Current Equipment
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
+
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
         // Melee Double Hit Spec Weapons
         if(weaponName.contains("Dragon dagger"))
         {
@@ -279,26 +281,24 @@ public class MaxSpec
         return 0;
     }
 
-    // Calculate Max Spec Hit
+    /**
+     * Calculates Max Hit of a Special Attack.
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @return Max Hit of Special Attack as Double
+     */
     public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
     {
         // Get Current Equipment
-        Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-        {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-        }
-        else {
-            return 0;
-        }
-
-        String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
         // Get Config Settings
         boolean doubleHitSetting = config.displayMultiHitWeaponsAsOneHit();
 
         // Get Spec modifier
-        double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, weaponName, playerEquipment);
+        double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, playerEquipment);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
@@ -311,7 +311,7 @@ public class MaxSpec
 
             return maxSpecHit;
         }
-        else if (doubleHitSetting && (MaxSpec.getSpecMultiHit(client, weaponName, (int)Math.floor(maxHit)) != 0))
+        else if (doubleHitSetting && (MaxSpec.getSpecMultiHit(client, (int)Math.floor(maxHit)) != 0))
         {
             // Niche cases where Special Attack does not increase Damage, but does hit twice. E.g: Dragon Knives, Magic Shortbow
             return maxHit;

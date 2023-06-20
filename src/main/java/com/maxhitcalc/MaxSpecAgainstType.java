@@ -4,21 +4,24 @@ import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
 import java.util.List;
 
+/**
+ * Contains functions for calculating max hit of a special attack weapon vs specific types of npc.
+ */
 public class MaxSpecAgainstType extends MaxAgainstType
 {
-    // Calculate Max Spec Hit Against Type
+    /**
+     * Caculates Max hit of a special attack against specific type bonuses
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @return Max hit as Double
+     */
     public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config){
         // Get Current Equipment
-        Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
-        {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
-        }
-        else {
-            return 0;
-        }
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
-        String weaponName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+        if (playerEquipment == null) return 0;
 
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
@@ -30,7 +33,7 @@ public class MaxSpecAgainstType extends MaxAgainstType
         AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
         // Get Type modifier
-        List<Double> typeModifiersList = getTypeBonus(client, attackStyle, weaponName, playerEquipment);
+        List<Double> typeModifiersList = getTypeBonus(client, attackStyle, playerEquipment);
 
         if(!typeModifiersList.isEmpty())
         {
