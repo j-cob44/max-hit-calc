@@ -32,10 +32,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-import net.runelite.api.events.ChatMessage; // for debug
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.ItemContainerChanged;
-import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.events.*;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.config.ConfigManager;
@@ -151,7 +148,28 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 	}
 
-	// Calculates all panel display maxes.
+	// OnStatChanged, waiting for skill changes, boosted or levelled
+	@Subscribe
+	public void onStatChanged(StatChanged event)
+	{
+		// On Strength Changed
+		if(event.getSkill() == Skill.STRENGTH)
+		{
+			calculateMaxes();
+		}
+		// On Ranged Changed
+		if(event.getSkill() == Skill.RANGED)
+		{
+			calculateMaxes();
+		}
+		// On Magic Changed
+		if(event.getSkill() == Skill.MAGIC)
+		{
+			calculateMaxes();
+		}
+	}
+
+	// Calculates all panel max hits.
 	public void calculateMaxes()
 	{
 		maxHit = (int)Math.floor(MaxHit.calculate(client, itemManager, config));
