@@ -34,45 +34,20 @@ import net.runelite.client.game.ItemManager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains functions for calculating max hit vs specific types of npc.
+ */
 public class MaxAgainstType extends MaxHit {
-    public static List<Double> getTypeBonus(Client client, AttackStyle attackStyle, String weaponName, Item[] playerEquipment)
+    protected static List<Double> getTypeBonus(Client client, AttackStyle attackStyle, Item[] playerEquipment)
     {
         List<Double> typeBonusToApply = new ArrayList<>();
 
-        String amuletItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.AMULET.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()] != null)
-        {
-            amuletItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMULET.getSlotIdx()].getId()).getName();
-        }
-
-        String headItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.HEAD.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()] != null)
-        {
-            headItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.HEAD.getSlotIdx()].getId()).getName();
-        }
-
-        String bodyItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.BODY.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()] != null)
-        {
-            bodyItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.BODY.getSlotIdx()].getId()).getName();
-        }
-
-        String legsItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.LEGS.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()] != null)
-        {
-            legsItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.LEGS.getSlotIdx()].getId()).getName();
-        }
-
-        String shieldItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.SHIELD.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()] != null)
-        {
-            shieldItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName();
-        }
+        // Get Required Items
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String amuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
 
         /*
          Order bonuses by when the bonus was added to the game, not when the item was added
@@ -112,58 +87,58 @@ public class MaxAgainstType extends MaxHit {
             }
 
             // Demonbane, added 4 January 2001
-            if(weaponName.contains("Silverlight"))
+            if(weaponItemName.contains("Silverlight"))
             {
                 typeBonusToApply.add(1.6) ;
             }
-            else if(weaponName.contains("Darklight"))
+            else if(weaponItemName.contains("Darklight"))
             {
                 typeBonusToApply.add(1.6); // same bonus as silverlight
             }
 
             // Shades, added 22 March 2006
-            if(weaponName.contains("Gadderhammer"))
+            if(weaponItemName.contains("Gadderhammer"))
             {
                 typeBonusToApply.add(1.25);
             }
 
             // Demonbane, added 9 June 2016
-            if(weaponName.contains("Arclight"))
+            if(weaponItemName.contains("Arclight"))
             {
                 typeBonusToApply.add(1.7); // different from silverlight and darklight
             }
 
             // Leaf-bladed Battleaxe vs Turoths and Kurasks, 15 September 2016
-            if(weaponName.contains("Leaf-bladed battleaxe"))
+            if(weaponItemName.contains("Leaf-bladed battleaxe"))
             {
                 typeBonusToApply.add(1.175);
             }
 
             // Dragonbane, added 5 January 2017
-            if(weaponName.contains("Dragon hunter"))
+            if(weaponItemName.contains("Dragon hunter"))
             {
                 typeBonusToApply.add(1.2); // same as dragon hunter crossbow boost which was added first
             }
 
             // Vampyre, added 24 May 2018
-            if(weaponName.contains("Ivandis flail"))
+            if(weaponItemName.contains("Ivandis flail"))
             {
                 typeBonusToApply.add(1.2);
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponName.contains("Viggora's"))
+            if(weaponItemName.contains("Viggora's"))
             {
-                if(!weaponName.contains("(u)"))
+                if(!weaponItemName.contains("(u)"))
                 {
                     typeBonusToApply.add(1.5);
                 }
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponName.contains("Ursine chainmace"))
+            if(weaponItemName.contains("Ursine chainmace"))
             {
-                if(!weaponName.contains("(u)"))
+                if(!weaponItemName.contains("(u)"))
                 {
                     typeBonusToApply.add(1.5);
                 }
@@ -201,19 +176,19 @@ public class MaxAgainstType extends MaxHit {
             }
 
             // Vampyre, added 4 June 2020
-            if(weaponName.contains("Blisterwood flail"))
+            if(weaponItemName.contains("Blisterwood flail"))
             {
                 typeBonusToApply.add(1.25);
             }
 
             // Golem bonus, added 14 April 2021, updated on 28 April 2021
-            if(weaponName.contains("Barronite mace"))
+            if(weaponItemName.contains("Barronite mace"))
             {
                 typeBonusToApply.add(1.15);
             }
 
             // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022
-            if(weaponName.contains("Keris"))
+            if(weaponItemName.contains("Keris"))
             {
                 typeBonusToApply.add(1.33);
             }
@@ -251,24 +226,24 @@ public class MaxAgainstType extends MaxHit {
             }
 
             // Dragonbane, added 5 January 2017
-            if(weaponName.contains("Dragon hunter"))
+            if(weaponItemName.contains("Dragon hunter"))
             {
                 typeBonusToApply.add(1.25);
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponName.contains("Craw's bow"))
+            if(weaponItemName.contains("Craw's bow"))
             {
-                if(!weaponName.contains("(u)"))
+                if(!weaponItemName.contains("(u)"))
                 {
                     typeBonusToApply.add(1.5);
                 }
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponName.contains("Webweaver bow"))
+            if(weaponItemName.contains("Webweaver bow"))
             {
-                if(!weaponName.contains("(u)"))
+                if(!weaponItemName.contains("(u)"))
                 {
                     typeBonusToApply.add(1.5);
                 }
@@ -307,18 +282,18 @@ public class MaxAgainstType extends MaxHit {
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponName.contains("Thammaron's sceptre"))
+            if(weaponItemName.contains("Thammaron's sceptre"))
             {
-                if(!weaponName.contains("(u)"))
+                if(!weaponItemName.contains("(u)"))
                 {
                     typeBonusToApply.add(1.5);
                 }
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponName.contains("Accursed sceptre"))
+            if(weaponItemName.contains("Accursed sceptre"))
             {
-                if(!weaponName.contains("u)"))
+                if(!weaponItemName.contains("u)"))
                 {
                     typeBonusToApply.add(1.5);
                 }
@@ -329,7 +304,7 @@ public class MaxAgainstType extends MaxHit {
     }
 
     // Needed in Magic for Slayer Staff (e)
-    public static double getSpellBaseHit(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
+    protected static double getSpellBaseHit(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
     {
         int spellSpriteID = -1;
         double basehit = 0;
@@ -478,7 +453,7 @@ public class MaxAgainstType extends MaxHit {
         return basehit;
     }
 
-    public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    protected static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
@@ -497,7 +472,7 @@ public class MaxAgainstType extends MaxHit {
         return maxDamage;
     }
 
-    public static double calculateMaxHit(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    private static double calculateTypeMaxHit(Client client, ItemManager itemManager, MaxHitCalcConfig config)
     {
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
@@ -529,11 +504,62 @@ public class MaxAgainstType extends MaxHit {
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
         {
-            return calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+            return calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle);
         }
         else
         {
             return -1;
         }
+    }
+
+    /**
+     * Calculates Max Hit Vs Types
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @return Max Hit vs Types as Double
+     */
+    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    {
+        // Get Current Equipment
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
+        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+
+        // Get Current Attack Style
+        WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+        AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+        AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+        // Get Type modifier
+        List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, playerEquipment);
+
+        // Debug Modifiers
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
+
+        // Get Max hit
+        double maxHit = MaxHit.calculate(client, itemManager, config); // Normal Max
+        double maxHitVsType = Math.floor(calculateTypeMaxHit(client, itemManager, config)); // Vs Type Max
+
+        // Iterate through modifiers, flooring after multiplying
+        if(!typeModifiersList.isEmpty())
+        {
+            for (double modifier: typeModifiersList)
+            {
+                maxHitVsType = Math.floor(maxHitVsType * modifier);
+            }
+        }
+
+        if(maxHit >= maxHitVsType)
+        {
+            return 0; // No Type Bonus
+        }
+        else
+        {
+            return maxHitVsType;
+        }
+
     }
 }

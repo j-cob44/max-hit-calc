@@ -72,44 +72,39 @@ public class MaxHitCalcOverlay extends OverlayPanel
     {
         panelComponent.getChildren().clear();
 
-        int maxHit = (int)Math.floor(plugin.calculateMaxHit());
-        int maxSpec = (int)Math.floor(plugin.calculateMaxSpec());
-        int maxVsType = (int)Math.floor(plugin.calculateMaxAgainstType());
-        int maxSpecVsType = (int)Math.floor(plugin.calculateMaxSpecAgainstType());
-
         // Don't Display if 0, or -1 (error)
-        if(maxHit > 0 && config.showMaxHit())
+        if(plugin.maxHit > 0 && config.showMaxHit())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Hit:")
-                    .right(Integer.toString(maxHit))
+                    .right(Integer.toString(plugin.maxHit))
                     .build());
         }
 
         // Don't Display if 0 (not useful) or turned off
-        if(maxSpec > 0 && config.showSpec())
+        if(plugin.maxSpec > 0 && config.showSpec())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Spec Hit:")
-                    .right(Integer.toString(maxSpec))
+                    .right(Integer.toString(plugin.maxSpec))
                     .build());
         }
 
         // Don't Display if 0 (not useful) or turned off
-        if(maxVsType > 0 && config.showType())
+        if(plugin.maxVsType > 0 && config.showType())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Hit vs Type:")
-                    .right(Integer.toString(maxVsType))
+                    .right(Integer.toString(plugin.maxVsType))
                     .build());
         }
 
         // Don't Display if 0 (not useful) or turned off
-        if(maxSpecVsType > 0 && config.showSpecVsType())
+        if(plugin.maxSpecVsType > 0 && config.showSpecVsType())
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Max Spec vs Type:")
-                    .right(Integer.toString(maxSpecVsType))
+                    .right(Integer.toString(plugin.maxSpecVsType))
                     .build());
         }
 
@@ -135,7 +130,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Inventory Item Tooltip
         if (config.showInventoryTooltip())
         {
-            getInventoryMaxHitTooltip(maxHit);
+            getInventoryMaxHitTooltip(plugin.maxHit);
         }
 
         // Spellbook Spell Tooltip
@@ -155,7 +150,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private String predictedMaxHitTooltip()
     {
-        List<Object> prediction = plugin.predictNextMaxHit();
+        List<Object> prediction = PredictNextMax.predict(client, itemManager, config);
 
         String result = "Next Max Hit at: </br>";
 
@@ -215,7 +210,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 {
                     int slotID = stats.getEquipment().getSlot();
 
-                    int maxWithItem = (int)plugin.calculateMaxHitFromInventory(slotID, itemID);
+                    int maxWithItem = (int)InventoryItemMaxHit.predict(client, itemManager, config, itemID, slotID);
 
                     // If no error
                     if (maxWithItem != -1){
@@ -302,7 +297,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 }
 
                 // Calculate Max Hit
-                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, AttackStyle.CASTING, 0, spell);
+                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, spell);
 
                 // Error Check
                 if (spellbookMaxHit > 0)
@@ -369,7 +364,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 }
 
                 // Calculate Max Hit
-                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, AttackStyle.CASTING, 0, spell);
+                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, spell);
 
                 // Error Check
                 if (spellbookMaxHit > 0)

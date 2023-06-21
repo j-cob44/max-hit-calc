@@ -34,21 +34,10 @@ import net.runelite.client.game.ItemManager;
 
 public class SpellbookSpellMaxHit extends MaxHit
 {
-    public static double getSpellBaseHit(Client client, Item[] playerEquipment, int magicLevel, CombatSpell spell)
+    protected static double getSpellBaseHit(Client client, Item[] playerEquipment, int magicLevel, CombatSpell spell)
     {
-        String weaponItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
-        {
-            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
-        }
-
-        String capeItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
-        {
-            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
-        }
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
 
         // God Spells Cases
         if((spell == CombatSpell.FLAMES_OF_ZAMORAK) || (spell == CombatSpell.CLAWS_OF_GUTHIX) || (spell == CombatSpell.SARADOMIN_STRIKE))
@@ -93,14 +82,9 @@ public class SpellbookSpellMaxHit extends MaxHit
         }
     }
 
-    public static double getTomeSpellBonus(Client client, Item[] playerEquipment, CombatSpell spell)
+    protected static double getTomeSpellBonus(Client client, Item[] playerEquipment, CombatSpell spell)
     {
-        String shieldItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.SHIELD.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()] != null)
-        {
-            shieldItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.SHIELD.getSlotIdx()].getId()).getName();
-        }
+        String shieldItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.SHIELD);
 
         if (spell.getName().toLowerCase().contains("fire"))
         {
@@ -129,7 +113,16 @@ public class SpellbookSpellMaxHit extends MaxHit
         return 1;
     }
 
-    public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, CombatSpell spell)
+    /**
+     * Calculates Max hit of a specific spell with given equipment.
+     *
+     * @param client
+     * @param itemManager
+     * @param playerEquipment current player equipment
+     * @param spell selected spell to calculate max hit with
+     * @return
+     */
+    public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, CombatSpell spell)
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell

@@ -30,11 +30,11 @@ package com.maxhitcalc;
 
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
-import java.util.List;
 
-public class InventoryItemMaxHit extends MaxHit
+public class InventoryItemMaxHit
 {
-    public static AttackStyle determineAttackStyle(Client client, int weaponID)
+    // Crudely determines attack style based on an item's name
+    private static AttackStyle determineAttackStyle(Client client, int weaponID)
     {
         AttackStyle attackStyle;
 
@@ -73,50 +73,7 @@ public class InventoryItemMaxHit extends MaxHit
         return attackStyle;
     }
 
-    public static int getCorrectedSlotID(Client client, int slotToCheck){
-        int correctSlotID = 0;
-
-        switch (slotToCheck)
-        {
-            case 0:
-                correctSlotID = EquipmentInventorySlot.HEAD.getSlotIdx();
-                break;
-            case 1:
-                correctSlotID = EquipmentInventorySlot.CAPE.getSlotIdx();
-                break;
-            case 2:
-                correctSlotID = EquipmentInventorySlot.AMULET.getSlotIdx();
-                break;
-            case 3:
-                correctSlotID = EquipmentInventorySlot.WEAPON.getSlotIdx();
-                break;
-            case 4:
-                correctSlotID = EquipmentInventorySlot.BODY.getSlotIdx();
-                break;
-            case 5:
-                correctSlotID = EquipmentInventorySlot.SHIELD.getSlotIdx();
-                break;
-            case 7:
-                correctSlotID = EquipmentInventorySlot.LEGS.getSlotIdx();
-                break;
-            case 9:
-                correctSlotID = EquipmentInventorySlot.GLOVES.getSlotIdx();
-                break;
-            case 10:
-                correctSlotID = EquipmentInventorySlot.BOOTS.getSlotIdx();
-                break;
-            case 12:
-                correctSlotID = EquipmentInventorySlot.RING.getSlotIdx();
-                break;
-            case 13:
-                correctSlotID = EquipmentInventorySlot.AMMO.getSlotIdx();
-                break;
-        }
-
-        return correctSlotID;
-    }
-
-    public static Item[] changeEquipment(Client client, int slotID, int itemID, Item[] currentEquipment)
+    private static Item[] changeEquipment(Client client, Item[] currentEquipment, int itemID, int slotID)
     {
         Item[] newEquipment = new Item[14];
 
@@ -144,92 +101,68 @@ public class InventoryItemMaxHit extends MaxHit
         return newEquipment;
     }
 
-    public static double calculateMeleeMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID)
+
+    /**
+     * Predicts max hit of a given item if it is equipped.
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @param itemID int of Item ID to do prediction on
+     * @param slotID int of slot the item will replace
+     * @return Max Hit Prediction as Double
+     */
+    public static double predict(Client client, ItemManager itemManager, MaxHitCalcConfig config, int itemID, int slotID)
     {
-        // Change equipment slot to new item
-        Item[] playerEquipment = changeEquipment(client, slotID, itemID, currentPlayerEquipment);
+        // Initialize Variables
+        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+        AttackStyle attackStyle = null;
 
-        // Calculate Melee Max Hit
-        // Step 1: Calculate effective Strength
-        int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
-        int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-        double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
+        // Get Current Equipment
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
-        double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
-
-        // Step 2: Calculate the base damage
-        double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
-
-        double baseDamage = (0.5 + effectiveStrength * ((strengthBonus + 64)/640));
-        double flooredBaseDamage = Math.floor(baseDamage);
-
-        // Step 3: Calculate the bonus damage
-        List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
-
-        double maxHit = flooredBaseDamage;
-
-        if(!specialBonusMultipliers.isEmpty())
+        // Determine if Attack Style is correct
+        if(slotID == 3)
         {
-            for (double bonus: specialBonusMultipliers)
-            {
-                maxHit += Math.floor(maxHit * bonus);
+            // IS A WEAPON
+            attackStyle = InventoryItemMaxHit.determineAttackStyle(client, itemID);
+        }
+        else
+        {
+            // Get Current Attack Style
+            WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
+            AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
+
+            attackStyle = weaponAttackStyles[attackStyleID];
+        }
+
+        // Get corrected slot ID if player is not fully equipped
+        //slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
+
+        // Change equipment slot to new item
+        playerEquipment = InventoryItemMaxHit.changeEquipment(client, playerEquipment, itemID, slotID);
+
+        // Find what type to calculate
+        if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
+        {
+            return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+        }
+        else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
+        {
+            return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
+        }
+        else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
+        {
+            double magicMaxHit = MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle);
+
+            // If -1, error, skip
+            if (magicMaxHit > -1){
+                return magicMaxHit;
             }
         }
 
-        // Complete
-        return maxHit;
-    }
+        return -1;
 
-    public static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID, MaxHitCalcConfig.BlowpipeDartType dartType)
-    {
-        // Change equipment slot to new item
-        Item[] playerEquipment = changeEquipment(client, slotID, itemID, currentPlayerEquipment);
-
-        // Calculate Ranged Max Hit
-        // Step 1: Calculate effective ranged Strength
-        int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
-        int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-        double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
-
-        double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
-
-        // Step 2: Calculate the max hit
-        double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
-
-        double maxHit = (0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
-
-        // Step 3: Bonus damage from special attack and effects
-        // Not used here.
-
-        return maxHit;
-    }
-
-    public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] currentPlayerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, int slotID, int itemID)
-    {
-        // Change equipment slot to new item
-        Item[] playerEquipment = changeEquipment(client, slotID, itemID, currentPlayerEquipment);
-
-        // Calculate Magic Max Hit
-        // Step 1: Find the base hit of the spell
-        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
-
-        if (spellBaseMaxHit == 0)
-        {
-            return -1;
-        }
-
-        // Step 2: Calculate the Magic Damage Bonus
-        double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
-
-        double maxDamage = (spellBaseMaxHit * magicDmgBonus);
-
-        // Step 3: Calculate Bonuses
-        // Tome Bonuses
-        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
-        maxDamage = maxDamage * correctTomeSpellBonus;
-
-        return maxDamage;
     }
 }

@@ -30,7 +30,10 @@ package com.maxhitcalc;
 
 import lombok.Getter;
 
-enum CombatSpell
+/**
+ * Contains definitions of combat spells and functions for retrieving them.
+ */
+public enum CombatSpell
 {
     WIND_STRIKE(15, 65, "WIND STRIKE", 2),
     WATER_STRIKE(17, 67, "WATER STRIKE", 4),
@@ -90,6 +93,11 @@ enum CombatSpell
     @Getter
     private final int baseDamage;
 
+    /**
+     * Finds a CombatSpell based on sprite ID
+     * @param spriteID int
+     * @return Spell, or null for failure
+     */
     public static CombatSpell getSpellBySpriteID(int spriteID)
     {
         for (CombatSpell spell : CombatSpell.values())
@@ -103,6 +111,11 @@ enum CombatSpell
         return null;
     }
 
+    /**
+     * Finds a CombatSpell based on its disabled sprite ID
+     * @param spriteID int
+     * @return Spell, or null for failure
+     */
     public static CombatSpell getSpellByDisabledSpriteID(int spriteID)
     {
         // Spells that

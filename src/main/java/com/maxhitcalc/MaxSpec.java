@@ -29,24 +29,28 @@
 package com.maxhitcalc;
 
 import net.runelite.api.*;
+import net.runelite.client.game.ItemManager;
 
+/**
+ * Contains functions for calculating max hit from a special attack weapon.
+ */
 public class MaxSpec
 {
-    public static double getSpecWeaponStat(Client client, String weaponName, Item[] playerEquipment)
+    static double getSpecWeaponStat(Client client, Item[] playerEquipment)
     {
-        String ammoItemName = "";
-        if(playerEquipment.length > EquipmentInventorySlot.AMMO.getSlotIdx()
-                && playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()] != null)
-        {
-            ammoItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId()).getName();
-        }
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
 
         // Check if we even have a spec weapon
-
         // Melee Checks
         if(weaponName.contains("Armadyl godsword"))
         {
             return 1.375;
+        }
+
+        if(weaponName.contains("Ancient godsword"))
+        {
+            return 1.1;
         }
 
         if(weaponName.contains("Bandos godsword"))
@@ -64,9 +68,19 @@ public class MaxSpec
             return 1.1;
         }
 
+        if(weaponName.contains("Saradomin sword"))
+        {
+            return 1.1;
+        }
+
         if(weaponName.contains("Dragon dagger"))
         {
             return 1.15;
+        }
+
+        if(weaponName.contains("Dragon sword"))
+        {
+            return 1.25;
         }
 
         if(weaponName.contains("Dragon halberd"))
@@ -126,6 +140,16 @@ public class MaxSpec
             return 1.25;
         }
 
+        if (weaponName.contains("Osmumten's fang"))
+        {
+            return 1.16666667;
+        }
+
+        if(weaponName.contains("Voidwaker"))
+        {
+            return 1.5;
+        }
+
         if(weaponName.contains("Vesta's longsword"))
         {
             return 1.20;
@@ -183,6 +207,116 @@ public class MaxSpec
             return 1.25;
         }
 
+        if(weaponName.contains("Webweaver bow"))
+        {
+            return 0.4;
+        }
+
+        if(weaponName.contains("Toxic blowpipe"))
+        {
+            return 1.5;
+        }
+
         return 0; // Not a spec weapon with a damage boost
+    }
+
+    // Returns the maximum hit of a spec weapon that hits multiple times in one move.
+    // Returns 0 if not a multi hit spec weapon.
+    public static int getSpecMultiHit(Client client, int hit)
+    {
+        // Get Current Equipment
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
+
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
+        // Melee Double Hit Spec Weapons
+        if(weaponName.contains("Dragon dagger"))
+        {
+            return hit * 2;
+        }
+
+        if(weaponName.contains("Dragon claws"))
+        {
+            int first = hit - 1;
+            int second = (hit - (hit/2)) - 1;
+            int third = (hit - ((hit*3/4))) - 1;
+            int fourth = third + 1;
+
+            // Debug
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "First: " + first, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Second: " + second, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Third: " + third, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Fourth: " + fourth, null);
+
+            return first + second + third + fourth;
+        }
+
+        if(weaponName.contains("Abyssal dagger"))
+        {
+            return hit * 2;
+        }
+
+        if(weaponName.contains("Saradomin sword"))
+        {
+            return hit + 16;
+        }
+
+        // Range Double Hit Spec Weapons
+        if(weaponName.contains("Magic shortbow"))
+        {
+            return hit * 2;
+        }
+
+        if (weaponName.contains("Dragon knife"))
+        {
+            return hit * 2;
+        }
+
+        if(weaponName.contains("Webweaver bow"))
+        {
+            return hit * 4;
+        }
+
+        // else
+        return 0;
+    }
+
+    /**
+     * Calculates Max Hit of a Special Attack.
+     *
+     * @param client
+     * @param itemManager
+     * @param config
+     * @return Max Hit of Special Attack as Double
+     */
+    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    {
+        // Get Current Equipment
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
+
+        // Get Config Settings
+        boolean doubleHitSetting = config.displayMultiHitWeaponsAsOneHit();
+
+        // Get Spec modifier
+        double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, playerEquipment);
+
+        // Debug
+        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
+
+        double maxHit = MaxHit.calculate(client, itemManager, config);
+        if(specialAttackWeapon != 0)
+        {
+            // Get Max hit then calculate Spec
+            double maxSpecHit = Math.floor(maxHit) * specialAttackWeapon;
+
+            return maxSpecHit;
+        }
+        else if (doubleHitSetting && (MaxSpec.getSpecMultiHit(client, (int)Math.floor(maxHit)) != 0))
+        {
+            // Niche cases where Special Attack does not increase Damage, but does hit twice. E.g: Dragon Knives, Magic Shortbow
+            return maxHit;
+        }
+
+        return 0; // No spec attack on weapon
     }
 }
