@@ -305,14 +305,24 @@ public class MaxHit {
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        int weaponID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.WEAPON);
+
         String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
         int ammoID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.AMMO);
 
         boolean skipAmmo = false;
-
-        // Crystal bow and Blowpipe skip ammo
-        // Cases to skip ammo
-        if (weaponItemName.contains("Crystal bow")
+        // Cases to skip ammo: throwing weapons, crystal bow, blowpipe
+        if (weaponItemName.contains("dart") || weaponItemName.contains("knife") || weaponItemName.contains("thrownaxe") || weaponItemName.contains("Toktz-xil-ul"))
+        {
+            // "Stackable" Throwing weapons
+            skipAmmo = true;
+        }
+        else if(weaponItemName.contains("Morrigan's javelin") || weaponItemName.contains("Morrigan's throwing axe") || weaponItemName.contains("Mud pie"))
+        {
+            // Not Stackable Throwing Weapons
+            skipAmmo = true;
+        }
+        else if (weaponItemName.contains("Crystal bow")
                 || weaponItemName.contains("faerdhinen"))
         {
             skipAmmo = true;
@@ -341,7 +351,6 @@ public class MaxHit {
             {
                 rangedStrengthBonus += 9; // default and lowest (mithril)
             }
-
         }
 
         // Get Ranged Strength Bonus of each equipped Item
