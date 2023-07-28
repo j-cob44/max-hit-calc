@@ -92,11 +92,11 @@ public class EquipmentItems
     {
         int itemID = -1;
 
-        if(playerEquipment != null){
+        if(playerEquipment != null) {
             if(playerEquipment.length > ITEMSLOT.getSlotIdx()
                     && playerEquipment[ITEMSLOT.getSlotIdx()] != null)
             {
-                itemID = playerEquipment[EquipmentInventorySlot.AMMO.getSlotIdx()].getId();
+                itemID = playerEquipment[ITEMSLOT.getSlotIdx()].getId();
             }
         }
 

@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
+import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.config.ConfigManager;
@@ -73,6 +74,9 @@ public class MaxHitCalcPlugin extends Plugin
 	public int maxVsType = 0;
 	public int maxSpecVsType = 0;
 
+	// Variable to check custom gamestate
+	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes
+
 //	DEBUG
 //	@Subscribe
 //	public void onChatMessage(ChatMessage chatMessageReceived)
@@ -92,38 +96,26 @@ public class MaxHitCalcPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
+		gameReady = false;
 		overlayManager.add(pluginOverlay);
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
+		gameReady = false;
 		overlayManager.remove(pluginOverlay);
 	}
 
+	// On Widget Closed, check for when login screen is closed
 	@Subscribe
-	public void onGameStateChanged(GameStateChanged event) {
-		if (event.getGameState() == GameState.LOGGED_IN) {
-			onLogIn();
-		}
-	}
-
-	// Run Thread on login which waits for first game tick
-	private void onLogIn()
+	public void onWidgetClosed(WidgetClosed widget)
 	{
-		clientThread.invokeLater(() ->
+		if (widget.getGroupId() == WidgetID.LOGIN_CLICK_TO_PLAY_GROUP_ID)
 		{
-			int tick = client.getTickCount();
-
-			// If not first tick, retry
-			if(tick < 1)
-			{
-				return false; // Reschedule task
-			}
-
+			gameReady = true; // Set as soon as user closes login screen
 			calculateMaxes();
-			return true; // Do not reschedule
-		});
+		}
 	}
 
 	// OnItemContainerChanged, waiting for equipment container
@@ -137,12 +129,33 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 	}
 
-	// OnVarbitChanged, waiting for change in prayer
+	// OnVarbitChanged, waiting for change in prayer, attack style, or selected spell
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		// On prayer change
+		if(!gameReady)
+		{
+			return; // do nothing, before you can see the game
+		}
+
+//		System.out.println("Varplayer: " + event.getVarpId());
+//		System.out.println("Varbit: " + event.getVarbitId());
+//		System.out.println("Varbit value: " + event.getValue());
+
+		// On prayer changed
 		if (event.getVarpId() == 83)
+		{
+			calculateMaxes();
+		}
+
+		// On attack style changed
+		if (event.getVarpId() == VarPlayer.ATTACK_STYLE)
+		{
+			calculateMaxes();
+		}
+
+		// On selected Spell changed
+		if (event.getVarbitId() == 276)
 		{
 			calculateMaxes();
 		}
