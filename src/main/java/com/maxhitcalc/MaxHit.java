@@ -622,6 +622,38 @@ public class MaxHit {
             magicdamagebonus = Math.min(magicdamagebonus, 1);
         }
 
+        // Get Virtus Robe's Damage Bonus for Ancient Magicks
+        CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(client.getVarbitValue(276));
+        if(selectedSpell != null){
+            if (selectedSpell.getName().toLowerCase().contains("smoke")
+                    || selectedSpell.getName().toLowerCase().contains("shadow")
+                    || selectedSpell.getName().toLowerCase().contains("blood")
+                    || selectedSpell.getName().toLowerCase().contains("ice"))
+            {
+                // Get Item names
+                String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+                String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+                String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+
+                // Add bonus per robe
+                if(headItemName.toLowerCase().contains("virtus"))
+                {
+                    magicdamagebonus += 0.03; // 1% added normally, add 3% to make total 4% bonus
+                }
+
+                if(bodyItemName.toLowerCase().contains("virtus"))
+                {
+                    magicdamagebonus += 0.03;
+                }
+
+                if(legsItemName.toLowerCase().contains("virtus"))
+                {
+                    magicdamagebonus += 0.03;
+                }
+            }
+        }
+
+
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus*100 + "%", null);
 
