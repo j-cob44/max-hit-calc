@@ -521,30 +521,25 @@ public class MaxHit {
         // Autocasted Spell
         else
         {
-            // Check if casting without spell selected
-            if(client.getWidget(WidgetInfo.COMBAT_SPELL_ICON) == null)
+            int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+            if (selectedSpellId == 0)
             {
+                // no spell selected
                 return -1; // error
             }
 
-            // Get Spell Sprite ID
-            if (weaponAttackStyle.equals(AttackStyle.CASTING))
-            {
-                spellSpriteID = client.getWidget(WidgetInfo.COMBAT_SPELL_ICON).getSpriteId();
-            }
-            else if (weaponAttackStyle.equals(AttackStyle.DEFENSIVE_CASTING))
-            {
-                spellSpriteID = client.getWidget(WidgetInfo.COMBAT_DEFENSIVE_SPELL_ICON).getSpriteId();
-            }
-
-            CombatSpell selectedSpell = CombatSpell.getSpellBySpriteID(spellSpriteID);
+            CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
 
             // Debug
-            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell Sprite ID: " + spellSpriteID, null);
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
 
             // Specific Selected Spell Cases
-            if (selectedSpell != null)
+            if (selectedSpell == null)
+            {
+                System.out.println("Error");
+                return -1; // error
+            }
+            else
             {
                 // Magic Dart Case
                 if(selectedSpell == CombatSpell.MAGIC_DART)
@@ -665,34 +660,28 @@ public class MaxHit {
 
     protected static double getTomeSpellBonus(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
-        int spellSpriteID = -1;
-
         String shieldItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.SHIELD);
 
         // Check if casting without spell selected
-        if(client.getWidget(WidgetInfo.COMBAT_SPELL_ICON) == null)
+        int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+        if (selectedSpellId == 0)
         {
+            // no spell selected
             return -1; // error
         }
 
-        // Get Spell Sprite ID
-        if (weaponAttackStyle.equals(AttackStyle.CASTING))
-        {
-            spellSpriteID = client.getWidget(WidgetInfo.COMBAT_SPELL_ICON).getSpriteId();
-        }
-        else if (weaponAttackStyle.equals(AttackStyle.DEFENSIVE_CASTING))
-        {
-            spellSpriteID = client.getWidget(WidgetInfo.COMBAT_DEFENSIVE_SPELL_ICON).getSpriteId();
-        }
-
-        CombatSpell selectedSpell = CombatSpell.getSpellBySpriteID(spellSpriteID);
+        CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell Sprite ID: " + spellSpriteID, null);
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
 
         // Spell is selected, not casting from weapon
-        if (selectedSpell != null)
+        if (selectedSpell == null)
+        {
+            return -1;
+        }
+        else
         {
             if (selectedSpell.getName().toLowerCase().contains("fire"))
             {
