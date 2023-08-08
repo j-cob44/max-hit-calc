@@ -56,16 +56,28 @@ public interface MaxHitCalcConfig extends Config
 				return "1x1";
 			}
 		},
-		FOUR(4) {
+		TWO(2) {
 			@Override
 			public String toString() {
 				return "2x2";
 			}
 		},
-		NINE(9) {
+		THREE(3) {
 			@Override
 			public String toString() {
-				return "3x3 or More";
+				return "3x3";
+			}
+		},
+		FOUR(4) {
+			@Override
+			public String toString() {
+				return "4x4";
+			}
+		},
+		FIVE(5) {
+			@Override
+			public String toString() {
+				return "5x5 +";
 			}
 		};
 
