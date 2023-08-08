@@ -704,7 +704,7 @@ public class MaxHit {
         if (selectedSpellId == 0)
         {
             // no spell selected
-            return -1; // error
+            return 1; // no bonus, default
         }
 
         CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
@@ -716,7 +716,7 @@ public class MaxHit {
         // Spell is selected, not casting from weapon
         if (selectedSpell == null)
         {
-            return -1;
+            return 1; // no bonus, default
         }
         else
         {

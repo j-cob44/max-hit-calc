@@ -90,7 +90,10 @@ public class MaxSpec
 
         if(weaponName.contains("Crystal halberd"))
         {
-            return 1.1;
+            if(!weaponName.contains("(basic)") && !weaponName.contains("(attuned)") && !weaponName.contains("(perfected)"))
+            {
+                return 1.1;
+            }
         }
 
         if(weaponName.contains("Barrelchest"))
