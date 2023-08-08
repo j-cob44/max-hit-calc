@@ -254,6 +254,11 @@ public class MaxHit {
             maxHit = maxHit * 0.85 + 1;
         }
 
+        // Colossal Blade Base Increase
+        if(weaponName.contains("Colossal blade")){
+            maxHit = maxHit + 2;
+        }
+
         // Complete
         return maxHit;
     }
@@ -699,7 +704,7 @@ public class MaxHit {
         if (selectedSpellId == 0)
         {
             // no spell selected
-            return -1; // error
+            return 1; // no bonus, default
         }
 
         CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
@@ -711,7 +716,7 @@ public class MaxHit {
         // Spell is selected, not casting from weapon
         if (selectedSpell == null)
         {
-            return -1;
+            return 1; // no bonus, default
         }
         else
         {

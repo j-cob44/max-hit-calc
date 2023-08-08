@@ -47,6 +47,47 @@ public interface MaxHitCalcConfig extends Config
 		DRAGON
 	}
 
+	enum ColossalBladeSizeBonus
+	{
+		ONE(1) {
+
+			@Override
+			public String toString() {
+				return "1x1";
+			}
+		},
+		TWO(2) {
+			@Override
+			public String toString() {
+				return "2x2";
+			}
+		},
+		THREE(3) {
+			@Override
+			public String toString() {
+				return "3x3";
+			}
+		},
+		FOUR(4) {
+			@Override
+			public String toString() {
+				return "4x4";
+			}
+		},
+		FIVE(5) {
+			@Override
+			public String toString() {
+				return "5x5 +";
+			}
+		};
+
+		public final int monsterSize;
+
+		ColossalBladeSizeBonus(int monsterSize) {
+			this.monsterSize = monsterSize;
+		}
+	}
+
 	@ConfigItem(
 			keyName = "blowpipeDartType",
 			name = "Blowpipe Dart Type",
@@ -58,10 +99,21 @@ public interface MaxHitCalcConfig extends Config
 		return BlowpipeDartType.MITHRIL;
 	}
 
+	@ConfigItem(
+			keyName = "colossalBladeMonsterSize",
+			name = "Colossal Blade Monster Size",
+			description = "Set the Monster Size for Colossal Blade Type Bonus",
+			position = 1
+	)
+	default ColossalBladeSizeBonus colossalBladeMonsterSize()
+	{
+		return ColossalBladeSizeBonus.ONE;
+	}
+
 	@ConfigSection(
 			name = "Main Panel",
 			description = "Settings relating to the Main Panel",
-			position =  1,
+			position =  2,
 			closedByDefault = false
 	)
 	String mainPanelSettings = "Main Panel";
@@ -69,7 +121,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigSection(
 			name = "Special Attack Settings",
 			description = "Settings for Special Attacks and Weapons",
-			position =  2,
+			position =  3,
 			closedByDefault = false
 	)
 	String specSettings = "Special Attack Settings";
@@ -77,7 +129,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigSection(
 			name = "Inventory Settings",
 			description = "Settings relating to tooltips on Inventory Items",
-			position =  3,
+			position =  4,
 			closedByDefault = false
 	)
 	String inventorySettings = "Inventory Settings";
@@ -85,7 +137,7 @@ public interface MaxHitCalcConfig extends Config
 	@ConfigSection(
 			name = "Spell Settings",
 			description = "Settings relating to tooltips on Spells",
-			position =  4,
+			position =  5,
 			closedByDefault = false
 	)
 	String spellSettings = "Spell Settings";

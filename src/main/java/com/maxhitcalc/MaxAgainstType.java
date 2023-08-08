@@ -543,6 +543,15 @@ public class MaxAgainstType extends MaxHit {
         double maxHit = MaxHit.calculate(client, itemManager, config); // Normal Max
         double maxHitVsType = Math.floor(calculateTypeMaxHit(client, itemManager, config)); // Vs Type Max
 
+
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        // REMOVE DEFAULT COLOSSAL BLADE BONUS. Other modifiers come first such as slayer helm bonus.
+        if(weaponName.contains("Colossal blade"))
+        {
+            maxHitVsType = maxHitVsType - 2; // remove default bonus
+        }
+
+
         // Iterate through modifiers, flooring after multiplying
         if(!typeModifiersList.isEmpty())
         {
@@ -550,6 +559,14 @@ public class MaxAgainstType extends MaxHit {
             {
                 maxHitVsType = Math.floor(maxHitVsType * modifier);
             }
+        }
+
+        // Re-add Colossal Blade Increase, factoring in other modifiers.
+        if(weaponName.contains("Colossal blade"))
+        {
+            int sizeBonus = (2 * Math.min(config.colossalBladeMonsterSize().monsterSize, 5));
+
+            maxHitVsType = maxHitVsType + sizeBonus;
         }
 
         if(maxHit >= maxHitVsType)
