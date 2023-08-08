@@ -37,6 +37,7 @@ import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -74,8 +75,8 @@ public class MaxHitCalcPlugin extends Plugin
 	public int maxVsType = 0;
 	public int maxSpecVsType = 0;
 
-	// Variable to check custom gamestate
-	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes
+	// Variable to check custom "gamestate"
+	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
 
 //	DEBUG
 //	@Subscribe
@@ -103,7 +104,6 @@ public class MaxHitCalcPlugin extends Plugin
 	@Override
 	protected void shutDown() throws Exception
 	{
-		gameReady = false;
 		overlayManager.remove(pluginOverlay);
 	}
 
@@ -115,6 +115,17 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			gameReady = true; // Set as soon as user closes login screen
 			calculateMaxes();
+		}
+	}
+
+	// Un-ready when logged out.
+	@Subscribe
+	public void onGameStateChanged(GameStateChanged event)
+	{
+		// On return to login screen, gameReady = false
+		if (event.getGameState().equals(GameState.LOGIN_SCREEN))
+		{
+			gameReady = false;
 		}
 	}
 
@@ -179,6 +190,20 @@ public class MaxHitCalcPlugin extends Plugin
 		if(event.getSkill() == Skill.MAGIC)
 		{
 			calculateMaxes();
+		}
+	}
+
+	// On config Changed, run calculations
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		// Only update for this plugin!
+		if(event.getGroup().contains("MaxHitCalc"))
+		{
+			if(gameReady)
+			{
+				clientThread.invoke(this::calculateMaxes);
+			}
 		}
 	}
 

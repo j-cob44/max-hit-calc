@@ -254,6 +254,11 @@ public class MaxHit {
             maxHit = maxHit * 0.85 + 1;
         }
 
+        // Colossal Blade Base Increase
+        if(weaponName.contains("Colossal blade")){
+            maxHit = maxHit + 2;
+        }
+
         // Complete
         return maxHit;
     }
