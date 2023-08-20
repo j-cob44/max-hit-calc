@@ -97,8 +97,17 @@ public class MaxHitCalcPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
-		gameReady = false;
 		overlayManager.add(pluginOverlay);
+
+		// Check if plugin started while game is running
+		if (client.getGameState().equals(GameState.LOGGED_IN))
+		{
+			gameReady = true; // Set true if game is logged in and ready
+		}
+		else
+		{
+			gameReady = false; // Set false on normal runelite boot
+		}
 	}
 
 	@Override
