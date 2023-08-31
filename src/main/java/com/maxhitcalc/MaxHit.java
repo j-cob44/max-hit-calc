@@ -458,6 +458,7 @@ public class MaxHit {
 
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
@@ -586,6 +587,15 @@ public class MaxHit {
                     else
                     {
                         basehit = 20;
+                    }
+                }
+
+                // Chaos Gauntlet Bonus Check
+                if(selectedSpell.getName().toLowerCase().contains("bolt"))
+                {
+                    if (glovesItemName.toLowerCase().contains("chaos gauntlets"))
+                    {
+                        basehit += 3;
                     }
                 }
             }

@@ -36,8 +36,11 @@ public class SpellbookSpellMaxHit extends MaxHit
 {
     protected static double getSpellBaseHit(Client client, Item[] playerEquipment, int magicLevel, CombatSpell spell)
     {
+        double basehit = 0;
+
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
 
         // God Spells Cases
         if((spell == CombatSpell.FLAMES_OF_ZAMORAK) || (spell == CombatSpell.CLAWS_OF_GUTHIX) || (spell == CombatSpell.SARADOMIN_STRIKE))
@@ -78,8 +81,19 @@ public class SpellbookSpellMaxHit extends MaxHit
         }
         else
         {
-            return spell.getBaseDamage();
+            basehit = spell.getBaseDamage();
         }
+
+        // Chaos Gauntlet Bonus Check
+        if(spell.getName().toLowerCase().contains("bolt"))
+        {
+            if (glovesItemName.toLowerCase().contains("chaos gauntlets"))
+            {
+                basehit += 3;
+            }
+        }
+
+        return basehit;
     }
 
     protected static double getTomeSpellBonus(Client client, Item[] playerEquipment, CombatSpell spell)
