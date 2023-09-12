@@ -273,27 +273,34 @@ public class PredictNextMax extends MaxHit
         double nextMagicDamageBonus = 0;
 
         double currentMaxHit = calculateMagicMaxHit(client, itemManager, playerEquipment, weaponAttackStyle);
+        CombatSpell spell = getSpell(client);
 
-        // Predict Next Magic Level for Next Max Hit
-        for(int i = 1; i <= 20; i++)
+
+        // Predict Next Magic Level for Next Max Hit - Only used for Charged Weapons and Magic Dart
+        if(spell == null || (spell.getName().toLowerCase().contains("magic dart")))
         {
-            // Calculate Magic Max Hit
-            // Step 1: Find the base hit of the spell
-            double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, (client.getBoostedSkillLevel(Skill.MAGIC) + i));
-
-            // Step 2: Calculate the Magic Damage Bonus
-            double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment) + (i * 0.01);
-
-            double predictedMaxHit = (spellBaseMaxHit * magicDmgBonus);
-
-            // Step 3: Calculate Type Bonuses
-            // Not used here.
-
-            // Check if predicted is better than current
-            if (Math.floor(predictedMaxHit) > currentMaxHit)
+            for(int i = 1; i <= 20; i++)
             {
-                nextMagicLevel = i;
-                break;
+                // Calculate Magic Max Hit
+                // Step 1: Find the base hit of the spell
+                double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, (client.getBoostedSkillLevel(Skill.MAGIC) + i));
+
+                // Step 2: Calculate the Magic Damage Bonus
+                double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment) + (i * 0.01);
+
+                double predictedMaxHit = (spellBaseMaxHit * magicDmgBonus);
+
+                // Step 3: Calculate Type Bonuses
+                // Tome Bonuses
+                double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+                predictedMaxHit = predictedMaxHit * correctTomeSpellBonus;
+
+                // Check if predicted is better than current
+                if (Math.floor(predictedMaxHit) > currentMaxHit)
+                {
+                    nextMagicLevel = i;
+                    break;
+                }
             }
         }
 
@@ -310,7 +317,19 @@ public class PredictNextMax extends MaxHit
             double predictedMaxHit = (spellBaseMaxHit * magicDmgBonus);
 
             // Step 3: Calculate Type Bonuses
-            // Not used here.
+            // Tome Bonuses
+            double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+            predictedMaxHit = predictedMaxHit * correctTomeSpellBonus;
+
+            // Smoke Battlestaff Bonus
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if (weaponItemName.toLowerCase().contains("smoke battlestaff"))
+            {
+                if (spell != null && spell.getSpellbook().contains("standard")) {
+                    double SmokeStandardSpellsBonus = predictedMaxHit * 0.1f;
+                    predictedMaxHit = predictedMaxHit + SmokeStandardSpellsBonus;
+                }
+            }
 
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)

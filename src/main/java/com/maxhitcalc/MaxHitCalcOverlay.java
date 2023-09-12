@@ -166,7 +166,15 @@ public class MaxHitCalcOverlay extends OverlayPanel
         }
         else if (prediction.get(0).equals("magic"))
         {
-            result += prediction.get(1) + " Magic Levels </br>" + (int)((double)prediction.get(2) * 100) + "% Magic Damage Bonus";
+            // Magic Level not always used for max hit
+            if (!prediction.get(1).equals(0))
+            {
+                result += prediction.get(1) + " Magic Levels </br>";
+            }
+
+            // Magic Damage Bonus always used for max hit
+            result += (int)((double)prediction.get(2) * 100) + "% Magic Damage Bonus";
+
             return result;
         }
         else
