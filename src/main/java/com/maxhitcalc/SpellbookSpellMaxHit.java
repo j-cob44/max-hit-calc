@@ -152,6 +152,16 @@ public class SpellbookSpellMaxHit extends MaxHit
         double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, spell); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
 
+        // Smoke Battlestaff Bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff"))
+        {
+            if (spell.getSpellbook().contains("standard")) {
+                double SmokeStandardSpellsBonus = maxDamage * 0.1f;
+                maxDamage = maxDamage + SmokeStandardSpellsBonus;
+            }
+        }
+
         return maxDamage;
     }
 }

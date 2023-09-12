@@ -604,6 +604,20 @@ public class MaxHit {
         return basehit;
     }
 
+    // Get Spell Info
+    protected static CombatSpell getSpell(Client client){
+        int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+        if (selectedSpellId == 0)
+        {
+            // no spell selected
+            return null; // error
+        }
+
+        CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
+
+        return selectedSpell;
+    }
+
     protected static double getMagicEquipmentBoost(Client client, ItemManager itemManager, Item[] playerEquipment)
     {
         if (playerEquipment == null) return 1;
@@ -779,6 +793,18 @@ public class MaxHit {
         // Tome Bonuses
         double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
+
+        // Smoke Battlestaff Bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff"))
+        {
+            CombatSpell spell = getSpell(client);
+
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+                double SmokeStandardSpellsBonus = maxDamage * 0.1f;
+                maxDamage = maxDamage + SmokeStandardSpellsBonus;
+            }
+        }
 
         return maxDamage;
     }
