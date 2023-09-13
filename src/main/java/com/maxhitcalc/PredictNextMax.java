@@ -74,6 +74,18 @@ public class PredictNextMax extends MaxHit
                 }
             }
 
+            // Osmumten's Fang Decrease
+            String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if (weaponName.contains("Osmumten's fang"))
+            {
+                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+            }
+
+            // Colossal Blade Base Increase
+            if(weaponName.contains("Colossal blade")){
+                predictedMaxHit = predictedMaxHit + 2;
+            }
+
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
             {
@@ -113,6 +125,18 @@ public class PredictNextMax extends MaxHit
                 }
             }
 
+            // Osmumten's Fang Decrease
+            String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if (weaponName.contains("Osmumten's fang"))
+            {
+                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+            }
+
+            // Colossal Blade Base Increase
+            if(weaponName.contains("Colossal blade")){
+                predictedMaxHit = predictedMaxHit + 2;
+            }
+
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
             {
@@ -150,6 +174,18 @@ public class PredictNextMax extends MaxHit
                 {
                     predictedMaxHit += Math.floor(predictedMaxHit * bonus);
                 }
+            }
+
+            // Osmumten's Fang Decrease
+            String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if (weaponName.contains("Osmumten's fang"))
+            {
+                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+            }
+
+            // Colossal Blade Base Increase
+            if(weaponName.contains("Colossal blade")){
+                predictedMaxHit = predictedMaxHit + 2;
             }
 
             // Check if predicted is better than current
