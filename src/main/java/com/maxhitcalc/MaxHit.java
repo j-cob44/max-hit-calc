@@ -507,7 +507,14 @@ public class MaxHit {
         // Warped sceptre
         else if(weaponItemName.contains("Warped sceptre"))
         {
-            basehit = Math.floor((magicLevel/5) + 3.6);
+            if(magicLevel >= 99)
+            {
+                basehit = Math.floor((magicLevel/5) + 4.2);
+            }
+            else
+            {
+                basehit = Math.floor((magicLevel/5) + 3.6);
+            }
         }
         // Crystal staff (basic)
         else if(weaponItemName.contains("Crystal staff (basic)"))
