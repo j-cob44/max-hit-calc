@@ -103,9 +103,14 @@ public class MaxHit {
                 if(equipmentItem.getId() != -1)
                 {
                     int equipmentID = equipmentItem.getId();
-                    int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
 
-                    strengthBonus += equipmentStrengthStat;
+                    // Ensure not null
+                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    {
+                        int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
+
+                        strengthBonus += equipmentStrengthStat;
+                    }
                 }
             }
         }
@@ -367,11 +372,16 @@ public class MaxHit {
                 {
                     int equipmentID = equipmentItem.getId();
 
-                    int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
+                    // Ensure not null
+                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    {
+                        int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
 
-                    if (equipmentID != ammoID || !skipAmmo) {
-                        // If equipment ID == Ammo, skip if skipAmmo is true
-                        rangedStrengthBonus += equipmentStrengthStat;
+                        if (equipmentID != ammoID || !skipAmmo)
+                        {
+                            // If equipment ID == Ammo, skip if skipAmmo is true
+                            rangedStrengthBonus += equipmentStrengthStat;
+                        }
                     }
                 }
             }
@@ -458,6 +468,7 @@ public class MaxHit {
 
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
@@ -492,6 +503,11 @@ public class MaxHit {
         else if(weaponItemName.contains("Tumeken"))
         {
             basehit = (Math.floor(magicLevel/3) + 1);
+        }
+        // Warped sceptre
+        else if(weaponItemName.contains("Warped sceptre"))
+        {
+            basehit = Math.floor((magicLevel/5) + 3.6);
         }
         // Crystal staff (basic)
         else if(weaponItemName.contains("Crystal staff (basic)"))
@@ -588,10 +604,33 @@ public class MaxHit {
                         basehit = 20;
                     }
                 }
+
+                // Chaos Gauntlet Bonus Check
+                if(selectedSpell.getName().toLowerCase().contains("bolt"))
+                {
+                    if (glovesItemName.toLowerCase().contains("chaos gauntlets"))
+                    {
+                        basehit += 3;
+                    }
+                }
             }
         }
 
         return basehit;
+    }
+
+    // Get Spell Info
+    protected static CombatSpell getSpell(Client client){
+        int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+        if (selectedSpellId == 0)
+        {
+            // no spell selected
+            return null; // error
+        }
+
+        CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
+
+        return selectedSpell;
     }
 
     protected static double getMagicEquipmentBoost(Client client, ItemManager itemManager, Item[] playerEquipment)
@@ -609,9 +648,17 @@ public class MaxHit {
                 if (equipmentItem.getId() != -1)
                 {
                     int equipmentID = equipmentItem.getId();
-                    double equipmentMagicBonusStat = itemManager.getItemStats(equipmentID, false).getEquipment().getMdmg();
 
-                    magicdamagebonus += (equipmentMagicBonusStat/100);
+                    double equipmentMagicBonusStat = 0;
+
+                    // Ensure not null
+                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    {
+                        equipmentMagicBonusStat = itemManager.getItemStats(equipmentID, false).getEquipment().getMdmg();
+
+                        magicdamagebonus += (equipmentMagicBonusStat/100);
+                    }
+
                 }
             }
         }
@@ -769,6 +816,18 @@ public class MaxHit {
         // Tome Bonuses
         double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
+
+        // Smoke Battlestaff Bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff"))
+        {
+            CombatSpell spell = getSpell(client);
+
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+                double SmokeStandardSpellsBonus = maxDamage * 0.1f;
+                maxDamage = maxDamage + SmokeStandardSpellsBonus;
+            }
+        }
 
         return maxDamage;
     }
