@@ -103,9 +103,14 @@ public class MaxHit {
                 if(equipmentItem.getId() != -1)
                 {
                     int equipmentID = equipmentItem.getId();
-                    int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
 
-                    strengthBonus += equipmentStrengthStat;
+                    // Ensure not null
+                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    {
+                        int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
+
+                        strengthBonus += equipmentStrengthStat;
+                    }
                 }
             }
         }
@@ -367,11 +372,16 @@ public class MaxHit {
                 {
                     int equipmentID = equipmentItem.getId();
 
-                    int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
+                    // Ensure not null
+                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    {
+                        int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
 
-                    if (equipmentID != ammoID || !skipAmmo) {
-                        // If equipment ID == Ammo, skip if skipAmmo is true
-                        rangedStrengthBonus += equipmentStrengthStat;
+                        if (equipmentID != ammoID || !skipAmmo)
+                        {
+                            // If equipment ID == Ammo, skip if skipAmmo is true
+                            rangedStrengthBonus += equipmentStrengthStat;
+                        }
                     }
                 }
             }
@@ -638,9 +648,17 @@ public class MaxHit {
                 if (equipmentItem.getId() != -1)
                 {
                     int equipmentID = equipmentItem.getId();
-                    double equipmentMagicBonusStat = itemManager.getItemStats(equipmentID, false).getEquipment().getMdmg();
 
-                    magicdamagebonus += (equipmentMagicBonusStat/100);
+                    double equipmentMagicBonusStat = 0;
+
+                    // Ensure not null
+                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    {
+                        equipmentMagicBonusStat = itemManager.getItemStats(equipmentID, false).getEquipment().getMdmg();
+
+                        magicdamagebonus += (equipmentMagicBonusStat/100);
+                    }
+
                 }
             }
         }
