@@ -154,7 +154,7 @@ public class SpellbookSpellMaxHit extends MaxHit
 
         // Smoke Battlestaff Bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("smoke battlestaff"))
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
         {
             if (spell.getSpellbook().contains("standard")) {
                 double SmokeStandardSpellsBonus = maxDamage * 0.1f;

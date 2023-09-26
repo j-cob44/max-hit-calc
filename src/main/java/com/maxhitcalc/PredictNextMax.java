@@ -359,7 +359,7 @@ public class PredictNextMax extends MaxHit
 
             // Smoke Battlestaff Bonus
             String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponItemName.toLowerCase().contains("smoke battlestaff"))
+            if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
             {
                 if (spell != null && spell.getSpellbook().contains("standard")) {
                     double SmokeStandardSpellsBonus = predictedMaxHit * 0.1f;

@@ -831,7 +831,7 @@ public class MaxHit {
 
         // Smoke Battlestaff Bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("smoke battlestaff"))
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
         {
             CombatSpell spell = getSpell(client);
 
