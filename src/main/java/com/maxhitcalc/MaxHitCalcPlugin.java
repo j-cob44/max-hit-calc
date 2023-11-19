@@ -75,6 +75,8 @@ public class MaxHitCalcPlugin extends Plugin
 	public int maxVsType = 0;
 	public int maxSpecVsType = 0;
 
+	public int relicMaxHit = 0; // Temporary League Max
+
 	// Variable to check custom "gamestate"
 	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
 
@@ -242,5 +244,9 @@ public class MaxHitCalcPlugin extends Plugin
 				maxSpecVsType = multiHitSpec;
 			}
 		}
+
+		// temporary for leagues 4
+		relicMaxHit = (int)Math.floor(RelicMaxHit.calculate(client, itemManager, config, maxHit));
+		// -------------------
 	}
 }

@@ -88,6 +88,20 @@ public interface MaxHitCalcConfig extends Config
 		}
 	}
 
+	// LEAGUES 4 TEMPORARY SETTING
+	@ConfigItem(
+			keyName = "showLeaguesMaxHit",
+			name = "Show Max hit with Relics",
+			description = "Show Max hit with Leagues 4 Relics",
+			position = 0
+	)
+	default boolean showLeaguesMaxHit()
+	{
+		return true;
+	}
+	// ------------------------------
+
+
 	@ConfigItem(
 			keyName = "blowpipeDartType",
 			name = "Blowpipe Dart Type",
