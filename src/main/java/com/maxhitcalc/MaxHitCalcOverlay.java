@@ -30,7 +30,6 @@ package com.maxhitcalc;
 
 import net.runelite.api.*;
 import net.runelite.api.widgets.*;
-import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;

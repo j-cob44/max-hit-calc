@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
@@ -122,7 +123,8 @@ public class MaxHitCalcPlugin extends Plugin
 	@Subscribe
 	public void onWidgetClosed(WidgetClosed widget)
 	{
-		if (widget.getGroupId() == WidgetID.LOGIN_CLICK_TO_PLAY_GROUP_ID)
+
+		if (widget.getGroupId() == InterfaceID.LOGIN_CLICK_TO_PLAY_SCREEN)
 		{
 			gameReady = true; // Set as soon as user closes login screen
 			calculateMaxes();
