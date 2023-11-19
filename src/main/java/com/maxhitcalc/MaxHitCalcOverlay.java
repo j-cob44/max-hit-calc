@@ -29,9 +29,7 @@
 package com.maxhitcalc;
 
 import net.runelite.api.*;
-import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetID;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.widgets.*;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
@@ -212,7 +210,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
         // Get Hovered Item
         int itemID = -1;
-        if (widget.getId() == WidgetInfo.INVENTORY.getId())
+        if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.INVENTORY)
         {
             itemID = widget.getItemId();
         }
@@ -277,14 +275,14 @@ public class MaxHitCalcOverlay extends OverlayPanel
             return;
         }
 
-        final int group = WidgetInfo.TO_GROUP(widget.getId());
+        final int group = WidgetUtil.componentToInterface(widget.getId());
         int spellSpriteID = -1;
 
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Group ID: " + group, ""); // DEBUG
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + widget.getSpriteId(), ""); // DEBUG
 
         // Get Spell Sprite ID if actually in Spellbook
-        if(group == WidgetID.SPELLBOOK_GROUP_ID)
+        if(group == InterfaceID.SPELLBOOK)
         {
             spellSpriteID = widget.getSpriteId();
         }
@@ -344,7 +342,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
             return;
         }
 
-        final int group = WidgetInfo.TO_GROUP(widget.getId());
+        final int group = WidgetUtil.componentToInterface(widget.getId());
         int spellSpriteID = -1;
 
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Group ID: " + group, ""); // DEBUG
