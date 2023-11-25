@@ -53,6 +53,16 @@ public class MaxHit {
             if(client.isPrayerActive((Prayer.CHIVALRY))) return 1.18;
 
             if(client.isPrayerActive((Prayer.PIETY))) return 1.23;
+
+            // TEMPORARY LEAGUES 4 - RUINOUS POWERS - MELEE
+            //if(client.isPrayerActive((Prayer.RP_ANCIENT_STRENGTH))) return 1.2;
+            //if(client.isPrayerActive((Prayer.RP_TRINITAS))) return 1.15;
+            //if(client.isPrayerActive((Prayer.RP_DECIMATE))) return 1.27;
+
+            if(client.getVarbitValue(14829) == 1) return 1.2; // RP_ANCIENT_STRENGTH
+            if(client.getVarbitValue(14832) == 1) return 1.15; // RP_TRINITAS
+            if(client.getVarbitValue(14833) == 1) return 1.27; // RP_DECIMATE
+            //------------------------
         }
 
         // Ranged Prayers
@@ -65,7 +75,26 @@ public class MaxHit {
             if(client.isPrayerActive((Prayer.EAGLE_EYE))) return 1.15;
 
             if(client.isPrayerActive((Prayer.RIGOUR))) return 1.23;
+
+            // TEMPORARY LEAGUES 4 - RUINOUS POWERS - RANGED
+            //if(client.isPrayerActive((Prayer.RP_ANCIENT_SIGHT))) return 1.2;
+            //if(client.isPrayerActive((Prayer.RP_TRINITAS))) return 1.15;
+            //if(client.isPrayerActive((Prayer.RP_ANNIHILATE))) return 1.27;
+
+            if(client.getVarbitValue(14830) == 1) return 1.2; // RP_ANCIENT_SIGHT
+            if(client.getVarbitValue(14832) == 1) return 1.15; // RP_TRINITAS
+            if(client.getVarbitValue(14834) == 1) return 1.27; // RP_ANNIHILATE
+            //------------------------
         }
+
+        // Magic Prayers - Ruinous Powers Only - LEAGUES 4 TEMP
+        if (weaponAttackStyle == AttackStyle.CASTING || weaponAttackStyle == AttackStyle.DEFENSIVE_CASTING)
+        {
+            //if(client.isPrayerActive((Prayer.RP_VAPORISE))) return 1.04;
+
+            if(client.getVarbitValue(14835) == 1) return 1.04; // RP_VAPORISE
+        }
+        //------------------------
 
         return 1; // default
     }
