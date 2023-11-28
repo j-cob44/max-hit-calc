@@ -166,8 +166,8 @@ public class MaxHitCalcPlugin extends Plugin
 //		System.out.println("Varbit: " + event.getVarbitId());
 //		System.out.println("Varbit value: " + event.getValue());
 
-		// On prayer changed
-		if (event.getVarpId() == 83)
+		// On prayer changed: 83 = normal prayerbook, 3780 = ruinous powers from leagues 4
+		if (event.getVarpId() == 83 || event.getVarpId() == 3780)
 		{
 			calculateMaxes();
 		}
