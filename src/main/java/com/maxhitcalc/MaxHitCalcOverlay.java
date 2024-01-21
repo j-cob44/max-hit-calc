@@ -78,16 +78,6 @@ public class MaxHitCalcOverlay extends OverlayPanel
                     .build());
         }
 
-        // LEAGUES 4 RELIC BOOST
-        // Don't Display if 0, or -1 (error)
-        if((plugin.relicMaxHit > 0 && plugin.relicMaxHit > plugin.maxHit) && config.showLeaguesMaxHit())
-        {
-            panelComponent.getChildren().add(LineComponent.builder()
-                    .left("Relic Max Hit:")
-                    .right(Integer.toString(plugin.relicMaxHit))
-                    .build());
-        }
-
         // Don't Display if 0 (not useful) or turned off
         if(plugin.maxSpec > 0 && config.showSpec())
         {

@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.widgets.InterfaceID;
-import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.config.ConfigManager;
@@ -75,8 +74,6 @@ public class MaxHitCalcPlugin extends Plugin
 	public int maxSpec = 0;
 	public int maxVsType = 0;
 	public int maxSpecVsType = 0;
-
-	public int relicMaxHit = 0; // Temporary League Max
 
 	// Variable to check custom "gamestate"
 	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
@@ -166,8 +163,8 @@ public class MaxHitCalcPlugin extends Plugin
 //		System.out.println("Varbit: " + event.getVarbitId());
 //		System.out.println("Varbit value: " + event.getValue());
 
-		// On prayer changed: 83 = normal prayerbook, 3780 = ruinous powers from leagues 4
-		if (event.getVarpId() == 83 || event.getVarpId() == 3780)
+		// On prayer changed: 83 = normal prayerbook
+		if (event.getVarpId() == 83)
 		{
 			calculateMaxes();
 		}
@@ -246,9 +243,5 @@ public class MaxHitCalcPlugin extends Plugin
 				maxSpecVsType = multiHitSpec;
 			}
 		}
-
-		// temporary for leagues 4
-		relicMaxHit = (int)Math.floor(RelicMaxHit.calculate(client, itemManager, config, maxHit));
-		// -------------------
 	}
 }

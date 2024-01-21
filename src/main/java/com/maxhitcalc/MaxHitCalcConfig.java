@@ -32,7 +32,6 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
-import net.runelite.client.plugins.boosts.BoostsConfig;
 
 @ConfigGroup("MaxHitCalc")
 public interface MaxHitCalcConfig extends Config
@@ -87,20 +86,6 @@ public interface MaxHitCalcConfig extends Config
 			this.monsterSize = monsterSize;
 		}
 	}
-
-	// LEAGUES 4 TEMPORARY SETTING
-	@ConfigItem(
-			keyName = "showLeaguesMaxHit",
-			name = "Show Max hit with Relics",
-			description = "Show Max hit with Leagues 4 Relics",
-			position = 0
-	)
-	default boolean showLeaguesMaxHit()
-	{
-		return true;
-	}
-	// ------------------------------
-
 
 	@ConfigItem(
 			keyName = "blowpipeDartType",
