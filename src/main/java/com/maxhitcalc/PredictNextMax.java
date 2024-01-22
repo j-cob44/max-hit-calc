@@ -52,8 +52,9 @@ public class PredictNextMax extends MaxHit
             double prayerBonus = getPrayerBonus(client, weaponAttackStyle) + (i * 0.01);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
+            double soulStackBonus = getSoulStackBonus(client);
 
-            double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
+            double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus * soulStackBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the base damage
             double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0

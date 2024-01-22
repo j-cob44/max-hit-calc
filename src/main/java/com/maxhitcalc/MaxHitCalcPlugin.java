@@ -180,6 +180,12 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			calculateMaxes();
 		}
+
+		// On soul stack changed
+		if (event.getVarpId() == 3784) // Should be replaced with VarPlayer.SOUL_STACK when implemented. See this PR for more info: https://github.com/runelite/runelite/pull/17390
+		{
+			calculateMaxes();
+		}
 	}
 
 	// OnStatChanged, waiting for skill changes, boosted or levelled
