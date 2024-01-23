@@ -73,7 +73,7 @@ public class MaxHit {
     {
         int soulStack = client.getVarpValue(3784); // Should be replaced with VarPlayer.SOUL_STACK when implemented. See this PR for more info: https://github.com/runelite/runelite/pull/17390
 
-        return 1 + 0.06 * soulStack;
+        return 0.06 * soulStack;
     }
 
     // Get Attack Style Bonus for Melee or Ranged
@@ -238,7 +238,9 @@ public class MaxHit {
         double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
         double soulStackBonus = getSoulStackBonus(client);
 
-        double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus * soulStackBonus) + styleBonus + 8) * voidBonus);
+        prayerBonus += soulStackBonus;
+
+        double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the base damage
         double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
