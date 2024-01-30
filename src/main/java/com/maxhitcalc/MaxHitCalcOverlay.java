@@ -124,8 +124,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
             }
         }
 
-        // Inventory Item Tooltip
-        if (config.showInventoryTooltip())
+        // Bank & Inventory Item Tooltip
+        if (config.showInventoryTooltip() || config.showBankTooltip())
         {
             getInventoryMaxHitTooltip(plugin.maxHit);
         }
@@ -199,11 +199,31 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
         // Get Hovered Item
         int itemID = -1;
-        if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.INVENTORY)
+        // Check if inventory item
+        if(config.showInventoryTooltip())
         {
-            itemID = widget.getItemId();
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.INVENTORY)
+            {
+                itemID = widget.getItemId();
+            }
         }
-        // Hovered Item ID grabber retrieved from net.runelite.client.plugins.itemstats
+        // Check if Bank item
+        if (config.showBankTooltip())
+        {
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.BANK)
+            {
+                itemID = widget.getItemId();
+            }
+        }
+        // Check if "Bank Invetory" Item, shows with either option true
+        if (config.showInventoryTooltip() || config.showBankTooltip())
+        {
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.BANK_INVENTORY)
+            {
+                itemID = widget.getItemId();
+            }
+        }
+
 
         // Prepare Tooltip
         if (itemID != -1)
