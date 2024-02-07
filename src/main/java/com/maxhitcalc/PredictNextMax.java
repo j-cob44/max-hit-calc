@@ -364,13 +364,6 @@ public class PredictNextMax extends MaxHit
                 double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
                 predictedMaxHit = predictedMaxHit * correctTomeSpellBonus;
 
-                // Rat Default +10 damage Bonus
-                String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-                if(weaponItemName.contains("Bone staff"))
-                {
-                    predictedMaxHit = predictedMaxHit + 10;
-                }
-
                 // Check if predicted is better than current
                 if (Math.floor(predictedMaxHit) > currentMaxHit)
                 {
@@ -405,12 +398,6 @@ public class PredictNextMax extends MaxHit
                     double SmokeStandardSpellsBonus = predictedMaxHit * 0.1f;
                     predictedMaxHit = predictedMaxHit + SmokeStandardSpellsBonus;
                 }
-            }
-
-            // Rat Default +10 damage Bonus
-            if(weaponItemName.contains("Bone staff"))
-            {
-                predictedMaxHit = predictedMaxHit + 10;
             }
 
             // Check if predicted is better than current

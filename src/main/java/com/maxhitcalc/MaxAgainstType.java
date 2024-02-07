@@ -485,12 +485,6 @@ public class MaxAgainstType extends MaxHit {
             }
         }
 
-        // Rat Default +10 damage Bonus
-        if(weaponItemName.contains("Bone staff"))
-        {
-            maxDamage = maxDamage + 10;
-        }
-
         return maxDamage;
     }
 
@@ -575,7 +569,7 @@ public class MaxAgainstType extends MaxHit {
         }
 
         // remove default +10 rat bonus
-        if(weaponName.contains("Bone staff") || weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
+        if(weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
         {
             maxHitVsType = maxHitVsType - 10;
         }
@@ -599,7 +593,7 @@ public class MaxAgainstType extends MaxHit {
         }
 
         // Re-add Rat +10 Damage Bonus
-        if(weaponName.contains("Bone staff") || weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
+        if(weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
         {
             maxHitVsType = maxHitVsType + 10;
         }

@@ -856,12 +856,6 @@ public class MaxHit {
             }
         }
 
-        // Rat Default +10 damage Bonus
-        if(weaponItemName.contains("Bone staff"))
-        {
-            maxDamage = maxDamage + 10;
-        }
-
         return maxDamage;
     }
 
