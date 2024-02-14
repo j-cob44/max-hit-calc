@@ -54,7 +54,14 @@ public class PredictNextMax extends MaxHit
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
             double soulStackBonus = getSoulStackBonus(client);
 
-            prayerBonus += soulStackBonus;
+            if (prayerBonus > 1)
+            {
+                prayerBonus += soulStackBonus - 0.009;
+            }
+            else
+            {
+                prayerBonus += soulStackBonus;
+            }
 
             double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
