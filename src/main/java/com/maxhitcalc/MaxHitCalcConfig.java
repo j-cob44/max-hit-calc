@@ -223,12 +223,22 @@ public interface MaxHitCalcConfig extends Config
 	// Show Predicted Max Hit when hovering over item in inventory
 	@ConfigItem(
 			keyName = "showInventoryTooltip",
-			name = "Tooltip on Inventory Item",
+			name = "Tooltip on Inventory Items",
 			description = "Hover over an item in your inventory to see it's max hit impact when equipped.",
 			position = 0,
 			section = inventorySettings
 	)
-	default boolean showInventoryTooltip()
+	default boolean showInventoryTooltip() { return true; }
+
+	// Show Predicted Max Hit when hovering over item in bank or bank inventory
+	@ConfigItem(
+			keyName = "showBankTooltip",
+			name = "Tooltip on Bank Items",
+			description = "Hover over an item in your bank to see it's max hit impact when equipped.",
+			position = 1,
+			section = inventorySettings
+	)
+	default boolean showBankTooltip()
 	{
 		return true;
 	}

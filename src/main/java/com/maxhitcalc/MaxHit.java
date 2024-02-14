@@ -280,6 +280,12 @@ public class MaxHit {
             maxHit = maxHit + 2;
         }
 
+        // Rat Default +10 damage Bonus
+        if(weaponName.contains("Bone mace"))
+        {
+            maxHit = maxHit + 10;
+        }
+
         // Complete
         return maxHit;
     }
@@ -472,7 +478,12 @@ public class MaxHit {
         double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
         // Step 3: Bonus damage from special attack and effects
-        // Not used here.
+        // Rat Default +10 damage Bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if(weaponItemName.contains("Bone shortbow"))
+        {
+            maxHit = maxHit + 10;
+        }
 
         return maxHit;
     }
@@ -566,6 +577,11 @@ public class MaxHit {
         else if(weaponItemName.contains("Corrupted staff (perfected)"))
         {
             basehit = 39;
+        }
+        // Bone Staff
+        else if(weaponItemName.contains("Bone staff"))
+        {
+            basehit = Math.floor(magicLevel/3) + 5;
         }
         // Autocasted Spell
         else
