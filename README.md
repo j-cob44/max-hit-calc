@@ -8,7 +8,7 @@
 3. Calculates max hit against specific types (e.g. kalphites bonus, tome of fire bonus, wilderness bonus).
 4. Calculates max special attack against specific type bonuses (e.g. dragon longsword spec while against slayer task).
 5. Provides tooltip displaying required stats for next max hit.
-6. Provides tooltip predicting new max hit when hovering over equipment items in inventory.
+6. Provides tooltip predicting new max hit when hovering over equipment items in inventory or bank.
 7. Provides tooltip displaying max hit of a combat spell in the spell book.
 8. Provides tooltip showing max hit of a combat spell in the auto-cast selection screen.
 
@@ -45,5 +45,5 @@ Config: <br>
 Any feedback/issues can be made through Github: https://github.com/j-cob44/max-hit-calc/issues <br>
 And suggestions can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 
-Jacob Burton (j-cob44), January 2024 <br>
-Version 1.10.3
+Jacob Burton (j-cob44), February 2024 <br>
+Version 1.11.1

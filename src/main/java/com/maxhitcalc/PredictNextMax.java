@@ -89,6 +89,12 @@ public class PredictNextMax extends MaxHit
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
+            // Rat Default +10 damage Bonus
+            if(weaponName.contains("Bone mace"))
+            {
+                predictedMaxHit = predictedMaxHit + 10;
+            }
+
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
             {
@@ -138,6 +144,12 @@ public class PredictNextMax extends MaxHit
             // Colossal Blade Base Increase
             if(weaponName.contains("Colossal blade")){
                 predictedMaxHit = predictedMaxHit + 2;
+            }
+
+            // Rat Default +10 damage Bonus
+            if(weaponName.contains("Bone mace"))
+            {
+                predictedMaxHit = predictedMaxHit + 10;
             }
 
             // Check if predicted is better than current
@@ -191,6 +203,12 @@ public class PredictNextMax extends MaxHit
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
+            // Rat Default +10 damage Bonus
+            if(weaponName.contains("Bone mace"))
+            {
+                predictedMaxHit = predictedMaxHit + 10;
+            }
+
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
             {
@@ -232,7 +250,12 @@ public class PredictNextMax extends MaxHit
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
             // Step 3: Bonus damage from special attack and effects
-            // Not used here.
+            // Rat Default +10 damage Bonus
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if(weaponItemName.contains("Bone shortbow"))
+            {
+                predictedMaxHit = predictedMaxHit + 10;
+            }
 
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
@@ -261,7 +284,12 @@ public class PredictNextMax extends MaxHit
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
             // Step 3: Bonus damage from special attack and effects
-            // Not used here.
+            // Rat Default +10 damage Bonus
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if(weaponItemName.contains("Bone shortbow"))
+            {
+                predictedMaxHit = predictedMaxHit + 10;
+            }
 
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
@@ -290,7 +318,12 @@ public class PredictNextMax extends MaxHit
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
             // Step 3: Bonus damage from special attack and effects
-            // Not used here.
+            // Rat Default +10 damage Bonus
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if(weaponItemName.contains("Bone shortbow"))
+            {
+                predictedMaxHit = predictedMaxHit + 10;
+            }
 
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)

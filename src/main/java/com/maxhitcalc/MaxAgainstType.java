@@ -372,6 +372,10 @@ public class MaxAgainstType extends MaxHit {
         {
             basehit = 39;
         }
+        else if(weaponItemName.contains("Bone staff"))
+        {
+            basehit = Math.floor(magicLevel/3) + 5;
+        }
         // Autocasted Spell
         else
         {
@@ -469,6 +473,18 @@ public class MaxAgainstType extends MaxHit {
         double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
 
+        // Smoke Battlestaff Bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
+        {
+            CombatSpell spell = getSpell(client);
+
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+                double SmokeStandardSpellsBonus = maxDamage * 0.1f;
+                maxDamage = maxDamage + SmokeStandardSpellsBonus;
+            }
+        }
+
         return maxDamage;
     }
 
@@ -543,14 +559,20 @@ public class MaxAgainstType extends MaxHit {
         double maxHit = MaxHit.calculate(client, itemManager, config); // Normal Max
         double maxHitVsType = Math.floor(calculateTypeMaxHit(client, itemManager, config)); // Vs Type Max
 
-
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        // REMOVE DEFAULT COLOSSAL BLADE BONUS. Other modifiers come first such as slayer helm bonus.
+
+        // Remove bonuses that are constant from normal max hit in order to calculate max vs type.
+        // Remove default + 2 colossal blade bonus
         if(weaponName.contains("Colossal blade"))
         {
             maxHitVsType = maxHitVsType - 2; // remove default bonus
         }
 
+        // remove default +10 rat bonus
+        if(weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
+        {
+            maxHitVsType = maxHitVsType - 10;
+        }
 
         // Iterate through modifiers, flooring after multiplying
         if(!typeModifiersList.isEmpty())
@@ -561,12 +583,19 @@ public class MaxAgainstType extends MaxHit {
             }
         }
 
+        // Re Add Bonuses that do not scale
         // Re-add Colossal Blade Increase, factoring in other modifiers.
         if(weaponName.contains("Colossal blade"))
         {
             int sizeBonus = (2 * Math.min(config.colossalBladeMonsterSize().monsterSize, 5));
 
             maxHitVsType = maxHitVsType + sizeBonus;
+        }
+
+        // Re-add Rat +10 Damage Bonus
+        if(weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
+        {
+            maxHitVsType = maxHitVsType + 10;
         }
 
         if(maxHit >= maxHitVsType)
