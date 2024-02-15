@@ -226,7 +226,7 @@ public class MaxHitCalcPlugin extends Plugin
 	// Calculates all panel max hits.
 	public void calculateMaxes()
 	{
-		maxHit = (int)Math.floor(MaxHit.calculate(client, itemManager, config));
+		maxHit = (int)Math.floor(MaxHit.calculate(client, itemManager, config, false));
 
 		maxSpec = (int)Math.floor(MaxSpec.calculate(client, itemManager, config));
 		if(config.displayMultiHitWeaponsAsOneHit())

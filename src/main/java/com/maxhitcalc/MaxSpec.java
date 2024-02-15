@@ -163,6 +163,11 @@ public class MaxSpec
             return 1.25;
         }
 
+        if(weaponName.contains("Soulreaper axe"))
+        {
+            return 1 + MaxHit.getSoulStackBonus(client);
+        }
+
         // Ranged Checks
         if(weaponName.contains("Dark bow"))
         {
@@ -306,7 +311,7 @@ public class MaxSpec
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
 
-        double maxHit = MaxHit.calculate(client, itemManager, config);
+        double maxHit = MaxHit.calculate(client, itemManager, config, true);
         if(specialAttackWeapon != 0)
         {
             // Get Max hit then calculate Spec

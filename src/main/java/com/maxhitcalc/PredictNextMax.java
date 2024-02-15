@@ -41,7 +41,7 @@ public class PredictNextMax extends MaxHit
         int nextStrengthBonus = 0;
         double nextPrayerBonus = 0;
 
-        double currentMaxHit = calculateMeleeMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID);
+        double currentMaxHit = calculateMeleeMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID, false);
 
         // Predict Next Prayer Bonus for Next Max Hit
         for(int i = 1; i <= 20; i++)

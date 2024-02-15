@@ -228,7 +228,7 @@ public class MaxHit {
     }
 
     // Calculate Melee Max Hit
-    protected static double calculateMeleeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    protected static double calculateMeleeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, boolean isSpecialAttack)
     {
         // Calculate Melee Max Hit
         // Step 1: Calculate effective Strength
@@ -238,11 +238,11 @@ public class MaxHit {
         double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
         double soulStackBonus = getSoulStackBonus(client);
 
-        if (prayerBonus > 1)
+        if (prayerBonus > 1 && !isSpecialAttack)
         {
             prayerBonus += soulStackBonus - 0.009;
         }
-        else
+        else if (!isSpecialAttack)
         {
             prayerBonus += soulStackBonus;
         }
@@ -882,9 +882,10 @@ public class MaxHit {
      * @param client
      * @param itemManager
      * @param config
+     * @param isSpecialAttack
      * @return Max Hit as Double
      */
-    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config, boolean isSpecialAttack)
     {
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
@@ -901,7 +902,7 @@ public class MaxHit {
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
         {
-            return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+            return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, isSpecialAttack);
         }
         else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
         {
