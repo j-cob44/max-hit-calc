@@ -512,7 +512,7 @@ public class MaxAgainstType extends MaxHit {
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
         {
-            return calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+            return calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, false);
         }
         else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
         {
@@ -556,7 +556,7 @@ public class MaxAgainstType extends MaxHit {
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
 
         // Get Max hit
-        double maxHit = MaxHit.calculate(client, itemManager, config); // Normal Max
+        double maxHit = MaxHit.calculate(client, itemManager, config, false); // Normal Max
         double maxHitVsType = Math.floor(calculateTypeMaxHit(client, itemManager, config)); // Vs Type Max
 
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);

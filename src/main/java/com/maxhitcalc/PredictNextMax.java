@@ -41,7 +41,7 @@ public class PredictNextMax extends MaxHit
         int nextStrengthBonus = 0;
         double nextPrayerBonus = 0;
 
-        double currentMaxHit = calculateMeleeMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID);
+        double currentMaxHit = calculateMeleeMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID, false);
 
         // Predict Next Prayer Bonus for Next Max Hit
         for(int i = 1; i <= 20; i++)
@@ -52,6 +52,16 @@ public class PredictNextMax extends MaxHit
             double prayerBonus = getPrayerBonus(client, weaponAttackStyle) + (i * 0.01);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
+            double soulStackBonus = getSoulStackBonus(client);
+
+            if (prayerBonus > 1)
+            {
+                prayerBonus += soulStackBonus - 0.009;
+            }
+            else
+            {
+                prayerBonus += soulStackBonus;
+            }
 
             double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
