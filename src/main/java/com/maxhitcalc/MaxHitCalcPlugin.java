@@ -156,7 +156,15 @@ public class MaxHitCalcPlugin extends Plugin
 	{
 		if(!gameReady)
 		{
-			return; // do nothing, before you can see the game
+			// Fix for potential out-of-order startup problems
+			if (client.getGameState() == GameState.LOGGED_IN)
+			{
+				gameReady = true;
+			}
+			else
+			{
+				return; // do nothing, before you can see the game
+			}
 		}
 
 //		System.out.println("Varplayer: " + event.getVarpId());
