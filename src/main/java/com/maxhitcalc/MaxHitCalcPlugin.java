@@ -207,6 +207,11 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			calculateMaxes();
 		}
+		// On HP Changed
+		if(event.getSkill() == Skill.HITPOINTS)
+		{
+			calculateMaxes();
+		}
 	}
 
 	// On config Changed, run calculations
