@@ -123,7 +123,7 @@ public class MaxHitCalcPlugin extends Plugin
 
 		if (widget.getGroupId() == InterfaceID.LOGIN_CLICK_TO_PLAY_SCREEN)
 		{
-			gameReady = true; // Set as soon as user closes login screen
+			gameReady = true; // Set as soon as user closes welcome screen
 			calculateMaxes();
 		}
 	}
@@ -156,7 +156,7 @@ public class MaxHitCalcPlugin extends Plugin
 	{
 		if(!gameReady)
 		{
-			// Fix for potential out-of-order startup problems
+			// Fix for potential out-of-order startup problems (logging in without welcome screen)
 			if (client.getGameState() == GameState.LOGGED_IN)
 			{
 				gameReady = true;
