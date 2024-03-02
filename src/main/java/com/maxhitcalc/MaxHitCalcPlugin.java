@@ -194,6 +194,12 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			calculateMaxes();
 		}
+
+		// On Charge Spell Buff Start/End
+		if(event.getVarpId() == VarPlayer.CHARGE_GOD_SPELL)
+		{
+			calculateMaxes();
+		}
 	}
 
 	// OnStatChanged, waiting for skill changes, boosted or levelled
