@@ -237,22 +237,19 @@ public class MaxHit {
         int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
         double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
         double soulStackBonus = getSoulStackBonus(client);
+        double effectiveSoulStackLevel = 0;
 
-        if (prayerBonus > 1 && !isSpecialAttack)
+        if (!isSpecialAttack)
         {
-            prayerBonus += soulStackBonus - 0.009;
-        }
-        else if (!isSpecialAttack)
-        {
-            prayerBonus += soulStackBonus;
+            effectiveSoulStackLevel = Math.floor(strengthLevel * soulStackBonus);
         }
 
-        double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + styleBonus + 8) * voidBonus);
+        double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + effectiveSoulStackLevel + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the base damage
         double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
 
-        double baseDamage = (0.5 + effectiveStrength * ((strengthBonus + 64)/640));
+        double baseDamage = (0.5 + (effectiveStrength * ((strengthBonus + 64)/640)));
         double flooredBaseDamage = Math.floor(baseDamage);
 
         // Step 3: Calculate the bonus damage
