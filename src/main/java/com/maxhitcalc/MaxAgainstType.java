@@ -357,6 +357,12 @@ public class MaxAgainstType extends MaxHit {
         {
             basehit = (Math.floor(magicLevel/3) + 1);
         }
+        // Warped sceptre
+        else if(weaponItemName.contains("Warped sceptre"))
+        {
+            // Current Wiki Value
+            basehit = Math.floor(((8*magicLevel)+96)/37);
+        }
         // Crystal staff (basic)
         else if(weaponItemName.contains("Crystal staff (basic)"))
         {
