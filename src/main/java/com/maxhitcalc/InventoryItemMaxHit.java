@@ -48,7 +48,10 @@ public class InventoryItemMaxHit
                 || client.getItemDefinition(weaponID).getName().contains("knife")
                 || client.getItemDefinition(weaponID).getName().contains("thrownaxe")
                 || client.getItemDefinition(weaponID).getName().contains("Toktz-xil-ul")
-                || client.getItemDefinition(weaponID).getName().contains("blowpipe"))
+                || client.getItemDefinition(weaponID).getName().contains("blowpipe")
+                || client.getItemDefinition(weaponID).getName().contains("Tonalztics of ralos")
+                || client.getItemDefinition(weaponID).getName().contains("Eclipse atlatl")
+                || client.getItemDefinition(weaponID).getName().contains("Hunter's spear"))
         {
             attackStyle = AttackStyle.RANGING;
         }
@@ -60,7 +63,8 @@ public class InventoryItemMaxHit
                 || client.getItemDefinition(weaponID).getName().contains("Staff")
                 || client.getItemDefinition(weaponID).getName().contains("wand")
                 || client.getItemDefinition(weaponID).getName().contains("crozier")
-                || client.getItemDefinition(weaponID).getName().contains("Void knight mace"))
+                || client.getItemDefinition(weaponID).getName().contains("Void knight mace")
+                || client.getItemDefinition(weaponID).getName().contains("Blue moon spear"))
         {
 
             attackStyle = AttackStyle.CASTING;
@@ -131,9 +135,7 @@ public class InventoryItemMaxHit
         else
         {
             // Get Current Attack Style
-            WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-            AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
+            AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
             attackStyle = weaponAttackStyles[attackStyleID];
         }
 
