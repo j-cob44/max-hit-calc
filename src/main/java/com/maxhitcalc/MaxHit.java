@@ -33,6 +33,8 @@ import net.runelite.client.game.ItemManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.maxhitcalc.AttackStyle.*;
+
 /**
  * Contains functions for calculating standard max hit.
  */
@@ -340,6 +342,7 @@ public class MaxHit {
         int ammoID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.AMMO);
 
         boolean skipAmmo = false;
+        boolean calcWithMelee = false;
         // Cases to skip ammo: throwing weapons, crystal bow, blowpipe
         if (weaponItemName.contains("dart") || weaponItemName.contains("knife") || weaponItemName.contains("thrownaxe") || weaponItemName.contains("Toktz-xil-ul"))
         {
@@ -381,6 +384,20 @@ public class MaxHit {
                 rangedStrengthBonus += 9; // default and lowest (mithril)
             }
         }
+        else if(weaponItemName.contains("Tonalztics"))
+        {
+            skipAmmo = true;
+        }
+        else if(weaponItemName.contains("atlatl"))
+        {
+            skipAmmo = true;
+            calcWithMelee = true;
+        }
+        else if(weaponItemName.contains("Hunter's spear"))
+        {
+            skipAmmo = true;
+            calcWithMelee = true;
+        }
 
         // Get Ranged Strength Bonus of each equipped Item
         for (Item equipmentItem: playerEquipment)
@@ -394,13 +411,27 @@ public class MaxHit {
                     // Ensure not null
                     if(itemManager.getItemStats(equipmentID, false) != null)
                     {
-                        int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
-
-                        if (equipmentID != ammoID || !skipAmmo)
+                        if(!calcWithMelee)
                         {
-                            // If equipment ID == Ammo, skip if skipAmmo is true
-                            rangedStrengthBonus += equipmentStrengthStat;
+                            int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
+
+                            if (equipmentID != ammoID || !skipAmmo)
+                            {
+                                // If equipment ID == Ammo, skip if skipAmmo is true
+                                rangedStrengthBonus += equipmentStrengthStat;
+                            }
                         }
+                        else
+                        {
+                            int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
+
+                            if (equipmentID != ammoID || !skipAmmo)
+                            {
+                                // If equipment ID == Ammo, skip if skipAmmo is true
+                                rangedStrengthBonus += equipmentStrengthStat;
+                            }
+                        }
+
                     }
                 }
             }
@@ -480,6 +511,12 @@ public class MaxHit {
         if(weaponItemName.contains("Bone shortbow"))
         {
             maxHit = maxHit + 10;
+        }
+
+        // Tonalztics of Ralos (uncharged) max hit is 75% of normal
+        if(weaponItemName.contains("Tonalztics of ralos (uncharged)"))
+        {
+            maxHit = Math.floor(maxHit * 0.75);
         }
 
         return maxHit;
@@ -888,9 +925,7 @@ public class MaxHit {
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
 
         // Get Current Attack Style
-        WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-        AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
+        AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
         AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
         // Get Current Equipment
@@ -914,5 +949,4 @@ public class MaxHit {
             return -1;
         }
     }
-
 }

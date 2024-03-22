@@ -435,9 +435,7 @@ public class PredictNextMax extends MaxHit
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
 
         // Get Current Attack Style
-        WeaponType weaponType = WeaponType.getWeaponType(weaponTypeID);
-        AttackStyle[] weaponAttackStyles = weaponType.getAttackStyles();
-
+        AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
         AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
 
         // Get Current Equipment
