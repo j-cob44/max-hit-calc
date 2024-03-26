@@ -41,6 +41,10 @@ public class WeaponType
     // Modified From runelite.client.plugins.attackstyles.AttackStyle
     protected static AttackStyle[] getWeaponTypeStyles(Client client, int weaponType)
     {
+        // Keris partisan returns 30; values can only be from 0-28 ?
+        if (weaponType == 30)
+            weaponType = 17; // set to equivalent weapon type; accurate, aggr, aggr, defensive
+
         int weaponStyleEnum = client.getEnum(EnumID.WEAPON_STYLES).getIntValue(weaponType);
         int[] weaponStyleStructs = client.getEnum(weaponStyleEnum).getIntVals();
 

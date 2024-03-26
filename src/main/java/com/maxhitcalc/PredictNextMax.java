@@ -437,6 +437,8 @@ public class PredictNextMax extends MaxHit
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
         AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+        if (attackStyle == null)
+            return null;
 
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);

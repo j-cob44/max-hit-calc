@@ -550,6 +550,8 @@ public class MaxAgainstType extends MaxHit {
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
         AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+        if (attackStyle == null)
+            return 0;
 
         // Get Type modifier
         List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, playerEquipment);
