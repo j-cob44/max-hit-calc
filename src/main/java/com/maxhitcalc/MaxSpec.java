@@ -168,6 +168,11 @@ public class MaxSpec
             return 1 + MaxHit.getSoulStackBonus(client);
         }
 
+        if(weaponName.contains("Dual macuahuitl"))
+        {
+            return 1.25;
+        }
+
         // Ranged Checks
         if(weaponName.contains("Dark bow"))
         {

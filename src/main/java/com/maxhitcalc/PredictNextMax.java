@@ -260,6 +260,16 @@ public class PredictNextMax extends MaxHit
                 predictedMaxHit = predictedMaxHit + 10;
             }
 
+            // Tonalztics of Ralos (uncharged) max hit is 75% of normal
+            if(weaponItemName.contains("Tonalztics of ralos"))
+            {
+                predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
+                if(!weaponItemName.contains("(uncharged)"))
+                {
+                    predictedMaxHit = predictedMaxHit*2;
+                }
+            }
+
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
             {
@@ -294,6 +304,16 @@ public class PredictNextMax extends MaxHit
                 predictedMaxHit = predictedMaxHit + 10;
             }
 
+            // Tonalztics of Ralos (uncharged) max hit is 75% of normal
+            if(weaponItemName.contains("Tonalztics of ralos"))
+            {
+                predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
+                if(!weaponItemName.contains("(uncharged)"))
+                {
+                    predictedMaxHit = predictedMaxHit*2;
+                }
+            }
+
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
             {
@@ -326,6 +346,16 @@ public class PredictNextMax extends MaxHit
             if(weaponItemName.contains("Bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
+            }
+
+            // Tonalztics of Ralos (uncharged) max hit is 75% of normal
+            if(weaponItemName.contains("Tonalztics of ralos"))
+            {
+                predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
+                if(!weaponItemName.contains("(uncharged)"))
+                {
+                    predictedMaxHit = predictedMaxHit*2;
+                }
             }
 
             // Check if predicted is better than current

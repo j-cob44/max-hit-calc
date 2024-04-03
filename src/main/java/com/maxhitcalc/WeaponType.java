@@ -46,6 +46,10 @@ public class WeaponType
         if (weaponType == 30)
             weaponType = 17; // set to equivalent weapon type; accurate, aggr, aggr, defensive
 
+        // Blue moon spear returns 22; enum undefined at 22, change to regular bladed spear: 21
+        if (weaponType == 22)
+            weaponType = 21;
+
         int weaponStyleEnum = client.getEnum(EnumID.WEAPON_STYLES).getIntValue(weaponType);
         int[] weaponStyleStructs = client.getEnum(weaponStyleEnum).getIntVals();
 

@@ -24,7 +24,7 @@ dependencies {
 }
 
 group = 'com.maxhitcalc'
-version = '1.12.4'
+version = '1.12.5'
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
