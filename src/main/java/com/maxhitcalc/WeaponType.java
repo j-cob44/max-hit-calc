@@ -32,6 +32,7 @@ package com.maxhitcalc;
 import net.runelite.api.Client;
 import net.runelite.api.EnumID;
 import net.runelite.api.ParamID;
+import net.runelite.api.Varbits;
 import net.runelite.api.StructComposition;
 
 import static com.maxhitcalc.AttackStyle.*;
@@ -64,9 +65,11 @@ public class WeaponType
             }
 
             // "Defensive" is used for Defensive and also Defensive casting
-            if (i == 5 && attackStyle == DEFENSIVE)
+            if (attackStyle == DEFENSIVE)
             {
-                attackStyle = DEFENSIVE_CASTING;
+                // Powered Staves Check, has "defensive" but should be "defensive casting"
+                if (weaponType == 24)
+                    attackStyle = DEFENSIVE_CASTING;
             }
 
             styles[i++] = attackStyle;
