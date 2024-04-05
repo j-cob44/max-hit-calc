@@ -33,8 +33,6 @@ import net.runelite.client.game.ItemManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.maxhitcalc.AttackStyle.*;
-
 /**
  * Contains functions for calculating standard max hit.
  */
@@ -343,6 +341,7 @@ public class MaxHit {
 
         boolean skipAmmo = false;
         boolean calcWithMelee = false;
+
         // Cases to skip ammo: throwing weapons, crystal bow, blowpipe
         if (weaponItemName.contains("dart") || weaponItemName.contains("knife") || weaponItemName.contains("thrownaxe") || weaponItemName.contains("Toktz-xil-ul"))
         {
@@ -355,7 +354,9 @@ public class MaxHit {
             skipAmmo = true;
         }
         else if (weaponItemName.contains("Crystal bow")
-                || weaponItemName.contains("faerdhinen"))
+                || weaponItemName.contains("faerdhinen")
+                || weaponItemName.contains("Webweaver")
+                || weaponItemName.contains("Craw's"))
         {
             skipAmmo = true;
         }
@@ -514,9 +515,13 @@ public class MaxHit {
         }
 
         // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-        if(weaponItemName.contains("Tonalztics of ralos (uncharged)"))
+        if(weaponItemName.contains("Tonalztics of ralos"))
         {
-            maxHit = Math.floor(maxHit * 0.75);
+            maxHit = Math.floor(maxHit * 0.75); // unknown if flooring here causes miscalcs
+            if(!weaponItemName.contains("(uncharged)"))
+            {
+                maxHit = maxHit * 2;
+            }
         }
 
         return maxHit;

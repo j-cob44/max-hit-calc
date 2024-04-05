@@ -28,7 +28,10 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.Item;
+import net.runelite.api.VarPlayer;
+import net.runelite.api.Varbits;
 import net.runelite.client.game.ItemManager;
 
 public class InventoryItemMaxHit
@@ -59,7 +62,7 @@ public class InventoryItemMaxHit
         else if (client.getItemDefinition(weaponID).getName().contains("sceptre")
                 || client.getItemDefinition(weaponID).getName().contains("staff")
                 || client.getItemDefinition(weaponID).getName().contains("Trident")
-                || client.getItemDefinition(weaponID).getName().contains("Tumeken's Shadow")
+                || client.getItemDefinition(weaponID).getName().contains("Tumeken's shadow")
                 || client.getItemDefinition(weaponID).getName().contains("Staff")
                 || client.getItemDefinition(weaponID).getName().contains("wand")
                 || client.getItemDefinition(weaponID).getName().contains("crozier")

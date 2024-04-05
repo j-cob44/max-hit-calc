@@ -82,9 +82,27 @@ public class MaxHitCalcPlugin extends Plugin
 //	@Subscribe
 //	public void onChatMessage(ChatMessage chatMessageReceived)
 //	{
-//		if(chatMessageReceived.getMessage().equals("!Checkmax"))
+//		if(chatMessageReceived.getMessage().equals("!Allstyles"))
 //		{
+//			System.out.println("================S===============");
+//			int[] weaponStyles = client.getEnum(EnumID.WEAPON_STYLES).getIntVals();
 //
+//			for(int i = 0; i < weaponStyles.length; i++)
+//			{
+//				System.out.println("i: " + i + "; WS: " + weaponStyles[i]);
+//			}
+//			System.out.println("================E===============");
+//		}
+//
+//		if(chatMessageReceived.getMessage().equals("!Getstyle"))
+//		{
+//			int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+//			int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+//
+//			System.out.println("=================S==================");
+//			System.out.println("WTID: " + weaponTypeID);
+//			System.out.println("ASID: " + attackStyleID);
+//			System.out.println("=================E==================");
 //		}
 //	}
 
