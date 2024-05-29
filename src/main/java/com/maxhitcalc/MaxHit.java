@@ -654,7 +654,38 @@ public class MaxHit {
                 }
                 else
                 {
-                    basehit = selectedSpell.getBaseDamage();
+                    // FIND TIER, FIND HIGHEST IN TIER
+                    if (selectedSpell.getTier() == 0)
+                    {
+                        // NO TIER,
+                        basehit = selectedSpell.getBaseDamage();
+                    }
+                    else
+                    {
+                        // GET TIER, Get highest tier in level
+                        int spellTier = selectedSpell.getTier();
+                        String spellbook = selectedSpell.getSpellbook();
+
+                        CombatSpell[] spellsInTier = CombatSpell.getSpellsOfTier(spellTier, spellbook);
+
+                        for(CombatSpell spell : spellsInTier)
+                        {
+                            if(magicLevel >= spell.getReqLevel())
+                            {
+                                if (basehit <= spell.getBaseDamage())
+                                {
+                                    // new highest found
+                                    basehit = spell.getBaseDamage();
+                                }
+                            }
+                        }
+
+                        // Error, didn't find usable spell
+                        if (basehit == 0)
+                            return -1; // error
+                    }
+
+
                 }
 
                 // God Spell Cases with Charge
@@ -788,6 +819,13 @@ public class MaxHit {
             }
         }
 
+        // Prayer Bonuses
+        if(client.isPrayerActive(Prayer.MYSTIC_LORE)) magicdamagebonus += 0.01;
+
+        if(client.isPrayerActive(Prayer.MYSTIC_MIGHT)) magicdamagebonus += 0.02;
+
+        if(client.isPrayerActive(Prayer.AUGURY)) magicdamagebonus += 0.04;
+
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus*100 + "%", null);
@@ -815,7 +853,7 @@ public class MaxHit {
                     if(legsItemName.contains("Elite void"))
                     {
                         // Elite void set
-                        return 0.025; // 2.5% magic dmg bonus
+                        return 0.05; // 5% magic dmg bonus
                     }
                 }
             }
@@ -857,7 +895,7 @@ public class MaxHit {
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
-                        return 1.5;
+                        return 1.1;
                     }
                 }
             }
@@ -869,7 +907,7 @@ public class MaxHit {
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
-                        return 1.2;
+                        return 1.1;
                     }
                 }
             }
