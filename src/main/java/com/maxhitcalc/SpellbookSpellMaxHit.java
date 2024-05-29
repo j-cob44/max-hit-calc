@@ -81,7 +81,41 @@ public class SpellbookSpellMaxHit extends MaxHit
         }
         else
         {
-            basehit = spell.getBaseDamage();
+            // FIND TIER, FIND HIGHEST IN TIER
+            if (spell.getTier() == 0)
+            {
+                // NO TIER,
+                basehit = spell.getBaseDamage();
+            }
+            else if(magicLevel < spell.getReqLevel())
+            {
+                // Cant use spell
+                basehit = -1;
+            }
+            else
+            {
+                // GET TIER, Get highest tier in level
+                int spellTier = spell.getTier();
+                String spellbook = spell.getSpellbook();
+
+                CombatSpell[] spellsInTier = CombatSpell.getSpellsOfTier(spellTier, spellbook);
+
+                for(CombatSpell cSpell : spellsInTier)
+                {
+                    if(magicLevel >= cSpell.getReqLevel())
+                    {
+                        if (basehit <= cSpell.getBaseDamage())
+                        {
+                            // new highest found
+                            basehit = cSpell.getBaseDamage();
+                        }
+                    }
+                }
+
+                // Error, didn't find usable spell
+                if (basehit == 0)
+                    return -1; // error
+            }
         }
 
         // Chaos Gauntlet Bonus Check
@@ -107,7 +141,7 @@ public class SpellbookSpellMaxHit extends MaxHit
             {
                 if (!shieldItemName.contains("(empty)"))
                 {
-                    return 1.5;
+                    return 1.1;
                 }
             }
         }
@@ -119,7 +153,7 @@ public class SpellbookSpellMaxHit extends MaxHit
             {
                 if (!shieldItemName.contains("(empty)"))
                 {
-                    return 1.2;
+                    return 1.1;
                 }
             }
         }

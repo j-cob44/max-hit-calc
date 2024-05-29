@@ -170,6 +170,12 @@ public class MaxAgainstType extends MaxHit {
                 if(inquisitorPieces == 3)
                 {
                     inquisitorTotal += 0.1;
+
+                    // Check for Mace,
+                    if (weaponItemName.contains("Inquisitor"))
+                    {
+                        inquisitorTotal += 0.05; // Ingame text (says tripled) is different from blog post (says +2.5%)
+                    }
                 }
 
                 typeBonusToApply.add(inquisitorTotal);

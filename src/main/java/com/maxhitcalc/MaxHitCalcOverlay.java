@@ -73,7 +73,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         if(plugin.maxHit > 0 && config.showMaxHit())
         {
             panelComponent.getChildren().add(LineComponent.builder()
-                    .left("Max Hit:")
+                    .left("Base Max Hit:")
                     .right(Integer.toString(plugin.maxHit))
                     .build());
         }
