@@ -107,6 +107,10 @@ public class MaxAgainstType extends MaxHit {
             {
                 typeBonusToApply.add(1.7); // different from silverlight and darklight
             }
+            else if(weaponItemName.contains("Emberlight"))
+            {
+                typeBonusToApply.add(1.7); //same as Arclight, but does not degrade
+            }
 
             // Leaf-bladed Battleaxe vs Turoths and Kurasks, 15 September 2016
             if(weaponItemName.contains("Leaf-bladed battleaxe"))
@@ -199,6 +203,12 @@ public class MaxAgainstType extends MaxHit {
                 typeBonusToApply.add(1.33);
             }
 
+            // Demonbane, added 10 July 2024
+            if(weaponItemName.contains("Burning claws"))
+            {
+                typeBonusToApply.add(1.05) ;
+            }
+
         }
         // Ranged Checks
         else if (attackStyle == AttackStyle.RANGING || attackStyle == AttackStyle.LONGRANGE)
@@ -253,6 +263,12 @@ public class MaxAgainstType extends MaxHit {
                 {
                     typeBonusToApply.add(1.5);
                 }
+            }
+
+            // Demonbane, added 10 July 2024
+            if(weaponItemName.contains("Scorching bow"))
+            {
+                typeBonusToApply.add(1.3);
             }
 
         }
@@ -431,6 +447,15 @@ public class MaxAgainstType extends MaxHit {
                 else
                 {
                     basehit = selectedSpell.getBaseDamage();
+                }
+
+                // Purging Staff Boost to Demonbane spells
+                if(weaponItemName.contains("Purging staff"))
+                {
+                    if((selectedSpell == CombatSpell.INFERIOR_DEMONBANE) || (selectedSpell == CombatSpell.SUPERIOR_DEMONBANE) || (selectedSpell == CombatSpell.DARK_DEMONBANE))
+                    {
+                        basehit = (selectedSpell.getBaseDamage() * 2); // Demonbane spells are doubled
+                    }
                 }
 
                 // God Spell Cases with Charge

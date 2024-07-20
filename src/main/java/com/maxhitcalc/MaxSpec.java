@@ -290,6 +290,11 @@ public class MaxSpec
             return hit * 4;
         }
 
+        if(weaponName.contains("Burning claws"))
+        {
+            return hit * 3;
+        }
+
         // else
         return 0;
     }
