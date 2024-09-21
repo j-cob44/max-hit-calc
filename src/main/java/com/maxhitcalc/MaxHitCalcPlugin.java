@@ -30,6 +30,8 @@ package com.maxhitcalc;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
+
+import com.jagex.oldscape.pub.OAuthApi;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
@@ -69,7 +71,13 @@ public class MaxHitCalcPlugin extends Plugin
 	@Inject
 	private ItemManager itemManager;
 
+
 	// Public Max Hit variables, calculated when Equipment changes
+	public MaxHit maxHits;
+	public MaxSpec maxSpecs;
+	public MaxAgainstType maxAgainstTypes;
+	public MaxSpecAgainstType maxSpecsAgainstTypes;
+
 	public int maxHit = 0;
 	public int maxSpec = 0;
 	public int maxVsType = 0;
@@ -77,6 +85,9 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// Variable to check custom "gamestate"
 	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
+
+	// Variable for Currently interacting NPC
+	public Actor clickedNPC;
 
 //	DEBUG
 //	@Subscribe
@@ -260,27 +271,70 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 	}
 
+	// On Hitsplat Applied, 1 way of getting correct NPC
+//	@Subscribe
+//	public void onHitsplatApplied(HitsplatApplied hit)
+//	{
+//		// find out who why and where
+//
+//		System.out.println("================Hit Applied===============");
+//		System.out.println(hit.getActor());
+//		System.out.println("Is mine: " + hit.getHitsplat().isMine());
+//		System.out.println("Is others: " + hit.getHitsplat().isOthers());
+//		System.out.println("================End===============");
+//
+//	}
+
+	// Get NPC from interaction,
+	@Subscribe
+	public void onInteractingChanged(InteractingChanged interaction)
+	{
+		// Verify interaction is between user and npc
+		if(interaction.getSource() != null)
+		{
+			// Verify source == local player
+			String localPlayerName = client.getLocalPlayer().getName();
+			String sourceName = interaction.getSource().getName();
+            if(localPlayerName.equals(sourceName))
+			{
+				if(interaction.getTarget() != null)
+				{
+					clickedNPC = interaction.getTarget();
+				}
+			}
+		}
+	}
+
 	// Calculates all panel max hits.
 	public void calculateMaxes()
 	{
-		maxHit = (int)Math.floor(MaxHit.calculate(client, itemManager, config, false));
+		// Calculate Normal Max Hits
+		maxHits = new MaxHit(this, config, itemManager, client);
+		maxHit = (int)Math.floor(maxHits.calculate(false));
 
-		maxSpec = (int)Math.floor(MaxSpec.calculate(client, itemManager, config));
+		// Calculate Special Attack Max Hit
+		maxSpecs = new MaxSpec(this, config, itemManager, client);
+		maxSpec = (int)Math.floor(maxSpecs.calculate());
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{
-			int multiHitSpec = MaxSpec.getSpecMultiHit(client, maxSpec);
+			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpec);
 			if(multiHitSpec != 0)
 			{
 				maxSpec = multiHitSpec;
 			}
 		}
 
-		maxVsType = (int)Math.floor(MaxAgainstType.calculate(client, itemManager, config));
+		// Calculate Max Hit vs Types of NPCs
+		maxAgainstTypes = new MaxAgainstType(this, config, itemManager, client);
+		maxVsType = (int)Math.floor(maxAgainstTypes.calculate());
 
-		maxSpecVsType = (int)Math.floor(MaxSpecAgainstType.calculate(client, itemManager, config));
+
+		// Calculate Special Attack Max Hit vs Types of NPCs
+		maxSpecsAgainstTypes = new MaxSpecAgainstType(this, config, itemManager, client);
+		maxSpecVsType = (int)Math.floor(maxSpecsAgainstTypes.calculate());
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{
-			int multiHitSpec = MaxSpec.getSpecMultiHit(client, maxSpecVsType);
+			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpecVsType);
 			if(multiHitSpec != 0)
 			{
 				maxSpecVsType = multiHitSpec;

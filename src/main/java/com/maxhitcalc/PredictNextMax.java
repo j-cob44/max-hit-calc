@@ -35,13 +35,18 @@ import java.util.List;
 
 public class PredictNextMax extends MaxHit
 {
-    private static List<Object> predictNextMeleeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    PredictNextMax(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
+    {
+        super(plugin, config, itemManager, client);
+    }
+
+    private List<Object> predictNextMeleeMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
         int nextStrengthLevel = 0;
         int nextStrengthBonus = 0;
         double nextPrayerBonus = 0;
 
-        double currentMaxHit = Math.floor(calculateMeleeMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID, false));
+        double currentMaxHit = Math.floor(calculateMeleeMaxHit(playerEquipment, weaponAttackStyle, attackStyleID, false));
 
         // Predict Next Prayer Bonus for Next Max Hit
         for(int i = 1; i <= 20; i++)
@@ -49,22 +54,22 @@ public class PredictNextMax extends MaxHit
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
             int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-            double prayerBonus = getPrayerBonus(client, weaponAttackStyle) + (i * 0.01);
+            double prayerBonus = getPrayerBonus(weaponAttackStyle) + (i * 0.01);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-            double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
-            double soulStackBonus = getSoulStackBonus(client);
+            double voidBonus = getVoidMeleeBonus(playerEquipment); // default 1;
+            double soulStackBonus = getSoulStackBonus();
             double effectiveSoulStackLevel = Math.floor(strengthLevel * soulStackBonus);
 
             double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + effectiveSoulStackLevel + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the base damage
-            double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
+            double strengthBonus = getMeleeStrengthBonus(playerEquipment); // default 0
 
             double baseDamage = (0.5 + effectiveStrength * ((strengthBonus + 64)/640));
             double flooredBaseDamage = Math.floor(baseDamage);
 
             // Step 3: Calculate the bonus damage
-            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
+            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(playerEquipment); // default empty
 
             double predictedMaxHit = flooredBaseDamage;
 
@@ -108,22 +113,22 @@ public class PredictNextMax extends MaxHit
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
             int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+            double prayerBonus = getPrayerBonus(weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-            double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
-            double soulStackBonus = getSoulStackBonus(client);
+            double voidBonus = getVoidMeleeBonus(playerEquipment); // default 1;
+            double soulStackBonus = getSoulStackBonus();
             double effectiveSoulStackLevel = Math.floor(strengthLevel * soulStackBonus);
 
             double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + effectiveSoulStackLevel + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the base damage
-            double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment) + i; // default 0
+            double strengthBonus = getMeleeStrengthBonus(playerEquipment) + i; // default 0
 
             double baseDamage = (0.5 + effectiveStrength * ((strengthBonus + 64)/640));
             double flooredBaseDamage = Math.floor(baseDamage);
 
             // Step 3: Calculate the bonus damage
-            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
+            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(playerEquipment); // default empty
 
             double predictedMaxHit = flooredBaseDamage;
 
@@ -167,22 +172,22 @@ public class PredictNextMax extends MaxHit
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
             int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH) + i;
-            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+            double prayerBonus = getPrayerBonus(weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-            double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
-            double soulStackBonus = getSoulStackBonus(client);
+            double voidBonus = getVoidMeleeBonus(playerEquipment); // default 1;
+            double soulStackBonus = getSoulStackBonus();
             double effectiveSoulStackLevel = Math.floor(strengthLevel * soulStackBonus);
 
             double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + effectiveSoulStackLevel + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the base damage
-            double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
+            double strengthBonus = getMeleeStrengthBonus(playerEquipment); // default 0
 
             double baseDamage = (0.5 + effectiveStrength * ((strengthBonus + 64)/640));
             double flooredBaseDamage = Math.floor(baseDamage);
 
             // Step 3: Calculate the bonus damage
-            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
+            List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(playerEquipment); // default empty
 
             double predictedMaxHit = flooredBaseDamage;
 
@@ -226,13 +231,13 @@ public class PredictNextMax extends MaxHit
         return results;
     }
 
-    private static List<Object> predictNextRangeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, MaxHitCalcConfig.BlowpipeDartType dartType)
+    private List<Object> predictNextRangeMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
         int nextRangedLevel = 0;
         int nextRangeEquipmentBonus = 0;
         double nextPrayerBonus = 0;
 
-        double currentMaxHit = Math.floor(calculateRangedMaxHit(client, itemManager, playerEquipment, weaponAttackStyle, attackStyleID, dartType));
+        double currentMaxHit = Math.floor(calculateRangedMaxHit(playerEquipment, weaponAttackStyle, attackStyleID));
 
         // Predict Next Ranged Level for Next Max Hit
         for(int i = 1; i <= 20; i++)
@@ -240,15 +245,15 @@ public class PredictNextMax extends MaxHit
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED) + i;
-            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+            double prayerBonus = getPrayerBonus(weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-            double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
+            double voidBonus = getVoidRangedBonus(playerEquipment); // default 1;
 
             double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
-            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
-            double gearBonus = getRangeGearBoost(client, playerEquipment);
+            double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
+            double gearBonus = getRangeGearBoost(playerEquipment);
 
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
@@ -284,15 +289,15 @@ public class PredictNextMax extends MaxHit
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-            double prayerBonus = getPrayerBonus(client, weaponAttackStyle) + (i * 0.01);
+            double prayerBonus = getPrayerBonus(weaponAttackStyle) + (i * 0.01);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-            double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
+            double voidBonus = getVoidRangedBonus(playerEquipment); // default 1;
 
             double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
-            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
-            double gearBonus = getRangeGearBoost(client, playerEquipment);
+            double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
+            double gearBonus = getRangeGearBoost(playerEquipment);
 
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
@@ -328,15 +333,15 @@ public class PredictNextMax extends MaxHit
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-            double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+            double prayerBonus = getPrayerBonus(weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-            double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
+            double voidBonus = getVoidRangedBonus(playerEquipment); // default 1;
 
             double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
             // Step 2: Calculate the max hit
-            double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType) + i;
-            double gearBonus = getRangeGearBoost(client, playerEquipment);
+            double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment) + i;
+            double gearBonus = getRangeGearBoost(playerEquipment);
 
             double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
@@ -372,13 +377,13 @@ public class PredictNextMax extends MaxHit
         return results;
     }
 
-    private static List<Object> predictNextMageMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
+    private List<Object> predictNextMageMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
         int nextMagicLevel = 0;
         double nextMagicDamageBonus = 0;
 
-        double currentMaxHit = Math.floor(calculateMagicMaxHit(client, itemManager, playerEquipment, weaponAttackStyle));
-        CombatSpell spell = getSpell(client);
+        double currentMaxHit = Math.floor(calculateMagicMaxHit(playerEquipment, weaponAttackStyle));
+        CombatSpell spell = getSpell();
 
         // Predict Next Magic Level for Next Max Hit - Only used for Charged Weapons and Magic Dart
         if(spell == null || (spell.getName().toLowerCase().contains("magic dart")))
@@ -387,16 +392,16 @@ public class PredictNextMax extends MaxHit
             {
                 // Calculate Magic Max Hit
                 // Step 1: Find the base hit of the spell
-                double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, (client.getBoostedSkillLevel(Skill.MAGIC) + i));
+                double spellBaseMaxHit = getSpellBaseHit(playerEquipment, weaponAttackStyle, (client.getBoostedSkillLevel(Skill.MAGIC) + i));
 
                 // Step 2: Calculate the Magic Damage Bonus
-                double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment) + (i * 0.01);
+                double magicDmgBonus = getMagicEquipmentBoost(playerEquipment) + (i * 0.01);
 
                 double predictedMaxHit = (spellBaseMaxHit * magicDmgBonus);
 
                 // Step 3: Calculate Type Bonuses
                 // Tome Bonuses
-                double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+                double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
                 predictedMaxHit = predictedMaxHit * correctTomeSpellBonus;
 
                 // Check if predicted is better than current
@@ -413,16 +418,16 @@ public class PredictNextMax extends MaxHit
         {
             // Calculate Magic Max Hit
             // Step 1: Find the base hit of the spell
-            double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
+            double spellBaseMaxHit = getSpellBaseHit(playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
 
             // Step 2: Calculate the Magic Damage Bonus
-            double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment) + (i * 0.01);
+            double magicDmgBonus = getMagicEquipmentBoost(playerEquipment) + (i * 0.01);
 
             double predictedMaxHit = (spellBaseMaxHit * magicDmgBonus);
 
             // Step 3: Calculate Type Bonuses
             // Tome Bonuses
-            double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+            double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
             predictedMaxHit = predictedMaxHit * correctTomeSpellBonus;
 
             // Smoke Battlestaff Bonus
@@ -432,6 +437,22 @@ public class PredictNextMax extends MaxHit
                 if (spell != null && spell.getSpellbook().contains("standard")) {
                     double SmokeStandardSpellsBonus = predictedMaxHit * 0.1f;
                     predictedMaxHit = predictedMaxHit + SmokeStandardSpellsBonus;
+                }
+            }
+
+            // Final step: Calculate and add spell type weakness Bonus
+            if (spell != null && spell.hasType())
+            {
+                if (plugin.clickedNPC != null)
+                {
+                    NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.clickedNPC.getName());
+                    if (weaknessBonus != null)
+                    {
+                        int bonusPercent = weaknessBonus.getWeaknessPercent();
+
+                        double typeBonusDamage = predictedMaxHit * ((double) bonusPercent / 100);
+                        predictedMaxHit = predictedMaxHit + typeBonusDamage;
+                    }
                 }
             }
 
@@ -455,12 +476,9 @@ public class PredictNextMax extends MaxHit
      * Predictions for Ranged: Ranged Level, Ranged Equipment Strength Bonus, and Prayer Bonus <br>
      * Predictions for Magic: Magic Level, and Magic Equipment Damage Bonus <br><br>
      *
-     * @param client
-     * @param itemManager
-     * @param config
      * @return List of predictions
      */
-    public static List<Object> predict(Client client, ItemManager itemManager, MaxHitCalcConfig config){
+    public List<Object> predict(){
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
 
@@ -476,21 +494,21 @@ public class PredictNextMax extends MaxHit
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
         {
-            List<Object> meleeResults = PredictNextMax.predictNextMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+            List<Object> meleeResults = this.predictNextMeleeMaxHit(playerEquipment, attackStyle, attackStyleID);
 
             // index: 0 = "melee", 1 = strength level, 2 = equipment strength bonus, 3 = prayer percent bonus
             return meleeResults;
         }
         else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
         {
-            List<Object> rangedResults = PredictNextMax.predictNextRangeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
+            List<Object> rangedResults = this.predictNextRangeMaxHit(playerEquipment, attackStyle, attackStyleID);
 
             // index: 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
             return rangedResults;
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
         {
-            List<Object> mageResults = PredictNextMax.predictNextMageMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID);
+            List<Object> mageResults = this.predictNextMageMaxHit(playerEquipment, attackStyle, attackStyleID);
 
             // index: 0 = "magic", 1 = magic level, 2 = mage equipment damage bonus
             return mageResults;

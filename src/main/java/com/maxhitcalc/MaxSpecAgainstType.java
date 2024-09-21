@@ -9,15 +9,21 @@ import java.util.List;
  */
 public class MaxSpecAgainstType extends MaxAgainstType
 {
+    private MaxSpec maxSpecs;
+
+    MaxSpecAgainstType(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
+    {
+        super(plugin, config, itemManager, client);
+
+        maxSpecs = new MaxSpec(plugin, config, itemManager, client);
+    }
+
     /**
      * Caculates Max hit of a special attack against specific type bonuses
      *
-     * @param client
-     * @param itemManager
-     * @param config
      * @return Max hit as Double
      */
-    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config){
+    public double calculate(){
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
@@ -33,12 +39,12 @@ public class MaxSpecAgainstType extends MaxAgainstType
             return 0;
 
         // Get Type modifier
-        List<Double> typeModifiersList = getTypeBonus(client, attackStyle, playerEquipment);
+        List<Double> typeModifiersList = getTypeBonus(attackStyle, playerEquipment);
 
         if(!typeModifiersList.isEmpty())
         {
             // Get Max hit then calculate Spec
-            double maxSpec = MaxSpec.calculate(client, itemManager, config);
+            double maxSpec = maxSpecs.calculate();
 
             if(maxSpec != 0)
             {

@@ -34,10 +34,25 @@ import net.runelite.api.VarPlayer;
 import net.runelite.api.Varbits;
 import net.runelite.client.game.ItemManager;
 
+import javax.inject.Inject;
+
 public class InventoryItemMaxHit
 {
+    protected MaxHitCalcConfig config;
+    private MaxHit maxHits;
+    protected ItemManager itemManager;
+    protected Client client;
+
+    InventoryItemMaxHit(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
+    {
+        this.config = config;
+        this.maxHits = new MaxHit(plugin, config, itemManager, client);
+        this.itemManager = itemManager;
+        this.client = client;
+    }
+
     // Crudely determines attack style based on an item's name
-    private static AttackStyle determineAttackStyle(Client client, int weaponID)
+    private AttackStyle determineAttackStyle(int weaponID)
     {
         AttackStyle attackStyle;
 
@@ -80,7 +95,7 @@ public class InventoryItemMaxHit
         return attackStyle;
     }
 
-    private static Item[] changeEquipment(Client client, Item[] currentEquipment, int itemID, int slotID)
+    private Item[] changeEquipment(Item[] currentEquipment, int itemID, int slotID)
     {
         Item[] newEquipment = new Item[14];
 
@@ -112,14 +127,11 @@ public class InventoryItemMaxHit
     /**
      * Predicts max hit of a given item if it is equipped.
      *
-     * @param client
-     * @param itemManager
-     * @param config
      * @param itemID int of Item ID to do prediction on
      * @param slotID int of slot the item will replace
      * @return Max Hit Prediction as Double
      */
-    public static double predict(Client client, ItemManager itemManager, MaxHitCalcConfig config, int itemID, int slotID)
+    public double predict(int itemID, int slotID)
     {
         // Initialize Variables
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
@@ -133,7 +145,7 @@ public class InventoryItemMaxHit
         if(slotID == 3)
         {
             // IS A WEAPON
-            attackStyle = InventoryItemMaxHit.determineAttackStyle(client, itemID);
+            attackStyle = determineAttackStyle(itemID);
         }
         else
         {
@@ -146,20 +158,20 @@ public class InventoryItemMaxHit
         //slotID = InventoryItemMaxHit.getCorrectedSlotID(client, slotID);
 
         // Change equipment slot to new item
-        playerEquipment = InventoryItemMaxHit.changeEquipment(client, playerEquipment, itemID, slotID);
+        playerEquipment = changeEquipment(playerEquipment, itemID, slotID);
 
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
         {
-            return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, false);
+            return maxHits.calculateMeleeMaxHit(playerEquipment, attackStyle, attackStyleID, false);
         }
         else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
         {
-            return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
+            return maxHits.calculateRangedMaxHit(playerEquipment, attackStyle, attackStyleID);
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
         {
-            double magicMaxHit = MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle);
+            double magicMaxHit = maxHits.calculateMagicMaxHit(playerEquipment, attackStyle);
 
             // If -1, error, skip
             if (magicMaxHit > -1){

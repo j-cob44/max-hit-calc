@@ -41,22 +41,23 @@ import java.util.ArrayList;
 public enum CombatSpell
 {
     // In order of autocast varbit
-    WIND_STRIKE(1, 15, 65, "WIND STRIKE", 1,2, "standard", 1),
-    WATER_STRIKE(2, 17, 67, "WATER STRIKE", 5,4, "standard", 1),
-    EARTH_STRIKE(3, 19, 69, "EARTH STRIKE", 9,6, "standard", 1),
-    FIRE_STRIKE(4, 21, 71, "FIRE STRIKE", 13,8, "standard", 1),
-    WIND_BOLT(5,23, 73, "WIND BOLT", 17,9, "standard", 2),
-    WATER_BOLT(6,26, 76, "WATER BOLT", 23,10, "standard", 2),
-    EARTH_BOLT(7,29, 79, "EARTH BOLT", 29,11, "standard", 2),
-    FIRE_BOLT(8,32, 82, "FIRE BOLT", 35,12, "standard", 2),
-    WIND_BLAST(9,35, 85, "WIND BLAST", 41,13, "standard", 3),
-    WATER_BLAST(10,38, 88, "WATER BLAST",47,14, "standard", 3),
-    EARTH_BLAST(11,40, 90, "EARTH BLAST", 53,15, "standard", 3),
-    FIRE_BLAST(12,44, 94, "FIRE BLAST", 59,16, "standard", 3),
-    WIND_WAVE(13,46, 96, "WIND WAVE", 62,17, "standard", 4),
-    WATER_WAVE(14,48, 98, "WATER WAVE", 65,18, "standard", 4),
-    EARTH_WAVE(15,51, 101, "EARTH WAVE", 70,19, "standard", 4),
-    FIRE_WAVE(16,52, 102, "FIRE WAVE", 75,20, "standard", 4),
+    WIND_STRIKE(1, 15, 65, "WIND STRIKE", 1,2, "standard", SpellType.Air, 1),
+    WATER_STRIKE(2, 17, 67, "WATER STRIKE", 5,4, "standard", SpellType.Water, 1),
+    EARTH_STRIKE(3, 19, 69, "EARTH STRIKE", 9,6, "standard", SpellType.Earth, 1),
+    FIRE_STRIKE(4, 21, 71, "FIRE STRIKE", 13,8, "standard", SpellType.Fire, 1),
+    WIND_BOLT(5,23, 73, "WIND BOLT", 17,9, "standard", SpellType.Air,2),
+    WATER_BOLT(6,26, 76, "WATER BOLT", 23,10, "standard", SpellType.Water, 2),
+    EARTH_BOLT(7,29, 79, "EARTH BOLT", 29,11, "standard", SpellType.Earth, 2),
+    FIRE_BOLT(8,32, 82, "FIRE BOLT", 35,12, "standard", SpellType.Fire, 2),
+    WIND_BLAST(9,35, 85, "WIND BLAST", 41,13, "standard", SpellType.Air,3),
+    WATER_BLAST(10,38, 88, "WATER BLAST",47,14, "standard", SpellType.Water, 3),
+    EARTH_BLAST(11,40, 90, "EARTH BLAST", 53,15, "standard", SpellType.Earth, 3),
+    FIRE_BLAST(12,44, 94, "FIRE BLAST", 59,16, "standard", SpellType.Fire, 3),
+    WIND_WAVE(13,46, 96, "WIND WAVE", 62,17, "standard", SpellType.Air,4),
+    WATER_WAVE(14,48, 98, "WATER WAVE", 65,18, "standard", SpellType.Water, 4),
+    EARTH_WAVE(15,51, 101, "EARTH WAVE", 70,19, "standard", SpellType.Earth, 4),
+    FIRE_WAVE(16,52, 102, "FIRE WAVE", 75,20, "standard", SpellType.Fire, 4),
+
     CRUMBLE_UNDEAD(17,34, 84, "CRUMBLE UNDEAD", 39,15, "standard",0),
     MAGIC_DART(18, 324, 374, "MAGIC DART", 50,10, "standard",0),
     CLAWS_OF_GUTHIX(19, 60, 110, "CLAWS OF GUTHIX", 60,20, "standard",0),
@@ -106,6 +107,8 @@ public enum CombatSpell
     private final int baseDamage;
     @Getter
     private final String spellbook;
+    @Getter
+    private final SpellType spellType;
     @Getter
     private final int tier;
 
@@ -164,6 +167,16 @@ public enum CombatSpell
         return null;
     }
 
+    /**
+     * Returns if a CombatSpell has a Type
+     */
+    public boolean hasType(){
+        if(this.spellType != SpellType.NoType)
+            return true;
+
+        return false;
+    }
+
     public static CombatSpell[] getSpellsOfTier(int tier, String spellbook){
         ArrayList<CombatSpell> results = new ArrayList<>();
 
@@ -182,6 +195,19 @@ public enum CombatSpell
         return results.toArray(new CombatSpell[results.size()]);
     }
 
+    CombatSpell(int autocastVarbitValue, int spriteID, int disabledSpriteID, String name, int reqLevel, int baseDamage, String spellbook, SpellType spellType, int tier)
+    {
+        this.autocastVarbitValue = autocastVarbitValue;
+        this.spriteID = spriteID;
+        this.disabledSpriteID = disabledSpriteID;
+        this.name = name;
+        this.reqLevel = reqLevel;
+        this.baseDamage = baseDamage;
+        this.spellbook = spellbook;
+        this.spellType = spellType;
+        this.tier = tier;
+    }
+
     CombatSpell(int autocastVarbitValue, int spriteID, int disabledSpriteID, String name, int reqLevel, int baseDamage, String spellbook, int tier)
     {
         this.autocastVarbitValue = autocastVarbitValue;
@@ -191,6 +217,7 @@ public enum CombatSpell
         this.reqLevel = reqLevel;
         this.baseDamage = baseDamage;
         this.spellbook = spellbook;
+        this.spellType = SpellType.NoType;
         this.tier = tier;
     }
 }
