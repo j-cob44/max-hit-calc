@@ -291,6 +291,7 @@ public class MaxHitCalcPlugin extends Plugin
 					{
 						clickedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
 					}
+					calculateMaxes();
 				}
 			}
 		}
@@ -302,7 +303,7 @@ public class MaxHitCalcPlugin extends Plugin
 	{
 		if(clickedNPC != null)
 		{
-			if (clickedNPCExpiryTime < client.getTickCount())
+			if (clickedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
 			{
 				clickedNPC = null;
 				calculateMaxes();
