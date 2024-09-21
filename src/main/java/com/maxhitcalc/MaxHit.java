@@ -30,10 +30,7 @@ package com.maxhitcalc;
 
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.ui.overlay.OverlayLayer;
-import net.runelite.client.ui.overlay.OverlayPosition;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -991,7 +988,7 @@ public class MaxHit {
     /**
      * Calculates the standard max hit based on current equipment and player status.
      *
-     * @param isSpecialAttack
+     * @param isSpecialAttack boolean
      * @return Max Hit as Double
      */
     public double calculate(boolean isSpecialAttack)

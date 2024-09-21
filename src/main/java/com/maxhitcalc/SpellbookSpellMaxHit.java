@@ -171,7 +171,7 @@ public class SpellbookSpellMaxHit extends MaxHit
      *
      * @param playerEquipment current player equipment
      * @param spell selected spell to calculate max hit with
-     * @return
+     * @return double, max hit value
      */
     public double calculateMagicMaxHit(Item[] playerEquipment, CombatSpell spell)
     {

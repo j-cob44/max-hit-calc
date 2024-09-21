@@ -31,8 +31,6 @@ package com.maxhitcalc;
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
 
-import javax.inject.Inject;
-
 /**
  * Contains functions for calculating max hit from a special attack weapon.
  */

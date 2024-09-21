@@ -33,5 +33,5 @@ public enum SpellType {
     Water,
     Earth,
     Fire,
-    NoType;
+    NoType
 }

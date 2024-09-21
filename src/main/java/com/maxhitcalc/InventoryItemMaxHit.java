@@ -34,8 +34,6 @@ import net.runelite.api.VarPlayer;
 import net.runelite.api.Varbits;
 import net.runelite.client.game.ItemManager;
 
-import javax.inject.Inject;
-
 public class InventoryItemMaxHit
 {
     protected MaxHitCalcConfig config;
