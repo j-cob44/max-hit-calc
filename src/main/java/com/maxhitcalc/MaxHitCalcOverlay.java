@@ -29,6 +29,7 @@
 package com.maxhitcalc;
 
 import net.runelite.api.*;
+import net.runelite.api.Menu;
 import net.runelite.api.widgets.*;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
@@ -183,7 +184,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private void getInventoryMaxHitTooltip(int maxHit){
         // Tooltip on item in inventory
-        MenuEntry[] menu = client.getMenuEntries();
+        Menu clientMenu = client.getMenu();
+        MenuEntry[] menu = clientMenu.getMenuEntries();
         int menuSize = menu.length;
         if (menuSize == 0)
         {
@@ -271,7 +273,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private void getSpellbookMaxHitTooltip(){
         // Tooltip on item in inventory
-        MenuEntry[] menu = client.getMenuEntries();
+        Menu clientMenu = client.getMenu();
+        MenuEntry[] menu = clientMenu.getMenuEntries();
         int menuSize = menu.length;
         if (menuSize == 0)
         {
@@ -339,7 +342,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private void getAutocastSelectionMaxHitTooltip(){
         // Tooltip on item in inventory
-        MenuEntry[] menu = client.getMenuEntries();
+        Menu clientMenu = client.getMenu();
+        MenuEntry[] menu = clientMenu.getMenuEntries();
         int menuSize = menu.length;
         if (menuSize == 0)
         {

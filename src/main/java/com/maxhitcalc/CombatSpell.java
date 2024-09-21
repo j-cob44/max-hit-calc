@@ -208,6 +208,9 @@ public enum CombatSpell
         this.tier = tier;
     }
 
+    /**
+     * Constructor: No type given
+     */
     CombatSpell(int autocastVarbitValue, int spriteID, int disabledSpriteID, String name, int reqLevel, int baseDamage, String spellbook, int tier)
     {
         this.autocastVarbitValue = autocastVarbitValue;

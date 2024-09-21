@@ -87,6 +87,8 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// Variable for Currently interacting NPC
 	public Actor clickedNPC;
+	public int clickedNPCExpiryTime;
+
 
 //	DEBUG
 //	@Subscribe
@@ -270,21 +272,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 	}
 
-	// On Hitsplat Applied, 1 way of getting correct NPC
-//	@Subscribe
-//	public void onHitsplatApplied(HitsplatApplied hit)
-//	{
-//		// find out who why and where
-//
-//		System.out.println("================Hit Applied===============");
-//		System.out.println(hit.getActor());
-//		System.out.println("Is mine: " + hit.getHitsplat().isMine());
-//		System.out.println("Is others: " + hit.getHitsplat().isOthers());
-//		System.out.println("================End===============");
-//
-//	}
-
-	// Get NPC from interaction,
+	// Get Selected NPC from interaction
 	@Subscribe
 	public void onInteractingChanged(InteractingChanged interaction)
 	{
@@ -299,7 +287,25 @@ public class MaxHitCalcPlugin extends Plugin
 				if(interaction.getTarget() != null)
 				{
 					clickedNPC = interaction.getTarget();
+					if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
+					{
+						clickedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
+					}
 				}
+			}
+		}
+	}
+
+	// After certain amount of ticks, clear clickedNPC
+	@Subscribe
+	public void onGameTick(GameTick gameTick)
+	{
+		if(clickedNPC != null)
+		{
+			if (clickedNPCExpiryTime < client.getTickCount())
+			{
+				clickedNPC = null;
+				calculateMaxes();
 			}
 		}
 	}

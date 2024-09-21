@@ -281,4 +281,13 @@ public interface MaxHitCalcConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+			keyName = "timeToWaitBeforeResettingSelectedNPC",
+			name = "Time To Wait Before Resetting Selected NPC",
+			description = "NPC is selected when attacking, calculating any magic weaknesses and will be removed after a certain amount of time. (in minutes) 0 = No Resetting",
+			position = 3,
+			section = spellSettings
+	)
+	default int timeToWaitBeforeResettingSelectedNPC() { return 2; }
 }
