@@ -641,7 +641,7 @@ public class MaxAgainstType extends MaxHit {
         // Re-add Colossal Blade Increase, factoring in other modifiers.
         if(weaponName.contains("Colossal blade"))
         {
-            int sizeBonus = (2 * Math.min(config.colossalBladeMonsterSize().monsterSize, 5));
+            int sizeBonus = (2 * Math.min(plugin.NPCSize, 5));
 
             maxHitVsType = maxHitVsType + sizeBonus;
         }

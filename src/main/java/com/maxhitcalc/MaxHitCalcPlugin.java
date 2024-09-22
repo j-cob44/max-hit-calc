@@ -42,7 +42,13 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.ImageUtil;
+import net.runelite.client.ui.ClientToolbar;
+
+
+import java.awt.image.BufferedImage;
 
 @Slf4j
 @PluginDescriptor(
@@ -70,13 +76,19 @@ public class MaxHitCalcPlugin extends Plugin
 	@Inject
 	private ItemManager itemManager;
 
+	// UI Panels
+	@Inject
+	private ClientToolbar clientToolbar;
+	private MaxHitCalcPanel panel;
+	private NavigationButton navButton;
+
+	//
+	private MaxHit maxHits;
+	private MaxSpec maxSpecs;
+	private MaxAgainstType maxAgainstTypes;
+	private MaxSpecAgainstType maxSpecsAgainstTypes;
 
 	// Public Max Hit variables, calculated when Equipment changes
-	public MaxHit maxHits;
-	public MaxSpec maxSpecs;
-	public MaxAgainstType maxAgainstTypes;
-	public MaxSpecAgainstType maxSpecsAgainstTypes;
-
 	public int maxHit = 0;
 	public int maxSpec = 0;
 	public int maxVsType = 0;
@@ -85,9 +97,16 @@ public class MaxHitCalcPlugin extends Plugin
 	// Variable to check custom "gamestate"
 	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
 
-	// Variable for Currently interacting NPC
-	public Actor clickedNPC;
+	// Variables for Currently interacting NPC
+	public NPCComposition clickedNPC;
 	public int clickedNPCExpiryTime;
+
+	// Vars for Calculations
+	public int NPCSize = 1;
+	boolean npcSizeSettingChanged = false;
+
+	public BlowpipeDartType selectedDartType = BlowpipeDartType.MITHRIL;
+	boolean dartSettingChanged = false;
 
 
 //	DEBUG
@@ -128,6 +147,7 @@ public class MaxHitCalcPlugin extends Plugin
 	protected void startUp() throws Exception
 	{
 		overlayManager.add(pluginOverlay);
+		System.out.println("=================S==================");
 
 		// Check if plugin started while game is running
 		if (client.getGameState().equals(GameState.LOGGED_IN))
@@ -138,12 +158,39 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			gameReady = false; // Set false on normal runelite boot
 		}
+
+		maxHits = new MaxHit(this, config, itemManager, client);
+		maxSpecs = new MaxSpec(this, config, itemManager, client);
+		maxAgainstTypes = new MaxAgainstType(this, config, itemManager, client);
+		maxSpecsAgainstTypes = new MaxSpecAgainstType(this, config, itemManager, client);
+
+
+		// UI Startup
+		panel = injector.getInstance(MaxHitCalcPanel.class);
+		panel.init(this, config);
+
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/icon.png");
+
+		navButton = NavigationButton.builder()
+				.tooltip("Max Hit Calc")
+				.icon(icon)
+				.priority(7)
+				.panel(panel)
+				.build();
+
+		clientToolbar.addNavigation(navButton);
+		System.out.println("=================E==================");
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
 		overlayManager.remove(pluginOverlay);
+
+		panel.deinit();
+		clientToolbar.removeNavigation(navButton);
+		panel = null;
+		navButton = null;
 	}
 
 	// On Widget Closed, check for when login screen is closed
@@ -282,16 +329,30 @@ public class MaxHitCalcPlugin extends Plugin
 			// Verify source == local player
 			String localPlayerName = client.getLocalPlayer().getName();
 			String sourceName = interaction.getSource().getName();
-            if(localPlayerName.equals(sourceName))
+
+			if(localPlayerName.equals(sourceName))
 			{
 				if(interaction.getTarget() != null)
 				{
-					clickedNPC = interaction.getTarget();
-					if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
+					NPC rawNPC = (NPC)interaction.getTarget();
+
+					if(rawNPC != null)
 					{
-						clickedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
+						// Do nothing for combat dummy or bankers
+						if(!rawNPC.getName().toLowerCase().contains("combat dummy") && !rawNPC.getName().toLowerCase().contains("banker"))
+						{
+							if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
+							{
+								clickedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
+							}
+							clickedNPC = rawNPC.getComposition();
+							NPCSize = Math.max(1, clickedNPC.getSize()); // enforce to 1, incase of error
+
+							System.out.println("Selected NPC size: " + NPCSize);
+
+							calculateMaxes();
+						}
 					}
-					calculateMaxes();
 				}
 			}
 		}
@@ -306,8 +367,22 @@ public class MaxHitCalcPlugin extends Plugin
 			if (clickedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
 			{
 				clickedNPC = null;
+				NPCSize = 1;
 				calculateMaxes();
 			}
+		}
+
+		// Update tick after panel settings are changed
+		if(npcSizeSettingChanged)
+		{
+			calculateMaxes();
+			npcSizeSettingChanged = false;
+		}
+
+		if(dartSettingChanged)
+		{
+			calculateMaxes();
+			dartSettingChanged = false;
 		}
 	}
 
@@ -315,11 +390,9 @@ public class MaxHitCalcPlugin extends Plugin
 	public void calculateMaxes()
 	{
 		// Calculate Normal Max Hits
-		maxHits = new MaxHit(this, config, itemManager, client);
 		maxHit = (int)Math.floor(maxHits.calculate(false));
 
 		// Calculate Special Attack Max Hit
-		maxSpecs = new MaxSpec(this, config, itemManager, client);
 		maxSpec = (int)Math.floor(maxSpecs.calculate());
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{
@@ -331,12 +404,10 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		// Calculate Max Hit vs Types of NPCs
-		maxAgainstTypes = new MaxAgainstType(this, config, itemManager, client);
 		maxVsType = (int)Math.floor(maxAgainstTypes.calculate());
 
 
 		// Calculate Special Attack Max Hit vs Types of NPCs
-		maxSpecsAgainstTypes = new MaxSpecAgainstType(this, config, itemManager, client);
 		maxSpecVsType = (int)Math.floor(maxSpecsAgainstTypes.calculate());
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{

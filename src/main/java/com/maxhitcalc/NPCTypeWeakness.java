@@ -1,5 +1,5 @@
 /* NPCTypeWeakness.java
- * Separates spells by SpriteID. Useful for getting the selected auto-cast spell.
+ * Enum for all NPC's with a type weakness.
  *
  *
  * Copyright (c) 2024, Jacob Burton <https://github.com/j-cob44>

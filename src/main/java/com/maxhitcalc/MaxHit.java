@@ -379,19 +379,19 @@ public class MaxHit {
         {
             skipAmmo = true;
 
-            if(config.blowpipeDartType() == MaxHitCalcConfig.BlowpipeDartType.ADAMANT)
+            if(plugin.selectedDartType == BlowpipeDartType.ADAMANT)
             {
                 rangedStrengthBonus += 17;
             }
-            else if(config.blowpipeDartType() == MaxHitCalcConfig.BlowpipeDartType.RUNE)
+            else if(plugin.selectedDartType == BlowpipeDartType.RUNE)
             {
                 rangedStrengthBonus += 26;
             }
-            else if(config.blowpipeDartType() == MaxHitCalcConfig.BlowpipeDartType.AMETHYST)
+            else if(plugin.selectedDartType == BlowpipeDartType.AMETHYST)
             {
                 rangedStrengthBonus += 28;
             }
-            else if(config.blowpipeDartType() == MaxHitCalcConfig.BlowpipeDartType.DRAGON)
+            else if(plugin.selectedDartType == BlowpipeDartType.DRAGON)
             {
                 rangedStrengthBonus += 35;
             }
