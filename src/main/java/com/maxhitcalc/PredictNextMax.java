@@ -443,15 +443,18 @@ public class PredictNextMax extends MaxHit
             // Final step: Calculate and add spell type weakness Bonus
             if (spell != null && spell.hasType())
             {
-                if (plugin.clickedNPC != null)
+                if (plugin.selectedNPCName != null)
                 {
-                    NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.clickedNPC.getName());
+                    NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
                     if (weaknessBonus != null)
                     {
-                        int bonusPercent = weaknessBonus.getWeaknessPercent();
+                        if(spell.getSpellType() == weaknessBonus.getElementalWeakness())
+                        {
+                            int bonusPercent = weaknessBonus.getWeaknessPercent();
 
-                        double typeBonusDamage = predictedMaxHit * ((double) bonusPercent / 100);
-                        predictedMaxHit = predictedMaxHit + typeBonusDamage;
+                            double typeBonusDamage = predictedMaxHit * ((double) bonusPercent / (double)100);
+                            predictedMaxHit = predictedMaxHit + typeBonusDamage;
+                        }
                     }
                 }
             }

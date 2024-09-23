@@ -34,6 +34,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -64,6 +67,9 @@ public class MaxHitCalcPanel extends PluginPanel
     // UI Settings
     private JComboBox dartList = new JComboBox();
     private JComboBox colossalBladeList = new JComboBox();
+
+    private JLabel[] allNPCLabels;
+    private Map<JLabel, String> npcLabels = new HashMap<>();
 
     enum ColossalBladeSizeBonus
     {
@@ -172,6 +178,7 @@ public class MaxHitCalcPanel extends PluginPanel
         selectNPCPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         frame.setLayout(new GridLayout(rows, columns));
 
+        allNPCLabels = new JLabel[totalCells];
         JLabel[][] gridLabels = new JLabel[rows][columns];
         for(int i = 0; i < rows; i++)
         {
@@ -184,9 +191,13 @@ public class MaxHitCalcPanel extends PluginPanel
                 else
                 {
                     gridLabels[i][j] = createIcon(NPCTypeWeakness.values()[index].getIcon());
+
+                    npcLabels.put(gridLabels[i][j], NPCTypeWeakness.values()[index].getNPCName());
+                    allNPCLabels[index] = gridLabels[i][j];
                     index++;
                 }
                 gridLabels[i][j].setSize(32,32); // max size
+                gridLabels[i][j].setBackground(Color.DARK_GRAY);
                 frame.add(gridLabels[i][j]);
             }
         }
@@ -227,7 +238,22 @@ public class MaxHitCalcPanel extends PluginPanel
     }
 
     void onNPCSelect(JLabel clickedLabel){
-        System.out.println(clickedLabel.getIcon());
+        String npcName = npcLabels.get(clickedLabel);
+
+        System.out.println(npcName);
+
+        // Clear old selected
+        for(JLabel label : allNPCLabels)
+        {
+            label.setBackground(Color.DARK_GRAY);
+        }
+
+        // Highlight selected
+        clickedLabel.setBackground(Color.ORANGE);
+
+        plugin.selectedNPCName = npcName;
+        plugin.npcSelectedByPanel = true;
+        plugin.selectedNPCExpiryTime = Integer.MAX_VALUE;
     }
 
     void onDartSwitched()

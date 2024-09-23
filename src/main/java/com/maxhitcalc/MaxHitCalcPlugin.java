@@ -98,8 +98,9 @@ public class MaxHitCalcPlugin extends Plugin
 	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
 
 	// Variables for Currently interacting NPC
-	public NPCComposition clickedNPC;
-	public int clickedNPCExpiryTime;
+	public String selectedNPCName;
+	public int selectedNPCExpiryTime;
+	boolean npcSelectedByPanel = true;
 
 	// Vars for Calculations
 	public int NPCSize = 1;
@@ -341,10 +342,12 @@ public class MaxHitCalcPlugin extends Plugin
 						{
 							if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
 							{
-								clickedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
+								selectedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
 							}
-							clickedNPC = rawNPC.getComposition();
-							NPCSize = Math.max(1, clickedNPC.getSize()); // enforce to 1, incase of error
+
+							// Get necessary vars: name and size
+							selectedNPCName = rawNPC.getComposition().getName();
+							NPCSize = Math.max(1, rawNPC.getComposition().getSize()); // enforce to 1, incase of error
 
 							System.out.println("Selected NPC size: " + NPCSize);
 
@@ -360,11 +363,11 @@ public class MaxHitCalcPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick gameTick)
 	{
-		if(clickedNPC != null)
+		if(selectedNPCName != null)
 		{
-			if (clickedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
+			if (selectedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
 			{
-				clickedNPC = null;
+				selectedNPCName = null;
 				NPCSize = 1;
 				calculateMaxes();
 			}
@@ -381,6 +384,12 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			calculateMaxes();
 			dartSettingChanged = false;
+		}
+
+		if(npcSelectedByPanel)
+		{
+			calculateMaxes();
+			npcSelectedByPanel = false;
 		}
 	}
 

@@ -531,15 +531,18 @@ public class MaxAgainstType extends MaxHit {
         // Final step: Calculate and add spell type weakness Bonus
         if (spell != null && spell.hasType())
         {
-            if (plugin.clickedNPC != null)
+            if (plugin.selectedNPCName != null)
             {
-                NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.clickedNPC.getName());
+                NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
                 if (weaknessBonus != null)
                 {
-                    int bonusPercent = weaknessBonus.getWeaknessPercent();
+                    if(spell.getSpellType() == weaknessBonus.getElementalWeakness())
+                    {
+                        int bonusPercent = weaknessBonus.getWeaknessPercent();
 
-                    double typeBonusDamage = maxDamage * ((double) bonusPercent / 100);
-                    maxDamage = maxDamage + typeBonusDamage;
+                        double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
+                        maxDamage = maxDamage + typeBonusDamage;
+                    }
                 }
             }
         }
