@@ -47,6 +47,8 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.ui.components.materialtabs.MaterialTab;
+import net.runelite.client.ui.components.materialtabs.MaterialTabGroup;
 import net.runelite.client.util.ImageUtil;
 
 public class MaxHitCalcPanel extends PluginPanel
@@ -63,6 +65,10 @@ public class MaxHitCalcPanel extends PluginPanel
 
     private MaxHitCalcPlugin plugin;
     private MaxHitCalcConfig config;
+
+    // tabs
+    private final JPanel npcIconDisplay = new JPanel();
+    private final MaterialTabGroup npcTabGroup = new MaterialTabGroup(npcIconDisplay);
 
     // UI Settings
     private JComboBox dartList = new JComboBox();
@@ -161,8 +167,8 @@ public class MaxHitCalcPanel extends PluginPanel
         // Build next section
         JPanel selectNPCPanel = new JPanel();
         selectNPCPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        selectNPCPanel.setLayout(new BoxLayout(selectNPCPanel, BoxLayout.PAGE_AXIS));
         selectNPCPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
 
         // Selected NPC setting
         JLabel selectedNPCLabel = new JLabel("Selected NPC: ");
@@ -190,7 +196,7 @@ public class MaxHitCalcPanel extends PluginPanel
                 }
                 else
                 {
-                    gridLabels[i][j] = createIcon(NPCTypeWeakness.values()[index].getIcon());
+                    gridLabels[i][j] = createIcon(NPCTypeWeakness.values()[index].getIcon(), NPCTypeWeakness.values()[index].getNPCName());
 
                     npcLabels.put(gridLabels[i][j], NPCTypeWeakness.values()[index].getNPCName());
                     allNPCLabels[index] = gridLabels[i][j];
@@ -202,11 +208,15 @@ public class MaxHitCalcPanel extends PluginPanel
             }
         }
 
-        selectNPCPanel.add(frame);
-        selectNPCPanel.setLayout(new BoxLayout(selectNPCPanel, BoxLayout.Y_AXIS));
+        JScrollPane scroller = new JScrollPane(frame);
+        scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroller.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
+        scroller.getVerticalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
+        scroller.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        scroller.setPreferredSize(new Dimension(200, 200));
 
-
-
+        //scroller.add(frame);
+        selectNPCPanel.add(scroller);
 
         add(settingsPanel, BorderLayout.NORTH);
         add(selectNPCPanel, BorderLayout.CENTER);
@@ -219,20 +229,35 @@ public class MaxHitCalcPanel extends PluginPanel
         eventBus.unregister(this);
     }
 
-    private JLabel createIcon(ImageIcon icon)
+    private JLabel createIcon(ImageIcon icon, String npcName)
     {
-        JLabel iconLabel = new JLabel(icon);
+        JLabel empty = new JLabel("");
 
-        iconLabel.setHorizontalAlignment(JLabel.CENTER);
+        MaterialTab iconLabel = new MaterialTab(icon, npcTabGroup, empty);
+        iconLabel.setPreferredSize(new Dimension(32, 48));
+        iconLabel.setName(npcName);
+        iconLabel.setToolTipText(npcName);
+        iconLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        iconLabel.setBorder(BorderFactory.createLineBorder(ColorScheme.DARK_GRAY_COLOR, 1));
+
+        //iconLabel.setHorizontalAlignment(JLabel.CENTER);
         //iconLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-        iconLabel.setSize(32,32);
+        //iconLabel.setSize(32,32);
 
-        iconLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                onNPCSelect(iconLabel);
-            }
+        iconLabel.setOnSelectEvent(() ->
+        {
+            onNPCSelect(iconLabel);
+            return true;
         });
+
+//        iconLabel.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                onNPCSelect(iconLabel);
+//            }
+//        });
+
+        npcTabGroup.addTab(iconLabel);
 
         return iconLabel;
     }
