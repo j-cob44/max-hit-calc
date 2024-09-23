@@ -147,7 +147,6 @@ public class MaxHitCalcPlugin extends Plugin
 	protected void startUp() throws Exception
 	{
 		overlayManager.add(pluginOverlay);
-		System.out.println("=================S==================");
 
 		// Check if plugin started while game is running
 		if (client.getGameState().equals(GameState.LOGGED_IN))
@@ -179,7 +178,6 @@ public class MaxHitCalcPlugin extends Plugin
 				.build();
 
 		clientToolbar.addNavigation(navButton);
-		System.out.println("=================E==================");
 	}
 
 	@Override

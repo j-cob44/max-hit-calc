@@ -28,36 +28,23 @@
 
 package com.maxhitcalc;
 
-import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.GridLayout;
+
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.ScheduledExecutorService;
+import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
-import javax.inject.Named;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.HyperlinkEvent;
+
+import lombok.Getter;
 import net.runelite.api.Client;
-import net.runelite.client.RuneLiteProperties;
-import net.runelite.client.account.SessionManager;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.EventBus;
-import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.events.SessionClose;
-import net.runelite.client.events.SessionOpen;
 import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
-import net.runelite.client.util.LinkBrowser;
-
 
 public class MaxHitCalcPanel extends PluginPanel
 {
@@ -77,7 +64,6 @@ public class MaxHitCalcPanel extends PluginPanel
     // UI Settings
     private JComboBox dartList = new JComboBox();
     private JComboBox colossalBladeList = new JComboBox();
-
 
     enum ColossalBladeSizeBonus
     {
@@ -120,16 +106,6 @@ public class MaxHitCalcPanel extends PluginPanel
         }
     }
 
-//    @Subscribe
-//    public void onConfigChanged(ConfigChanged event)
-//    {
-//        // Only update for this plugin!
-//        if(event.getGroup().contains("MaxHitCalc"))
-//        {
-//
-//        }
-//    }
-
     void init(MaxHitCalcPlugin plugin, MaxHitCalcConfig config)
     {
         this.plugin = plugin;
@@ -148,12 +124,12 @@ public class MaxHitCalcPanel extends PluginPanel
         JPanel settingsPanel = new JPanel();
         settingsPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        settingsPanel.setLayout(new GridLayout(0, 1));
+        settingsPanel.setLayout(new GridLayout(0,1));
 
         JLabel settingsHeader = new JLabel("Calculation Settings");
         settingsPanel.add(settingsHeader);
 
-        // Dart Setting
+        // Blowpipe Dart Setting
         JLabel dartSettingLabel = new JLabel("Dart Type:");
         settingsPanel.add(dartSettingLabel);
 
@@ -174,15 +150,56 @@ public class MaxHitCalcPanel extends PluginPanel
         colossalBladeList.addActionListener(e -> onCBladeSettingSwitched());
 
         settingsPanel.add(colossalBladeList);
+        settingsPanel.add(Box.createGlue());
 
+        // Build next section
+        JPanel selectNPCPanel = new JPanel();
+        selectNPCPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        selectNPCPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+
+        // Selected NPC setting
+        JLabel selectedNPCLabel = new JLabel("Selected NPC: ");
+        selectNPCPanel.add(selectedNPCLabel);
+
+
+        int totalCells = NPCTypeWeakness.values().length;
+        int columns = 5;
+        int rows = (int) Math.ceil(((double) totalCells/(double)columns));
+        int index = 0;
+
+        JPanel frame = new JPanel();
+        selectNPCPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        frame.setLayout(new GridLayout(rows, columns));
+
+        JLabel[][] gridLabels = new JLabel[rows][columns];
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < columns; j++)
+            {
+                if(index >= totalCells)
+                {
+                    gridLabels[i][j] = new JLabel(""); // Make empty when not cleanly divided
+                }
+                else
+                {
+                    gridLabels[i][j] = createIcon(NPCTypeWeakness.values()[index].getIcon());
+                    index++;
+                }
+                gridLabels[i][j].setSize(32,32); // max size
+                frame.add(gridLabels[i][j]);
+            }
+        }
+
+        selectNPCPanel.add(frame);
+        selectNPCPanel.setLayout(new BoxLayout(selectNPCPanel, BoxLayout.Y_AXIS));
 
 
 
 
         add(settingsPanel, BorderLayout.NORTH);
-        //add(content, BorderLayout.CENTER);
+        add(selectNPCPanel, BorderLayout.CENTER);
 
-        System.out.println("=================Panel==================");
         eventBus.register(this);
     }
 
@@ -191,13 +208,37 @@ public class MaxHitCalcPanel extends PluginPanel
         eventBus.unregister(this);
     }
 
-    void onDartSwitched(){
+    private JLabel createIcon(ImageIcon icon)
+    {
+        JLabel iconLabel = new JLabel(icon);
+
+        iconLabel.setHorizontalAlignment(JLabel.CENTER);
+        //iconLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        iconLabel.setSize(32,32);
+
+        iconLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                onNPCSelect(iconLabel);
+            }
+        });
+
+        return iconLabel;
+    }
+
+    void onNPCSelect(JLabel clickedLabel){
+        System.out.println(clickedLabel.getIcon());
+    }
+
+    void onDartSwitched()
+    {
         BlowpipeDartType selectedDart = BlowpipeDartType.values()[dartList.getSelectedIndex()];
         plugin.selectedDartType = selectedDart;
         plugin.dartSettingChanged = true;
     }
 
-    void onCBladeSettingSwitched(){
+    void onCBladeSettingSwitched()
+    {
         plugin.NPCSize = Math.max(1, colossalBladeList.getSelectedIndex()+1); // index 0 == 1, index 1 == 2, etc...
         plugin.npcSizeSettingChanged = true;
     }

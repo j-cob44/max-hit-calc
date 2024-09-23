@@ -29,6 +29,10 @@
 package com.maxhitcalc;
 
 import lombok.Getter;
+import net.runelite.client.util.ImageUtil;
+
+import javax.swing.*;
+import java.awt.image.BufferedImage;
 
 
 /**
@@ -42,67 +46,67 @@ import lombok.Getter;
 public enum NPCTypeWeakness
 {
     // In Alphabetical Order
-    AbyssalPortal("Abyssal portal", SpellType.Fire, 50),
-    AdamantDragon("Adamant dragon", SpellType.Earth, 50),
-    Ahrim("Ahrim", SpellType.Air, 50),
-    Araxxor("Araxxor", SpellType.Fire, 50),
-    Araxyte("Araxyte", SpellType.Fire, 50),
-    ArcaneScarab("Arcane scarab", SpellType.Fire, 50),
-    ArmadyleanGuard("Armadylean guard", SpellType.Air, 30),
-    Aviansie("Aviansie", SpellType.Air, 45),
-    BlackDragon("Black dragon", SpellType.Water, 50), // Brutal, Baby, and normal black dragons all have the same %
-    BlackDemon("Black demon", SpellType.Water, 40),
-    BlueDragon("Blue dragon", SpellType.Water, 50), // Brutal, Baby, and normal blue dragons all have the same %
-    BronzeDragon("Bronze dragon", SpellType.Earth, 50),
-    Cerberus("Cerberus", SpellType.Water, 40),
-    DemonicGorilla("Demonic gorilla", SpellType.Water, 35),
-    Dharok("Dharok", SpellType.Air, 50),
-    Drake("Drake", SpellType.Water, 50),
-    FireGiant("Fire giant", SpellType.Water, 100),
-    FlightKilisa("Flight kilisa", SpellType.Air, 30),
-    FlockleaderGeerin("Flockleader geerin", SpellType.Air, 30),
-    Ghost("Ghost", SpellType.Air, 50),
-    GiantMole("Giant mole", SpellType.Water, 50),
-    GiantSpider("Giant spider", SpellType.Fire, 50),
-    GreaterDemon("Greater demon", SpellType.Water, 40),
-    GreenDragon("Green dragon", SpellType.Water, 50), // Brutal, Baby, and normal blue dragons all have the same %
-    Guthan("Guthan", SpellType.Air, 50),
-    Hellhound("Hellhound", SpellType.Water, 50),
-    Hespori("Hespori", SpellType.Fire, 100),
-    IceDemon("Ice demon", SpellType.Fire, 150),
-    IceGiant("Ice giant", SpellType.Fire, 100),
-    IceTroll("Ice troll", SpellType.Fire, 100), // Ordinary, Male, Female, and Grunt all have the same %
-    IceTrollRunt("Ice troll runt", SpellType.Fire, 50),
-    IceWarrior("Ice warrior", SpellType.Fire, 100),
-    Icefiend("Icefiend", SpellType.Fire, 100),
-    IronDragon("Iron dragon", SpellType.Earth, 50),
-    Karil("Karil", SpellType.Air, 50),
-    Kephri("Kephri", SpellType.Fire, 35), // 40% with shield, not possible to calculate
-    KingBlackDragon("King black dragon", SpellType.Water, 50),
-    Kreearra("Kree'arra", SpellType.Air, 30),
-    KrilTsutsaroth("K'ril Tsutsaroth", SpellType.Water, 30),
-    LavaDragon("Lava dragon", SpellType.Water, 50),
-    LesserDemon("Lava dragon", SpellType.Water, 40),
-    MithrilDragon("Mithril dragon", SpellType.Earth, 50),
-    MossGiant("Moss gian", SpellType.Fire, 50),
-    MountainTroll("Mountain troll", SpellType.Fire, 50),
-    Pyrefiend("Pyrefiend", SpellType.Water, 100),
-    RedDragon("Red dragon", SpellType.Water, 50), // Brutal, Baby, and normal black dragons all have the same %
-    RuneDragon("Rune dragon", SpellType.Earth, 50),
-    ScarabMage("Scarab mage", SpellType.Fire, 50),
-    ScarabSwarm("Scarab swarm", SpellType.Fire, 50),
-    Skeleton("Skeleton", SpellType.Air, 35),
-    SoldierScarab("Soldier scarab", SpellType.Fire, 50),
-    SpittingScarab("Spitting scarab", SpellType.Fire, 50),
+    AbyssalPortal("Abyssal portal", SpellType.Fire, 50, NPCIcons.ABYSSAL_PORTAL_ICON),
+    AdamantDragon("Adamant dragon", SpellType.Earth, 50, NPCIcons.ADAMANT_DRAGON_ICON),
+    Ahrim("Ahrim", SpellType.Air, 50, NPCIcons.AHRIM_ICON),
+    Araxxor("Araxxor", SpellType.Fire, 50, NPCIcons.ARAXXOR_ICON),
+    Araxyte("Araxyte", SpellType.Fire, 50, NPCIcons.ARAXXOR_ICON), // Needs Icon
+    ArcaneScarab("Arcane scarab", SpellType.Fire, 50, NPCIcons.ARCANE_SCARAB_ICON),
+    ArmadyleanGuard("Armadylean guard", SpellType.Air, 30, NPCIcons.AVIANSIE_ICON), // Needs Icon
+    Aviansie("Aviansie", SpellType.Air, 45, NPCIcons.AVIANSIE_ICON),
+    BlackDemon("Black demon", SpellType.Water, 40, NPCIcons.BLACK_DEMON_ICON),
+    BlackDragon("Black dragon", SpellType.Water, 50, NPCIcons.BLACK_DRAGON_ICON), // Brutal, Baby, and normal black dragons all have the same %
+    BlueDragon("Blue dragon", SpellType.Water, 50, NPCIcons.BLUE_DRAGON_ICON), // Brutal, Baby, and normal blue dragons all have the same %
+    BronzeDragon("Bronze dragon", SpellType.Earth, 50, NPCIcons.BRONZE_DRAGON_ICON),
+    Cerberus("Cerberus", SpellType.Water, 40, NPCIcons.CERBERUS_ICON),
+    DemonicGorilla("Demonic gorilla", SpellType.Water, 35, NPCIcons.DEMONIC_GORILLA_ICON),
+    Dharok("Dharok", SpellType.Air, 50, NPCIcons.DHAROK_ICON),
+    Drake("Drake", SpellType.Water, 50, NPCIcons.DRAKE_ICON),
+    FireGiant("Fire giant", SpellType.Water, 100, NPCIcons.FIRE_GIANT_ICON),
+    FlightKilisa("Flight kilisa", SpellType.Air, 30, NPCIcons.AVIANSIE_ICON), // Needs icon
+    FlockleaderGeerin("Flockleader geerin", SpellType.Air, 30, NPCIcons.AVIANSIE_ICON), // Needs icon
+    Ghost("Ghost", SpellType.Air, 50, NPCIcons.GHOST_ICON),
+    GiantMole("Giant mole", SpellType.Water, 50, NPCIcons.GIANT_MOLE_ICON),
+    GiantSpider("Giant spider", SpellType.Fire, 50, NPCIcons.GIANT_SPIDER_ICON),
+    GreaterDemon("Greater demon", SpellType.Water, 40, NPCIcons.GREATER_DEMON_ICON),
+    GreenDragon("Green dragon", SpellType.Water, 50, NPCIcons.GREEN_DRAGON_ICON), // Brutal, Baby, and normal blue dragons all have the same %
+    Guthan("Guthan", SpellType.Air, 50, NPCIcons.GUTHAN_ICON),
+    Hellhound("Hellhound", SpellType.Water, 50, NPCIcons.HELLHOUND_ICON),
+    Hespori("Hespori", SpellType.Fire, 100, NPCIcons.HESPORI_ICON),
+    IceDemon("Ice demon", SpellType.Fire, 150, NPCIcons.ICE_DEMON_ICON),
+    IceGiant("Ice giant", SpellType.Fire, 100, NPCIcons.ICE_GIANT_ICON),
+    IceTroll("Ice troll", SpellType.Fire, 100, NPCIcons.ICE_TROLL_ICON), // Ordinary, Male, Female, and Grunt all have the same %
+    IceTrollRunt("Ice troll runt", SpellType.Fire, 50, NPCIcons.ICE_TROLL_RUNT_ICON),
+    IceWarrior("Ice warrior", SpellType.Fire, 100, NPCIcons.ICE_WARRIOR_ICON),
+    Icefiend("Icefiend", SpellType.Fire, 100, NPCIcons.ICEFIEND_ICON),
+    IronDragon("Iron dragon", SpellType.Earth, 50, NPCIcons.IRON_DRAGON_ICON),
+    Karil("Karil", SpellType.Air, 50, NPCIcons.KARIL_ICON),
+    Kephri("Kephri", SpellType.Fire, 35, NPCIcons.KEPHRI_ICON), // 40% with shield, not possible to calculate
+    KingBlackDragon("King black dragon", SpellType.Water, 50, NPCIcons.KBD_ICON),
+    Kreearra("Kree'arra", SpellType.Air, 30, NPCIcons.KREE_ICON),
+    KrilTsutsaroth("K'ril Tsutsaroth", SpellType.Water, 30, NPCIcons.KRIL_ICON),
+    LavaDragon("Lava dragon", SpellType.Water, 50, NPCIcons.LAVA_DRAGON_ICON),
+    LesserDemon("Lava dragon", SpellType.Water, 40, NPCIcons.LESSER_DEMON_ICON),
+    MithrilDragon("Mithril dragon", SpellType.Earth, 50, NPCIcons.MITHRIL_DRAGON_ICON),
+    MossGiant("Moss gian", SpellType.Fire, 50, NPCIcons.MOSS_GIANT_ICON),
+    MountainTroll("Mountain troll", SpellType.Fire, 50, NPCIcons.MOUNTAIN_TROLL_ICON),
+    Pyrefiend("Pyrefiend", SpellType.Water, 100, NPCIcons.PYREFIEND_ICON),
+    RedDragon("Red dragon", SpellType.Water, 50, NPCIcons.RED_DRAGON_ICON), // Brutal, Baby, and normal black dragons all have the same %
+    RuneDragon("Rune dragon", SpellType.Earth, 50, NPCIcons.RUNE_DRAGON_ICON),
+    ScarabMage("Scarab mage", SpellType.Fire, 50, NPCIcons.SCARAB_MAGE_ICON),
+    ScarabSwarm("Scarab swarm", SpellType.Fire, 50, NPCIcons.SCARAB_SWARM_ICON),
+    Skeleton("Skeleton", SpellType.Air, 35, NPCIcons.SKELETON_ICON),
+    SoldierScarab("Soldier scarab", SpellType.Fire, 50, NPCIcons.SOLDIER_SCARAB_ICON),
+    SpittingScarab("Spitting scarab", SpellType.Fire, 50, NPCIcons.SPITTING_SCARAB_ICON),
     // Spiritual Warrior (Zaros), find how to differentiate between all different versions
-    SteelDragon("Steel dragon", SpellType.Earth, 50),
-    Torag("Torag", SpellType.Air, 50),
-    Verac("Verac", SpellType.Air, 50),
-    Vespula("Vespula", SpellType.Fire, 50),
-    Waterfiend("Vespula", SpellType.Earth, 50),
-    Wyrm("Wyrm", SpellType.Earth, 50),
-    Wyrmling("Wyrmling", SpellType.Earth, 50),
-    Zulrah("Zulrah", SpellType.Fire, 50);
+    SteelDragon("Steel dragon", SpellType.Earth, 50, NPCIcons.STEEL_DRAGON_ICON),
+    Torag("Torag", SpellType.Air, 50, NPCIcons.TORAG_ICON),
+    Verac("Verac", SpellType.Air, 50, NPCIcons.VERAC_ICON),
+    Vespula("Vespula", SpellType.Fire, 50, NPCIcons.VESPULA_ICON),
+    Waterfiend("Waterfiend", SpellType.Earth, 50, NPCIcons.WATERFIEND_ICON),
+    Wyrm("Wyrm", SpellType.Earth, 50, NPCIcons.WYRM_ICON),
+    Wyrmling("Wyrmling", SpellType.Earth, 50, NPCIcons.WYRMLING_ICON),
+    Zulrah("Zulrah", SpellType.Fire, 50, NPCIcons.ZULRAH_ICON);
 
     @Getter
     private final String NPCName;
@@ -110,6 +114,8 @@ public enum NPCTypeWeakness
     private final SpellType elementalWeakness;
     @Getter
     private final int weaknessPercent;
+    @Getter
+    private final ImageIcon icon;
 
     /**
      * Gets an NPC's Weakness by searching their name
@@ -141,10 +147,11 @@ public enum NPCTypeWeakness
         return null;
     }
 
-    NPCTypeWeakness(String NPCName, SpellType elementalWeakness, int weaknessPercent)
+    NPCTypeWeakness(String NPCName, SpellType elementalWeakness, int weaknessPercent, ImageIcon icon)
     {
         this.NPCName = NPCName;
         this.elementalWeakness = elementalWeakness;
         this.weaknessPercent = weaknessPercent;
+        this.icon = icon;
     }
 }
