@@ -36,79 +36,6 @@ import net.runelite.client.config.ConfigSection;
 @ConfigGroup("MaxHitCalc")
 public interface MaxHitCalcConfig extends Config
 {
-	// Dart Types
-	enum BlowpipeDartType
-	{
-		MITHRIL,
-		ADAMANT,
-		RUNE,
-		AMETHYST,
-		DRAGON
-	}
-
-	enum ColossalBladeSizeBonus
-	{
-		ONE(1) {
-
-			@Override
-			public String toString() {
-				return "1x1";
-			}
-		},
-		TWO(2) {
-			@Override
-			public String toString() {
-				return "2x2";
-			}
-		},
-		THREE(3) {
-			@Override
-			public String toString() {
-				return "3x3";
-			}
-		},
-		FOUR(4) {
-			@Override
-			public String toString() {
-				return "4x4";
-			}
-		},
-		FIVE(5) {
-			@Override
-			public String toString() {
-				return "5x5 +";
-			}
-		};
-
-		public final int monsterSize;
-
-		ColossalBladeSizeBonus(int monsterSize) {
-			this.monsterSize = monsterSize;
-		}
-	}
-
-	@ConfigItem(
-			keyName = "blowpipeDartType",
-			name = "Blowpipe Dart Type",
-			description = "Sets the Dart type for calculation",
-			position = 0
-	)
-	default BlowpipeDartType blowpipeDartType()
-	{
-		return BlowpipeDartType.MITHRIL;
-	}
-
-	@ConfigItem(
-			keyName = "colossalBladeMonsterSize",
-			name = "Colossal Blade Monster Size",
-			description = "Set the Monster Size for Colossal Blade Type Bonus",
-			position = 1
-	)
-	default ColossalBladeSizeBonus colossalBladeMonsterSize()
-	{
-		return ColossalBladeSizeBonus.ONE;
-	}
-
 	@ConfigSection(
 			name = "Main Panel",
 			description = "Settings relating to the Main Panel",
@@ -281,4 +208,13 @@ public interface MaxHitCalcConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+			keyName = "timeToWaitBeforeResettingSelectedNPC",
+			name = "Time To Wait Before Resetting Selected NPC",
+			description = "NPC is selected when attacking, calculating any magic weaknesses and will be removed after a certain amount of time. (in minutes) 0 = No Resetting",
+			position = 3,
+			section = spellSettings
+	)
+	default int timeToWaitBeforeResettingSelectedNPC() { return 2; }
 }

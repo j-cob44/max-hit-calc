@@ -34,7 +34,12 @@ import net.runelite.client.game.ItemManager;
 
 public class SpellbookSpellMaxHit extends MaxHit
 {
-    protected static double getSpellBaseHit(Client client, Item[] playerEquipment, int magicLevel, CombatSpell spell)
+    SpellbookSpellMaxHit(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
+    {
+        super(plugin, config, itemManager, client);
+    }
+
+    protected double getSpellBaseHit(Item[] playerEquipment, int magicLevel, CombatSpell spell)
     {
         double basehit = 0;
 
@@ -130,7 +135,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         return basehit;
     }
 
-    protected static double getTomeSpellBonus(Client client, Item[] playerEquipment, CombatSpell spell)
+    protected double getTomeSpellBonus(Item[] playerEquipment, CombatSpell spell)
     {
         String shieldItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.SHIELD);
 
@@ -164,26 +169,24 @@ public class SpellbookSpellMaxHit extends MaxHit
     /**
      * Calculates Max hit of a specific spell with given equipment.
      *
-     * @param client
-     * @param itemManager
      * @param playerEquipment current player equipment
      * @param spell selected spell to calculate max hit with
-     * @return
+     * @return double, max hit value
      */
-    public static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, CombatSpell spell)
+    public double calculateMagicMaxHit(Item[] playerEquipment, CombatSpell spell)
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
-        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, client.getBoostedSkillLevel(Skill.MAGIC), spell);
+        double spellBaseMaxHit = getSpellBaseHit(playerEquipment, client.getBoostedSkillLevel(Skill.MAGIC), spell);
 
         // Step 2: Calculate the Magic Damage Bonus
-        double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
+        double magicDmgBonus = getMagicEquipmentBoost( playerEquipment);
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
         // Step 3: Calculate Bonuses
         // Tome Bonuses
-        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, spell); // default 1
+        double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, spell); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
 
         // Smoke Battlestaff Bonus
@@ -193,6 +196,25 @@ public class SpellbookSpellMaxHit extends MaxHit
             if (spell.getSpellbook().contains("standard")) {
                 double SmokeStandardSpellsBonus = maxDamage * 0.1f;
                 maxDamage = maxDamage + SmokeStandardSpellsBonus;
+            }
+        }
+
+        // Final step: Calculate and add spell type weakness Bonus
+        if(spell.hasType())
+        {
+            if(plugin.selectedNPCName != null)
+            {
+                NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
+                if(weaknessBonus != null)
+                {
+                    if(spell.getSpellType() == weaknessBonus.getElementalWeakness())
+                    {
+                        int bonusPercent = weaknessBonus.getWeaknessPercent();
+
+                        double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
+                        maxDamage = maxDamage + typeBonusDamage;
+                    }
+                }
             }
         }
 

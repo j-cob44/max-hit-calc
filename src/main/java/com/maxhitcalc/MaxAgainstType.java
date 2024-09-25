@@ -38,7 +38,12 @@ import java.util.List;
  * Contains functions for calculating max hit vs specific types of npc.
  */
 public class MaxAgainstType extends MaxHit {
-    protected static List<Double> getTypeBonus(Client client, AttackStyle attackStyle, Item[] playerEquipment)
+    MaxAgainstType(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
+    {
+        super(plugin, config, itemManager, client);
+    }
+
+    protected List<Double> getTypeBonus(AttackStyle attackStyle, Item[] playerEquipment)
     {
         List<Double> typeBonusToApply = new ArrayList<>();
 
@@ -326,10 +331,11 @@ public class MaxAgainstType extends MaxHit {
     }
 
     // Needed in Magic for Slayer Staff (e)
-    protected static double getSpellBaseHit(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
+    protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         int spellSpriteID = -1;
         double basehit = 0;
+        double magicLevel = client.getBoostedSkillLevel(Skill.MAGIC);
 
         String weaponItemName = "";
         if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
@@ -494,38 +500,57 @@ public class MaxAgainstType extends MaxHit {
         return basehit;
     }
 
-    protected static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle)
+    protected double calculateMagicMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
-        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
+        double spellBaseMaxHit = getSpellBaseHit(playerEquipment, weaponAttackStyle);
 
         // Step 2: Calculate the Magic Damage Bonus
-        double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
+        double magicDmgBonus = getMagicEquipmentBoost(playerEquipment);
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
         // Step 3: Calculate Bonuses
         // Tome Bonuses
-        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+        double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
+
+        CombatSpell spell = getSpell();
 
         // Smoke Battlestaff Bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
         {
-            CombatSpell spell = getSpell(client);
-
             if (spell != null && spell.getSpellbook().contains("standard")) {
                 double SmokeStandardSpellsBonus = maxDamage * 0.1f;
                 maxDamage = maxDamage + SmokeStandardSpellsBonus;
             }
         }
 
+        // Final step: Calculate and add spell type weakness Bonus
+        if (spell != null && spell.hasType())
+        {
+            if (plugin.selectedNPCName != null)
+            {
+                NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
+                if (weaknessBonus != null)
+                {
+                    if(spell.getSpellType() == weaknessBonus.getElementalWeakness())
+                    {
+                        int bonusPercent = weaknessBonus.getWeaknessPercent();
+
+                        double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
+                        maxDamage = maxDamage + typeBonusDamage;
+                    }
+                }
+            }
+        }
+
         return maxDamage;
     }
 
-    private static double calculateTypeMaxHit(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    private double calculateTypeMaxHit()
     {
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
@@ -547,15 +572,15 @@ public class MaxAgainstType extends MaxHit {
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
         {
-            return calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, false);
+            return calculateMeleeMaxHit(playerEquipment, attackStyle, attackStyleID, false);
         }
         else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
         {
-            return calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
+            return calculateRangedMaxHit(playerEquipment, attackStyle, attackStyleID);
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
         {
-            return calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle);
+            return calculateMagicMaxHit(playerEquipment, attackStyle);
         }
         else
         {
@@ -566,12 +591,9 @@ public class MaxAgainstType extends MaxHit {
     /**
      * Calculates Max Hit Vs Types
      *
-     * @param client
-     * @param itemManager
-     * @param config
      * @return Max Hit vs Types as Double
      */
-    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    public double calculate()
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
@@ -585,14 +607,14 @@ public class MaxAgainstType extends MaxHit {
             return 0;
 
         // Get Type modifier
-        List<Double> typeModifiersList = MaxAgainstType.getTypeBonus(client, attackStyle, playerEquipment);
+        List<Double> typeModifiersList = this.getTypeBonus(attackStyle, playerEquipment);
 
         // Debug Modifiers
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
 
         // Get Max hit
-        double maxHit = MaxHit.calculate(client, itemManager, config, false); // Normal Max
-        double maxHitVsType = Math.floor(calculateTypeMaxHit(client, itemManager, config)); // Vs Type Max
+        double maxHit = super.calculate(false); // Normal Max
+        double maxHitVsType = Math.floor(this.calculateTypeMaxHit()); // Vs Type Max
 
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
 
@@ -622,7 +644,7 @@ public class MaxAgainstType extends MaxHit {
         // Re-add Colossal Blade Increase, factoring in other modifiers.
         if(weaponName.contains("Colossal blade"))
         {
-            int sizeBonus = (2 * Math.min(config.colossalBladeMonsterSize().monsterSize, 5));
+            int sizeBonus = (2 * Math.min(plugin.NPCSize, 5));
 
             maxHitVsType = maxHitVsType + sizeBonus;
         }

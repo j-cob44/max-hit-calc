@@ -29,6 +29,7 @@
 package com.maxhitcalc;
 
 import net.runelite.api.*;
+import net.runelite.api.Menu;
 import net.runelite.api.widgets.*;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
@@ -73,7 +74,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         if(plugin.maxHit > 0 && config.showMaxHit())
         {
             panelComponent.getChildren().add(LineComponent.builder()
-                    .left("Base Max Hit:")
+                    .left("Max Hit:")
                     .right(Integer.toString(plugin.maxHit))
                     .build());
         }
@@ -147,7 +148,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private String predictedMaxHitTooltip()
     {
-        List<Object> prediction = PredictNextMax.predict(client, itemManager, config);
+        PredictNextMax predictNextMaxes = new PredictNextMax(plugin, config, itemManager, client);
+        List<Object> prediction = predictNextMaxes.predict();
 
         String result = "Next Max Hit at: </br>";
 
@@ -182,7 +184,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private void getInventoryMaxHitTooltip(int maxHit){
         // Tooltip on item in inventory
-        MenuEntry[] menu = client.getMenuEntries();
+        Menu clientMenu = client.getMenu();
+        MenuEntry[] menu = clientMenu.getMenuEntries();
         int menuSize = menu.length;
         if (menuSize == 0)
         {
@@ -235,7 +238,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 {
                     int slotID = stats.getEquipment().getSlot();
 
-                    int maxWithItem = (int)InventoryItemMaxHit.predict(client, itemManager, config, itemID, slotID);
+                    InventoryItemMaxHit inventoryMaxHits = new InventoryItemMaxHit(plugin, config, itemManager, client);
+                    int maxWithItem = (int) inventoryMaxHits.predict(itemID, slotID);
 
                     // If no error
                     if (maxWithItem != -1){
@@ -269,7 +273,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private void getSpellbookMaxHitTooltip(){
         // Tooltip on item in inventory
-        MenuEntry[] menu = client.getMenuEntries();
+        Menu clientMenu = client.getMenu();
+        MenuEntry[] menu = clientMenu.getMenuEntries();
         int menuSize = menu.length;
         if (menuSize == 0)
         {
@@ -322,7 +327,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 }
 
                 // Calculate Max Hit
-                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, spell);
+                SpellbookSpellMaxHit spellbookMaxHits = new SpellbookSpellMaxHit(plugin, config, itemManager, client);
+                int spellbookMaxHit = (int)spellbookMaxHits.calculateMagicMaxHit(playerEquipment, spell);
 
                 // Error Check
                 if (spellbookMaxHit > 0)
@@ -336,7 +342,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
     private void getAutocastSelectionMaxHitTooltip(){
         // Tooltip on item in inventory
-        MenuEntry[] menu = client.getMenuEntries();
+        Menu clientMenu = client.getMenu();
+        MenuEntry[] menu = clientMenu.getMenuEntries();
         int menuSize = menu.length;
         if (menuSize == 0)
         {
@@ -389,7 +396,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 }
 
                 // Calculate Max Hit
-                int spellbookMaxHit = (int)SpellbookSpellMaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, spell);
+                SpellbookSpellMaxHit spellbookMaxHits = new SpellbookSpellMaxHit(plugin, config, itemManager, client);
+                int spellbookMaxHit = (int)spellbookMaxHits.calculateMagicMaxHit(playerEquipment, spell);
 
                 // Error Check
                 if (spellbookMaxHit > 0)

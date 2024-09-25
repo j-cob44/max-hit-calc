@@ -30,6 +30,7 @@ package com.maxhitcalc;
 
 import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +38,22 @@ import java.util.List;
  * Contains functions for calculating standard max hit.
  */
 public class MaxHit {
+
+    protected MaxHitCalcPlugin plugin;
+    protected MaxHitCalcConfig config;
+    protected ItemManager itemManager;
+    protected Client client;
+
+    MaxHit(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
+    {
+        this.plugin = plugin;
+        this.config = config;
+        this.itemManager = itemManager;
+        this.client = client;
+    }
+
     // Get Prayer Bonus for Max Hit Calculation
-    protected static double getPrayerBonus(Client client, AttackStyle weaponAttackStyle)
+    protected double getPrayerBonus(AttackStyle weaponAttackStyle)
     {
         // Melee Prayers
         if(weaponAttackStyle == AttackStyle.ACCURATE || weaponAttackStyle == AttackStyle.AGGRESSIVE || weaponAttackStyle == AttackStyle.CONTROLLED || weaponAttackStyle == AttackStyle.DEFENSIVE)
@@ -69,7 +84,7 @@ public class MaxHit {
         return 1; // default
     }
 
-    protected static double getSoulStackBonus(Client client)
+    protected double getSoulStackBonus()
     {
         int soulStack = client.getVarpValue(3784); // Should be replaced with VarPlayer.SOUL_STACK when implemented. See this PR for more info: https://github.com/runelite/runelite/pull/17390
 
@@ -77,7 +92,7 @@ public class MaxHit {
     }
 
     // Get Attack Style Bonus for Melee or Ranged
-    protected static int getAttackStyleBonus(AttackStyle weaponAttackStyle, int attackStyleID)
+    protected int getAttackStyleBonus(AttackStyle weaponAttackStyle, int attackStyleID)
     {
         // Return attack style bonus
         // Melee bonuses
@@ -95,7 +110,7 @@ public class MaxHit {
     }
 
     // Get Melee Strength Bonus from Weapon and armor
-    protected static double getMeleeStrengthBonus(Client client, ItemManager itemManager, Item[] playerEquipment)
+    protected double getMeleeStrengthBonus(Item[] playerEquipment)
     {
         if (playerEquipment == null) return 0;
 
@@ -124,7 +139,7 @@ public class MaxHit {
         return strengthBonus;
     }
 
-    protected static double getVoidMeleeBonus(Client client, Item[] playerEquipment)
+    protected double getVoidMeleeBonus(Item[] playerEquipment)
     {
         if (playerEquipment == null) return 1;
 
@@ -164,7 +179,7 @@ public class MaxHit {
     }
 
     // Passive Melee Set effects
-    protected static List<Double> getMeleeSpecialBonusMultiplier(Client client, Item[] playerEquipment)
+    protected List<Double> getMeleeSpecialBonusMultiplier(Item[] playerEquipment)
     {
         List<Double> specialBonusesToApply = new ArrayList<>();
 
@@ -228,15 +243,15 @@ public class MaxHit {
     }
 
     // Calculate Melee Max Hit
-    protected static double calculateMeleeMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, boolean isSpecialAttack)
+    protected double calculateMeleeMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, boolean isSpecialAttack)
     {
         // Calculate Melee Max Hit
         // Step 1: Calculate effective Strength
         int strengthLevel = client.getBoostedSkillLevel(Skill.STRENGTH);
-        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+        double prayerBonus = getPrayerBonus(weaponAttackStyle);
         int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-        double voidBonus = getVoidMeleeBonus(client, playerEquipment); // default 1;
-        double soulStackBonus = getSoulStackBonus(client);
+        double voidBonus = getVoidMeleeBonus(playerEquipment); // default 1;
+        double soulStackBonus = getSoulStackBonus();
         double effectiveSoulStackLevel = 0;
 
         if (!isSpecialAttack)
@@ -247,13 +262,13 @@ public class MaxHit {
         double effectiveStrength = Math.floor((Math.floor(strengthLevel * prayerBonus) + effectiveSoulStackLevel + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the base damage
-        double strengthBonus = getMeleeStrengthBonus(client, itemManager, playerEquipment); // default 0
+        double strengthBonus = getMeleeStrengthBonus(playerEquipment); // default 0
 
         double baseDamage = (0.5 + (effectiveStrength * ((strengthBonus + 64)/640)));
         double flooredBaseDamage = Math.floor(baseDamage);
 
         // Step 3: Calculate the bonus damage
-        List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(client, playerEquipment); // default empty
+        List<Double> specialBonusMultipliers = getMeleeSpecialBonusMultiplier(playerEquipment); // default empty
 
         double maxHit = flooredBaseDamage;
 
@@ -288,7 +303,7 @@ public class MaxHit {
     }
 
     // Get Ranged Void Bonus for Elite and Normal Sets
-    protected static double getVoidRangedBonus(Client client, Item[] playerEquipment)
+    protected double getVoidRangedBonus(Item[] playerEquipment)
     {
         // Get required items for void check
         String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
@@ -326,7 +341,7 @@ public class MaxHit {
     }
 
     // Get Ranged Strength Bonus from Equipment
-    protected static double getRangedStrengthBonus(Client client, ItemManager itemManager, Item[] playerEquipment, MaxHitCalcConfig.BlowpipeDartType dartType)
+    protected double getRangedStrengthBonus(Item[] playerEquipment)
     {
         double rangedStrengthBonus = 0;
 
@@ -364,19 +379,19 @@ public class MaxHit {
         {
             skipAmmo = true;
 
-            if(dartType == MaxHitCalcConfig.BlowpipeDartType.ADAMANT)
+            if(plugin.selectedDartType == BlowpipeDartType.ADAMANT)
             {
                 rangedStrengthBonus += 17;
             }
-            else if(dartType == MaxHitCalcConfig.BlowpipeDartType.RUNE)
+            else if(plugin.selectedDartType == BlowpipeDartType.RUNE)
             {
                 rangedStrengthBonus += 26;
             }
-            else if(dartType == MaxHitCalcConfig.BlowpipeDartType.AMETHYST)
+            else if(plugin.selectedDartType == BlowpipeDartType.AMETHYST)
             {
                 rangedStrengthBonus += 28;
             }
-            else if(dartType == MaxHitCalcConfig.BlowpipeDartType.DRAGON)
+            else if(plugin.selectedDartType == BlowpipeDartType.DRAGON)
             {
                 rangedStrengthBonus += 35;
             }
@@ -442,7 +457,7 @@ public class MaxHit {
     }
 
     // Get Gear Boost, for instance Crystal Armor set bonus
-    protected static double getRangeGearBoost(Client client, Item[] playerEquipment){
+    protected double getRangeGearBoost(Item[] playerEquipment){
         double damagePercentBonus = 1;
 
         // Get Required Item Names for checks
@@ -489,20 +504,21 @@ public class MaxHit {
         return damagePercentBonus;
     }
 
-    protected static double calculateRangedMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, MaxHitCalcConfig.BlowpipeDartType dartType)
+    // Calculate Ranged Max Hit
+    protected double calculateRangedMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
         // Calculate Ranged Max Hit
         // Step 1: Calculate effective ranged Strength
         int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-        double prayerBonus = getPrayerBonus(client, weaponAttackStyle);
+        double prayerBonus = getPrayerBonus(weaponAttackStyle);
         int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
-        double voidBonus = getVoidRangedBonus(client, playerEquipment); // default 1;
+        double voidBonus = getVoidRangedBonus(playerEquipment); // default 1;
 
         double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the max hit
-        double equipmentRangedStrength = getRangedStrengthBonus(client, itemManager, playerEquipment, dartType);
-        double gearBonus = getRangeGearBoost(client, playerEquipment);
+        double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
+        double gearBonus = getRangeGearBoost(playerEquipment);
 
         double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
 
@@ -527,7 +543,7 @@ public class MaxHit {
         return maxHit;
     }
 
-    protected static double getSpellBaseHit(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
+    protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
     {
         int spellSpriteID = -1;
         double basehit = 0;
@@ -640,7 +656,7 @@ public class MaxHit {
             // Specific Selected Spell Cases
             if (selectedSpell == null)
             {
-                System.out.println("Error");
+                //System.out.println("Error");
                 return -1; // error
             }
             else
@@ -734,7 +750,7 @@ public class MaxHit {
     }
 
     // Get Spell Info
-    protected static CombatSpell getSpell(Client client){
+    protected CombatSpell getSpell(){
         int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
         if (selectedSpellId == 0)
         {
@@ -747,7 +763,7 @@ public class MaxHit {
         return selectedSpell;
     }
 
-    protected static double getMagicEquipmentBoost(Client client, ItemManager itemManager, Item[] playerEquipment)
+    protected double getMagicEquipmentBoost(Item[] playerEquipment)
     {
         if (playerEquipment == null) return 1;
 
@@ -778,7 +794,7 @@ public class MaxHit {
         }
 
         // Get Void 2.5% bonus if necessary, otherwise +0
-        magicdamagebonus += getVoidMagicBonus(client, playerEquipment);
+        magicdamagebonus += getVoidMagicBonus(playerEquipment);
 
         // Get Tumeken's Shadow Bonus
         if(weaponItemName.contains("Tumeken"))
@@ -833,7 +849,7 @@ public class MaxHit {
         return 1 + magicdamagebonus; // Default is 1.
     }
 
-    protected static double getVoidMagicBonus(Client client, Item[] playerEquipment)
+    protected double getVoidMagicBonus(Item[] playerEquipment)
     {
         if (playerEquipment == null) return 0;
 
@@ -863,7 +879,7 @@ public class MaxHit {
         return 0;
     }
 
-    protected static double getTomeSpellBonus(Client client, Item[] playerEquipment, AttackStyle weaponAttackStyle)
+    protected double getTomeSpellBonus(Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         String shieldItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.SHIELD);
 
@@ -916,12 +932,12 @@ public class MaxHit {
         return 1;
     }
 
-    // Public Function, Calculate Standard Magic Max Hit
-    protected static double calculateMagicMaxHit(Client client, ItemManager itemManager, Item[] playerEquipment, AttackStyle weaponAttackStyle)
+    // Calculate Standard Magic Max Hit
+    protected double calculateMagicMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         // Calculate Magic Max Hit
         // Step 1: Find the base hit of the spell
-        double spellBaseMaxHit = getSpellBaseHit(client, playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
+        double spellBaseMaxHit = getSpellBaseHit(playerEquipment, weaponAttackStyle, client.getBoostedSkillLevel(Skill.MAGIC));
 
         if (spellBaseMaxHit == 0)
         {
@@ -929,24 +945,43 @@ public class MaxHit {
         }
 
         // Step 2: Calculate the Magic Damage Bonus
-        double magicDmgBonus = getMagicEquipmentBoost(client, itemManager, playerEquipment);
+        double magicDmgBonus = getMagicEquipmentBoost(playerEquipment);
 
         double maxDamage = (spellBaseMaxHit * magicDmgBonus);
 
         // Step 3: Calculate Bonuses
         // Tome Bonuses
-        double correctTomeSpellBonus = getTomeSpellBonus(client, playerEquipment, weaponAttackStyle); // default 1
+        double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
+
+        CombatSpell spell = getSpell();
 
         // Smoke Battlestaff Bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
         {
-            CombatSpell spell = getSpell(client);
-
             if (spell != null && spell.getSpellbook().contains("standard")) {
                 double SmokeStandardSpellsBonus = maxDamage * 0.1f;
                 maxDamage = maxDamage + SmokeStandardSpellsBonus;
+            }
+        }
+
+        // Final step: Calculate and add spell type weakness Bonus
+        if (spell != null && spell.hasType())
+        {
+            if (plugin.selectedNPCName != null)
+            {
+                NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
+                if (weaknessBonus != null)
+                {
+                    if(spell.getSpellType() == weaknessBonus.getElementalWeakness())
+                    {
+                        int bonusPercent = weaknessBonus.getWeaknessPercent();
+
+                        double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
+                        maxDamage = maxDamage + typeBonusDamage;
+                    }
+                }
             }
         }
 
@@ -956,13 +991,10 @@ public class MaxHit {
     /**
      * Calculates the standard max hit based on current equipment and player status.
      *
-     * @param client
-     * @param itemManager
-     * @param config
-     * @param isSpecialAttack
+     * @param isSpecialAttack boolean
      * @return Max Hit as Double
      */
-    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config, boolean isSpecialAttack)
+    public double calculate(boolean isSpecialAttack)
     {
         int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
         int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
@@ -979,15 +1011,15 @@ public class MaxHit {
         // Find what type to calculate
         if(attackStyle.equals(AttackStyle.ACCURATE) || attackStyle.equals(AttackStyle.AGGRESSIVE) || attackStyle.equals(AttackStyle.CONTROLLED) || attackStyle.equals(AttackStyle.DEFENSIVE))
         {
-            return MaxHit.calculateMeleeMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, isSpecialAttack);
+            return this.calculateMeleeMaxHit(playerEquipment, attackStyle, attackStyleID, isSpecialAttack);
         }
         else if (attackStyle.equals(AttackStyle.RANGING) || attackStyle.equals(AttackStyle.LONGRANGE))
         {
-            return MaxHit.calculateRangedMaxHit(client, itemManager, playerEquipment, attackStyle, attackStyleID, config.blowpipeDartType());
+            return this.calculateRangedMaxHit(playerEquipment, attackStyle, attackStyleID);
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))
         {
-            return MaxHit.calculateMagicMaxHit(client, itemManager, playerEquipment, attackStyle);
+            return this.calculateMagicMaxHit(playerEquipment, attackStyle);
         }
         else
         {

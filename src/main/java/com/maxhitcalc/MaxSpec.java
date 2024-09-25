@@ -36,7 +36,20 @@ import net.runelite.client.game.ItemManager;
  */
 public class MaxSpec
 {
-    static double getSpecWeaponStat(Client client, Item[] playerEquipment)
+    private MaxHitCalcConfig config;
+    private MaxHit maxHits;
+    private ItemManager itemManager;
+    private Client client;
+
+    MaxSpec(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
+    {
+        this.config = config;
+        this.maxHits = new MaxHit(plugin, config, itemManager, client);
+        this.itemManager = itemManager;
+        this.client = client;
+    }
+
+    double getSpecWeaponStat(Item[] playerEquipment)
     {
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
@@ -165,7 +178,7 @@ public class MaxSpec
 
         if(weaponName.contains("Soulreaper axe"))
         {
-            return 1 + MaxHit.getSoulStackBonus(client);
+            return 1 + maxHits.getSoulStackBonus();
         }
 
         if(weaponName.contains("Dual macuahuitl"))
@@ -235,7 +248,7 @@ public class MaxSpec
 
     // Returns the maximum hit of a spec weapon that hits multiple times in one move.
     // Returns 0 if not a multi hit spec weapon.
-    public static int getSpecMultiHit(Client client, int hit)
+    public int getSpecMultiHit(int hit)
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
@@ -302,12 +315,9 @@ public class MaxSpec
     /**
      * Calculates Max Hit of a Special Attack.
      *
-     * @param client
-     * @param itemManager
-     * @param config
      * @return Max Hit of Special Attack as Double
      */
-    public static double calculate(Client client, ItemManager itemManager, MaxHitCalcConfig config)
+    public double calculate()
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
@@ -316,12 +326,12 @@ public class MaxSpec
         boolean doubleHitSetting = config.displayMultiHitWeaponsAsOneHit();
 
         // Get Spec modifier
-        double specialAttackWeapon = MaxSpec.getSpecWeaponStat(client, playerEquipment);
+        double specialAttackWeapon = this.getSpecWeaponStat(playerEquipment);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
 
-        double maxHit = MaxHit.calculate(client, itemManager, config, true);
+        double maxHit = maxHits.calculate(true);
         if(specialAttackWeapon != 0)
         {
             // Get Max hit then calculate Spec
@@ -329,7 +339,7 @@ public class MaxSpec
 
             return maxSpecHit;
         }
-        else if (doubleHitSetting && (MaxSpec.getSpecMultiHit(client, (int)Math.floor(maxHit)) != 0))
+        else if (doubleHitSetting && (this.getSpecMultiHit((int)Math.floor(maxHit)) != 0))
         {
             // Niche cases where Special Attack does not increase Damage, but does hit twice. E.g: Dragon Knives, Magic Shortbow
             return maxHit;

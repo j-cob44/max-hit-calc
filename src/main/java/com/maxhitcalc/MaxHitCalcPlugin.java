@@ -30,6 +30,7 @@ package com.maxhitcalc;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
+
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
@@ -41,7 +42,13 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.ImageUtil;
+import net.runelite.client.ui.ClientToolbar;
+
+
+import java.awt.image.BufferedImage;
 
 @Slf4j
 @PluginDescriptor(
@@ -69,6 +76,18 @@ public class MaxHitCalcPlugin extends Plugin
 	@Inject
 	private ItemManager itemManager;
 
+	// UI Panels
+	@Inject
+	private ClientToolbar clientToolbar;
+	private MaxHitCalcPanel panel;
+	private NavigationButton navButton;
+
+	//
+	private MaxHit maxHits;
+	private MaxSpec maxSpecs;
+	private MaxAgainstType maxAgainstTypes;
+	private MaxSpecAgainstType maxSpecsAgainstTypes;
+
 	// Public Max Hit variables, calculated when Equipment changes
 	public int maxHit = 0;
 	public int maxSpec = 0;
@@ -77,6 +96,22 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// Variable to check custom "gamestate"
 	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
+
+	// Variables for Currently interacting NPC
+	public String selectedNPCName;
+	public int selectedNPCExpiryTime = Integer.MAX_VALUE;
+	boolean npcSelectedByPanel = false;
+	boolean npcResetByPanel = false;
+
+	// Vars for Calculations
+	public int NPCSize = 1;
+	boolean npcSizeSettingChanged = false;
+
+	public BlowpipeDartType selectedDartType = BlowpipeDartType.MITHRIL;
+	boolean dartSettingChanged = false;
+
+
+
 
 //	DEBUG
 //	@Subscribe
@@ -126,12 +161,38 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			gameReady = false; // Set false on normal runelite boot
 		}
+
+		maxHits = new MaxHit(this, config, itemManager, client);
+		maxSpecs = new MaxSpec(this, config, itemManager, client);
+		maxAgainstTypes = new MaxAgainstType(this, config, itemManager, client);
+		maxSpecsAgainstTypes = new MaxSpecAgainstType(this, config, itemManager, client);
+
+
+		// UI Startup
+		panel = injector.getInstance(MaxHitCalcPanel.class);
+		panel.init(this, config);
+
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/icon.png");
+
+		navButton = NavigationButton.builder()
+				.tooltip("Max Hit Calc")
+				.icon(icon)
+				.priority(7)
+				.panel(panel)
+				.build();
+
+		clientToolbar.addNavigation(navButton);
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
 		overlayManager.remove(pluginOverlay);
+
+		panel.deinit();
+		clientToolbar.removeNavigation(navButton);
+		panel = null;
+		navButton = null;
 	}
 
 	// On Widget Closed, check for when login screen is closed
@@ -260,27 +321,117 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 	}
 
+	// Get Selected NPC from interaction
+	@Subscribe
+	public void onInteractingChanged(InteractingChanged interaction)
+	{
+		// Verify interaction is between user and npc
+		if(interaction.getSource() != null)
+		{
+			// Verify source == local player
+			String localPlayerName = client.getLocalPlayer().getName();
+			String sourceName = interaction.getSource().getName();
+
+			if(localPlayerName.equals(sourceName))
+			{
+				if(interaction.getTarget() != null)
+				{
+					NPC rawNPC = (NPC)interaction.getTarget();
+
+					if(rawNPC != null)
+					{
+						// Do nothing for combat dummy or bankers
+						if(!rawNPC.getName().toLowerCase().contains("combat dummy") && !rawNPC.getName().toLowerCase().contains("banker"))
+						{
+							if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
+							{
+								selectedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
+							}
+
+							// Get necessary vars: name and size
+							selectedNPCName = rawNPC.getComposition().getName();
+							NPCSize = Math.max(1, rawNPC.getComposition().getSize()); // enforce to 1, incase of error
+
+							panel.setNPCviaPlugin();
+
+							calculateMaxes();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// After certain amount of ticks, clear clickedNPC
+	@Subscribe
+	public void onGameTick(GameTick gameTick)
+	{
+		// If NPC is selected, wait for time to expire to deselect it
+		if(selectedNPCName != null)
+		{
+			if (selectedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
+			{
+				selectedNPCName = null;
+				NPCSize = 1;
+				selectedNPCExpiryTime = Integer.MAX_VALUE; // Set higher than tick count
+				panel.resetNPCviaPanel();
+				calculateMaxes();
+			}
+		}
+
+		// Check flags set by panel
+		// Update tick after panel settings are changed
+		if(npcSizeSettingChanged)
+		{
+			calculateMaxes();
+			npcSizeSettingChanged = false;
+		}
+
+		if(dartSettingChanged)
+		{
+			calculateMaxes();
+			dartSettingChanged = false;
+		}
+
+		if(npcSelectedByPanel)
+		{
+			calculateMaxes();
+			npcSelectedByPanel = false;
+		}
+
+		if (npcResetByPanel)
+		{
+			calculateMaxes();
+			npcResetByPanel = false;
+		}
+	}
+
 	// Calculates all panel max hits.
 	public void calculateMaxes()
 	{
-		maxHit = (int)Math.floor(MaxHit.calculate(client, itemManager, config, false));
+		// Calculate Normal Max Hits
+		maxHit = (int)Math.floor(maxHits.calculate(false));
 
-		maxSpec = (int)Math.floor(MaxSpec.calculate(client, itemManager, config));
+		// Calculate Special Attack Max Hit
+		maxSpec = (int)Math.floor(maxSpecs.calculate());
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{
-			int multiHitSpec = MaxSpec.getSpecMultiHit(client, maxSpec);
+			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpec);
 			if(multiHitSpec != 0)
 			{
 				maxSpec = multiHitSpec;
 			}
 		}
 
-		maxVsType = (int)Math.floor(MaxAgainstType.calculate(client, itemManager, config));
+		// Calculate Max Hit vs Types of NPCs
+		maxVsType = (int)Math.floor(maxAgainstTypes.calculate());
 
-		maxSpecVsType = (int)Math.floor(MaxSpecAgainstType.calculate(client, itemManager, config));
+
+		// Calculate Special Attack Max Hit vs Types of NPCs
+		maxSpecVsType = (int)Math.floor(maxSpecsAgainstTypes.calculate());
 		if(config.displayMultiHitWeaponsAsOneHit())
 		{
-			int multiHitSpec = MaxSpec.getSpecMultiHit(client, maxSpecVsType);
+			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpecVsType);
 			if(multiHitSpec != 0)
 			{
 				maxSpecVsType = multiHitSpec;
