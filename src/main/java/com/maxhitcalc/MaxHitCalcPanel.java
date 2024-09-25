@@ -33,24 +33,18 @@ import com.google.inject.Inject;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
-import net.runelite.client.ui.components.materialtabs.MaterialTab;
-import net.runelite.client.ui.components.materialtabs.MaterialTabGroup;
-import net.runelite.client.util.ImageUtil;
+
 
 public class MaxHitCalcPanel extends PluginPanel
 {
@@ -174,9 +168,6 @@ public class MaxHitCalcPanel extends PluginPanel
 
         // Create Dropdown menu for selecting Dart type
         dartList = new JComboBox(BlowpipeDartType.values());
-        //dartList.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        //dartList.setLayout(new GridLayout(2, 1));
-        //dartList.setBorder(new EmptyBorder(5, 10, 5, 10));
         dartList.setSelectedIndex(0); // 0 = Mithril
         dartList.addActionListener(e -> onDartSwitched());
 
