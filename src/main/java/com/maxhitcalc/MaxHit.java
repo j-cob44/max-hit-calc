@@ -656,7 +656,7 @@ public class MaxHit {
             // Specific Selected Spell Cases
             if (selectedSpell == null)
             {
-                System.out.println("Error");
+                //System.out.println("Error");
                 return -1; // error
             }
             else

@@ -99,8 +99,9 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// Variables for Currently interacting NPC
 	public String selectedNPCName;
-	public int selectedNPCExpiryTime;
-	boolean npcSelectedByPanel = true;
+	public int selectedNPCExpiryTime = Integer.MAX_VALUE;
+	boolean npcSelectedByPanel = false;
+	boolean npcResetByPanel = false;
 
 	// Vars for Calculations
 	public int NPCSize = 1;
@@ -108,6 +109,8 @@ public class MaxHitCalcPlugin extends Plugin
 
 	public BlowpipeDartType selectedDartType = BlowpipeDartType.MITHRIL;
 	boolean dartSettingChanged = false;
+
+
 
 
 //	DEBUG
@@ -349,7 +352,7 @@ public class MaxHitCalcPlugin extends Plugin
 							selectedNPCName = rawNPC.getComposition().getName();
 							NPCSize = Math.max(1, rawNPC.getComposition().getSize()); // enforce to 1, incase of error
 
-							System.out.println("Selected NPC size: " + NPCSize);
+							panel.setNPCviaPlugin();
 
 							calculateMaxes();
 						}
@@ -363,16 +366,20 @@ public class MaxHitCalcPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick gameTick)
 	{
+		// If NPC is selected, wait for time to expire to deselect it
 		if(selectedNPCName != null)
 		{
 			if (selectedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
 			{
 				selectedNPCName = null;
 				NPCSize = 1;
+				selectedNPCExpiryTime = Integer.MAX_VALUE; // Set higher than tick count
+				panel.resetNPCviaPanel();
 				calculateMaxes();
 			}
 		}
 
+		// Check flags set by panel
 		// Update tick after panel settings are changed
 		if(npcSizeSettingChanged)
 		{
@@ -390,6 +397,12 @@ public class MaxHitCalcPlugin extends Plugin
 		{
 			calculateMaxes();
 			npcSelectedByPanel = false;
+		}
+
+		if (npcResetByPanel)
+		{
+			calculateMaxes();
+			npcResetByPanel = false;
 		}
 	}
 

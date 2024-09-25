@@ -40,6 +40,7 @@ import java.util.Vector;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import lombok.Getter;
 import net.runelite.api.Client;
@@ -66,16 +67,16 @@ public class MaxHitCalcPanel extends PluginPanel
     private MaxHitCalcPlugin plugin;
     private MaxHitCalcConfig config;
 
-    // tabs
-    private final JPanel npcIconDisplay = new JPanel();
-    private final MaterialTabGroup npcTabGroup = new MaterialTabGroup(npcIconDisplay);
-
     // UI Settings
     private JComboBox dartList = new JComboBox();
     private JComboBox colossalBladeList = new JComboBox();
 
+    private JLabel selectionNotice;
     private JLabel[] allNPCLabels;
     private Map<JLabel, String> npcLabels = new HashMap<>();
+
+    private String panelSelectedNPC = "";
+
 
     enum ColossalBladeSizeBonus
     {
@@ -123,103 +124,226 @@ public class MaxHitCalcPanel extends PluginPanel
         this.plugin = plugin;
         this.config = config;
 
-        // initial setting of panel layout
-        getParent().setLayout(new BorderLayout());
-        getParent().add(this, BorderLayout.CENTER); // <- this allows the panel to take up entire space
-
+        // Initial Settings
         setLayout(new BorderLayout());
         setBackground(ColorScheme.DARK_GRAY_COLOR);
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
+        // Title Panel
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        titlePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        titlePanel.setLayout(new GridLayout(0, 1));
 
-        // Build Settings Panel on Top
-        JPanel settingsPanel = new JPanel();
-        settingsPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        settingsPanel.setLayout(new GridLayout(0,1));
+        JLabel titleLabel = new JLabel();
+        titleLabel.setText("Calculation Settings");
 
-        JLabel settingsHeader = new JLabel("Calculation Settings");
-        settingsPanel.add(settingsHeader);
+        titlePanel.add(titleLabel);
+        //titlePanel.add(Box.createGlue()); // Adds a break
+
+
+        // Content section
+        JPanel contentPanel = new JPanel();
+        contentPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+        contentPanel.setLayout(new GridLayout(0, 1));
 
         // Blowpipe Dart Setting
+        JPanel panel = new JPanel();
+        panel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipadx = 0;
+
         JLabel dartSettingLabel = new JLabel("Dart Type:");
-        settingsPanel.add(dartSettingLabel);
+        dartSettingLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        //dartSettingLabel.setLayout(new GridLayout(2, 1));
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.ipady = 0;
+        c.weightx = 0.5;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridwidth = 2;
+
+        panel.add(dartSettingLabel, c);
+
 
         // Create Dropdown menu for selecting Dart type
         dartList = new JComboBox(BlowpipeDartType.values());
+        //dartList.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        //dartList.setLayout(new GridLayout(2, 1));
+        //dartList.setBorder(new EmptyBorder(5, 10, 5, 10));
         dartList.setSelectedIndex(0); // 0 = Mithril
         dartList.addActionListener(e -> onDartSwitched());
 
-        settingsPanel.add(dartList);
-        settingsPanel.add(Box.createGlue());
+        c.gridx = 2;
+        c.gridy = 0;
+        c.ipady = 0;
+        c.weightx = 0.5;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.LINE_END;
+        c.gridwidth = 2;
 
-        // Colossal Blade Setting
-        JLabel colossalBladeLabel = new JLabel("Colossal Blade Enemy Size:");
-        settingsPanel.add(colossalBladeLabel);
-        // Dropdown
+        panel.add(dartList, c);
+
+        c.gridx = 0;
+        c.gridy = 1;
+        c.ipady = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(10,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridwidth = 2;
+
+        panel.add(Box.createGlue(), c);
+
+        // Colossal Blade NPC Size Setting
+        JLabel cbladeSettingLabel = new JLabel("NPC Size:");
+        cbladeSettingLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        cbladeSettingLabel.setLayout(new GridLayout(2, 1));
+
+        c.gridx = 0;
+        c.gridy = 2;
+        c.ipady = 0;
+        c.weightx = 0.5;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridwidth = 2;
+
+        panel.add(cbladeSettingLabel, c);
+
+        // Dropdown for NPC Size
         colossalBladeList = new JComboBox(ColossalBladeSizeBonus.values());
         colossalBladeList.setSelectedIndex(0);
         colossalBladeList.addActionListener(e -> onCBladeSettingSwitched());
 
-        settingsPanel.add(colossalBladeList);
-        settingsPanel.add(Box.createGlue());
+        c.gridx = 2;
+        c.gridy = 2;
+        c.ipady = 0;
+        c.weightx = 0.5;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.LINE_END;
+        c.gridwidth = 2;
 
-        // Build next section
-        JPanel selectNPCPanel = new JPanel();
-        selectNPCPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        selectNPCPanel.setLayout(new BoxLayout(selectNPCPanel, BoxLayout.PAGE_AXIS));
-        selectNPCPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.add(colossalBladeList, c);
 
-        // Selected NPC setting
-        JLabel selectedNPCLabel = new JLabel("Selected NPC: ");
-        selectNPCPanel.add(selectedNPCLabel);
+        c.gridx = 0;
+        c.gridy = 3;
+        c.ipady = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(10,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridwidth = 2;
 
+        panel.add(Box.createGlue(), c);
+
+        // NPC Selection Title
+        JLabel npcSelectionTitleLabel = new JLabel("Selected NPC:");
+        npcSelectionTitleLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+        c.gridx = 0;
+        c.gridy = 4;
+        c.ipady = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridwidth = 2;
+
+        panel.add(npcSelectionTitleLabel, c);
+
+        // NPC Selection
+        selectionNotice = new JLabel("");
+        selectionNotice.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+        c.gridx = 2;
+        c.gridy = 4;
+        c.ipady = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.LINE_END;
+        c.gridwidth = 2;
+
+        panel.add(selectionNotice, c);
 
         int totalCells = NPCTypeWeakness.values().length;
-        int columns = 5;
+        allNPCLabels = new JLabel[totalCells];
+
+        int columns = 4;
         int rows = (int) Math.ceil(((double) totalCells/(double)columns));
         int index = 0;
 
-        JPanel frame = new JPanel();
-        selectNPCPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        frame.setLayout(new GridLayout(rows, columns));
+        int finalRow = 6;
 
-        allNPCLabels = new JLabel[totalCells];
-        JLabel[][] gridLabels = new JLabel[rows][columns];
         for(int i = 0; i < rows; i++)
         {
             for(int j = 0; j < columns; j++)
             {
                 if(index >= totalCells)
                 {
-                    gridLabels[i][j] = new JLabel(""); // Make empty when not cleanly divided
+
+
+                    //panel.add(new JLabel(""), c);
                 }
                 else
                 {
-                    gridLabels[i][j] = createIcon(NPCTypeWeakness.values()[index].getIcon(), NPCTypeWeakness.values()[index].getNPCName());
+                    NPCTypeWeakness currentNPC = NPCTypeWeakness.values()[index];
+                    JLabel createLabel = createIcon(currentNPC.getIcon(), currentNPC.getNPCName());
 
-                    npcLabels.put(gridLabels[i][j], NPCTypeWeakness.values()[index].getNPCName());
-                    allNPCLabels[index] = gridLabels[i][j];
+                    allNPCLabels[index] = createLabel;
+                    npcLabels.put(createLabel, currentNPC.getNPCName());
+
+                    c.gridx = 0+j;
+                    c.gridy = 5+i;
+                    c.ipady = 0;
+                    c.weightx = 0.5;
+                    c.weighty = 0;
+                    c.insets = new Insets(0,0,0,0);  //top padding
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.gridwidth = 1;
+                    c.gridheight = 1;
+
+                    panel.add(createLabel, c);
                     index++;
                 }
-                gridLabels[i][j].setSize(32,32); // max size
-                gridLabels[i][j].setBackground(Color.DARK_GRAY);
-                frame.add(gridLabels[i][j]);
             }
+            finalRow = 6+i; // needed for last button
         }
 
-        JScrollPane scroller = new JScrollPane(frame);
-        scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroller.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
-        scroller.getVerticalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
-        scroller.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        scroller.setPreferredSize(new Dimension(200, 200));
+        JButton resetButton = new JButton("Reset");
+        resetButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                resetNPCviaPanel();
+            }
+        });
 
-        //scroller.add(frame);
-        selectNPCPanel.add(scroller);
+        c.gridx = 0;
+        c.gridy = finalRow;
+        c.ipady = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridwidth = 2;
+        c.gridheight = 0;
 
-        add(settingsPanel, BorderLayout.NORTH);
-        add(selectNPCPanel, BorderLayout.CENTER);
+        panel.add(resetButton, c);
+
+        contentPanel.add(panel);
+
+        // Final,
+        add(titlePanel, BorderLayout.NORTH);
+        add(contentPanel, BorderLayout.CENTER);
 
         eventBus.register(this);
     }
@@ -231,54 +355,45 @@ public class MaxHitCalcPanel extends PluginPanel
 
     private JLabel createIcon(ImageIcon icon, String npcName)
     {
-        JLabel empty = new JLabel("");
+        ImageIcon resizedImage = new ImageIcon(icon.getImage().getScaledInstance(-1, 39, Image.SCALE_DEFAULT));
 
-        MaterialTab iconLabel = new MaterialTab(icon, npcTabGroup, empty);
-        iconLabel.setPreferredSize(new Dimension(32, 48));
-        iconLabel.setName(npcName);
+        JLabel iconLabel = new JLabel(resizedImage);
+        iconLabel.setLayout(new BorderLayout());
+        iconLabel.setBorder(new EmptyBorder(1,1,1,1));
         iconLabel.setToolTipText(npcName);
-        iconLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        iconLabel.setBorder(BorderFactory.createLineBorder(ColorScheme.DARK_GRAY_COLOR, 1));
-
-        //iconLabel.setHorizontalAlignment(JLabel.CENTER);
-        //iconLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-        //iconLabel.setSize(32,32);
-
-        iconLabel.setOnSelectEvent(() ->
+        iconLabel.addMouseListener(new MouseAdapter()
         {
-            onNPCSelect(iconLabel);
-            return true;
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                JLabel currentLabel = (JLabel) e.getSource();
+
+                if(!panelSelectedNPC.isEmpty())
+                {
+                    for(JLabel label : allNPCLabels)
+                    {
+                        String searchedNPC = npcLabels.get(label);
+
+                        if(searchedNPC.equals(panelSelectedNPC))
+                        {
+                            label.setBorder(new EmptyBorder(0,0,0,0));
+                        }
+                    }
+                }
+
+                currentLabel.setBorder(new LineBorder(Color.ORANGE, 1));
+
+                panelSelectedNPC = npcLabels.get(currentLabel);
+
+                selectionNotice.setText(panelSelectedNPC);
+
+                // Recalculate plugin
+                plugin.selectedNPCName = panelSelectedNPC;
+                plugin.npcSelectedByPanel = true;
+            }
         });
 
-//        iconLabel.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                onNPCSelect(iconLabel);
-//            }
-//        });
-
-        npcTabGroup.addTab(iconLabel);
-
         return iconLabel;
-    }
-
-    void onNPCSelect(JLabel clickedLabel){
-        String npcName = npcLabels.get(clickedLabel);
-
-        System.out.println(npcName);
-
-        // Clear old selected
-        for(JLabel label : allNPCLabels)
-        {
-            label.setBackground(Color.DARK_GRAY);
-        }
-
-        // Highlight selected
-        clickedLabel.setBackground(Color.ORANGE);
-
-        plugin.selectedNPCName = npcName;
-        plugin.npcSelectedByPanel = true;
-        plugin.selectedNPCExpiryTime = Integer.MAX_VALUE;
     }
 
     void onDartSwitched()
@@ -292,5 +407,61 @@ public class MaxHitCalcPanel extends PluginPanel
     {
         plugin.NPCSize = Math.max(1, colossalBladeList.getSelectedIndex()+1); // index 0 == 1, index 1 == 2, etc...
         plugin.npcSizeSettingChanged = true;
+    }
+
+    void resetNPCviaPanel(){
+        // Reset size
+        colossalBladeList.setSelectedIndex(0);
+
+        // Reset Selected NPC
+        if(!panelSelectedNPC.isEmpty())
+        {
+            for(JLabel label : allNPCLabels)
+            {
+                String searchedNPC = npcLabels.get(label);
+
+                if(searchedNPC.equals(panelSelectedNPC))
+                {
+                    label.setBorder(new EmptyBorder(0,0,0,0));
+                }
+            }
+        }
+
+        panelSelectedNPC = "";
+        selectionNotice.setText(panelSelectedNPC);
+
+    }
+
+    void setNPCviaPlugin()
+    {
+        // Set Size
+        int size = Math.min(plugin.NPCSize, 5);
+        colossalBladeList.setSelectedIndex(size-1);
+
+        // Set NPC
+        if(plugin.selectedNPCName != null)
+        {
+            for(JLabel label : allNPCLabels)
+            {
+                String searchedNPC = npcLabels.get(label);
+
+                if(!panelSelectedNPC.isEmpty())
+                {
+                    if(searchedNPC.equals(panelSelectedNPC))
+                    {
+                        label.setBorder(new EmptyBorder(0,0,0,0));
+                    }
+                }
+
+                if(searchedNPC.equals(plugin.selectedNPCName))
+                {
+                    label.setBorder(new LineBorder(Color.ORANGE, 1));
+                }
+            }
+
+            panelSelectedNPC = plugin.selectedNPCName;
+            selectionNotice.setText(panelSelectedNPC);
+        }
+
     }
 }

@@ -2,15 +2,14 @@
 
 ### Features:
 1. Calculates max hit for melee, ranged, and magic weapons.
-   - Automatically grabs your currently auto-casted spell, no need for input anywhere
-   - Currently only blowpipe is not automatic, used dart type must be set in plugin settings.
+   - Automatically grabs your currently auto-casted spell, no need for input anywhere.
+   - Currently only blowpipe is not automatic, used dart type must be set in sidebar panel.
 2. Calculates max special attack hit for all damage boosting special attacks.
 3. Calculates max hit against specific types (e.g. kalphites bonus, tome of fire bonus, wilderness bonus).
 4. Calculates max special attack against specific type bonuses (e.g. dragon longsword spec while against slayer task).
-5. Provides tooltip displaying required stats for next max hit.
-6. Provides tooltip predicting new max hit when hovering over equipment items in inventory or bank.
-7. Provides tooltip displaying max hit of a combat spell in the spell book.
-8. Provides tooltip showing max hit of a combat spell in the auto-cast selection screen.
+5. Provides max hit tooltips on inventory and bank items and spells.
+
+***New in v2.0: Use the sidebar panel to test magic weaknesses of certain NPCs with your gear setup.***
 
 <hr>
 
@@ -37,7 +36,8 @@ Auto-cast Selection Tooltips: <br>
 ![Autocast Example 3](/assets/ac_selection_example3.png)
 ![Autocast Example 4](/assets/ac_selection_example4.png)<br>
 
-Config: <br>
+Sidebar Panel and Settings Panel: <br>
+![Sidebar Panel](/assets/plugin_panel_example.png)
 ![Config Example](/assets/settings_example.png)<br>
 
 <hr>
