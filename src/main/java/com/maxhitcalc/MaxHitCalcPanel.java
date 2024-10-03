@@ -41,6 +41,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import net.runelite.api.Client;
 import net.runelite.client.callback.ClientThread;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
@@ -57,6 +58,9 @@ public class MaxHitCalcPanel extends PluginPanel
 
     @Inject
     private ClientThread clientThread;
+
+    @Inject
+    private ConfigManager configManager;
 
     private MaxHitCalcPlugin plugin;
     private MaxHitCalcConfig config;
@@ -168,7 +172,8 @@ public class MaxHitCalcPanel extends PluginPanel
 
         // Create Dropdown menu for selecting Dart type
         dartList = new JComboBox(BlowpipeDartType.values());
-        dartList.setSelectedIndex(0); // 0 = Mithril
+        BlowpipeDartType selectedDart = (BlowpipeDartType)configManager.getConfiguration("MaxHitCalc", "blowpipeDartType", BlowpipeDartType.class);
+        dartList.setSelectedIndex(selectedDart.ordinal()); // 0 = Mithril
         dartList.addActionListener(e -> onDartSwitched());
 
         c.gridx = 2;
@@ -181,6 +186,7 @@ public class MaxHitCalcPanel extends PluginPanel
         c.gridwidth = 2;
 
         panel.add(dartList, c);
+
 
         c.gridx = 0;
         c.gridy = 1;
@@ -390,6 +396,7 @@ public class MaxHitCalcPanel extends PluginPanel
     void onDartSwitched()
     {
         BlowpipeDartType selectedDart = BlowpipeDartType.values()[dartList.getSelectedIndex()];
+        configManager.setConfiguration("MaxHitCalc", "blowpipeDartType", selectedDart);
         plugin.selectedDartType = selectedDart;
         plugin.dartSettingChanged = true;
     }
