@@ -68,6 +68,19 @@ public interface MaxHitCalcConfig extends Config
 	)
 	String spellSettings = "Spell Settings";
 
+	// Persistent Blowdart Setting
+	@ConfigItem(
+			keyName = "blowpipeDartType",
+			name = "Blowpipe Dart Type",
+			description = "Sets the Dart type for calculation",
+			position = 0,
+			hidden = true,
+			secret = true
+	)
+	default BlowpipeDartType blowpipeDartType()
+	{
+		return BlowpipeDartType.MITHRIL;
+	}
 
 	// Show Max Hit
 	@ConfigItem(
