@@ -153,41 +153,31 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
 
-            // Inquisitor's armor, added 6 February 2020, set effect added 16 April 2020
-            int inquisitorPieces = 0;
-            if (headItemName.contains("Inquisitor's"))
+            // Inquisitor's Crush Bonus, added 6 February 2020, set effect removed 25 September 2024
+            // Now, wearing the Mace is the only requirement for the inquisitor's crush bonus
+            if (weaponItemName.contains("Inquisitor"))
             {
-                inquisitorPieces += 1;
-                typeBonusToApply.add(1.025);
-            }
-
-            if (bodyItemName.contains("Inquisitor's"))
-            {
-                inquisitorPieces += 1;
-            }
-
-            if (legsItemName.contains("Inquisitor's"))
-            {
-                inquisitorPieces += 1;
-            }
-
-            // Get total for inquisitors
-            if(inquisitorPieces != 0)
-            {
-                double inquisitorTotal = inquisitorPieces * 0.05;
-
-                if(inquisitorPieces == 3)
+                // If on crush style, which for the mace is all styles except controlled
+                if (attackStyle != AttackStyle.CONTROLLED)
                 {
-                    inquisitorTotal += 0.1;
+                    typeBonusToApply.add(1.025); // +2.5% for the mace
 
-                    // Check for Mace,
-                    if (weaponItemName.contains("Inquisitor"))
+                    // +2.5% crush dmg bonus for each armor piece if wearing the mace
+                    if (headItemName.contains("Inquisitor's"))
                     {
-                        inquisitorTotal += 0.05; // Ingame text (says tripled) is different from blog post (says +2.5%)
+                        typeBonusToApply.add(1.025);
+                    }
+
+                    if (bodyItemName.contains("Inquisitor's"))
+                    {
+                        typeBonusToApply.add(1.025);
+                    }
+
+                    if (legsItemName.contains("Inquisitor's"))
+                    {
+                        typeBonusToApply.add(1.025);
                     }
                 }
-
-                typeBonusToApply.add(inquisitorTotal);
             }
 
             // Vampyre, added 4 June 2020
