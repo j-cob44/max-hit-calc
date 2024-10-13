@@ -76,6 +76,9 @@ public class MaxHitCalcPlugin extends Plugin
 	@Inject
 	private ItemManager itemManager;
 
+	@Inject
+	private ConfigManager configManager;
+
 	// UI Panels
 	@Inject
 	private ClientToolbar clientToolbar;
@@ -390,6 +393,7 @@ public class MaxHitCalcPlugin extends Plugin
 		if(dartSettingChanged)
 		{
 			calculateMaxes();
+			configManager.setConfiguration("MaxHitCalc", "blowpipeDartType", selectedDartType);
 			dartSettingChanged = false;
 		}
 

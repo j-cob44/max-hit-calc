@@ -154,7 +154,7 @@ public class MaxHitCalcPanel extends PluginPanel
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 0;
 
-        JLabel dartSettingLabel = new JLabel("Dart Type:");
+        JLabel dartSettingLabel = new JLabel("Blowpipe Dart:");
         dartSettingLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         //dartSettingLabel.setLayout(new GridLayout(2, 1));
 
