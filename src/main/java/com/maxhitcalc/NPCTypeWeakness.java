@@ -29,10 +29,8 @@
 package com.maxhitcalc;
 
 import lombok.Getter;
-import net.runelite.client.util.ImageUtil;
 
 import javax.swing.*;
-import java.awt.image.BufferedImage;
 
 
 /**
@@ -49,6 +47,7 @@ public enum NPCTypeWeakness
     AbyssalPortal("Abyssal portal", SpellType.Fire, 50, NPCIcons.ABYSSAL_PORTAL_ICON),
     AdamantDragon("Adamant dragon", SpellType.Earth, 50, NPCIcons.ADAMANT_DRAGON_ICON),
     Ahrim("Ahrim", SpellType.Air, 50, NPCIcons.AHRIM_ICON),
+    Amoxliatl("Amoxliatl", SpellType.Fire, 30, NPCIcons.AMOXLIATL),
     Araxxor("Araxxor", SpellType.Fire, 50, NPCIcons.ARAXXOR_ICON),
     Araxyte("Araxyte", SpellType.Fire, 50, NPCIcons.ARAXXOR_ICON), // Needs Icon
     ArcaneScarab("Arcane scarab", SpellType.Fire, 50, NPCIcons.ARCANE_SCARAB_ICON),
@@ -59,12 +58,15 @@ public enum NPCTypeWeakness
     BlueDragon("Blue dragon", SpellType.Water, 50, NPCIcons.BLUE_DRAGON_ICON), // Brutal, Baby, and normal blue dragons all have the same %
     BronzeDragon("Bronze dragon", SpellType.Earth, 50, NPCIcons.BRONZE_DRAGON_ICON),
     Cerberus("Cerberus", SpellType.Water, 40, NPCIcons.CERBERUS_ICON),
+    ChilledJelly("Chilled jelly", SpellType.Fire, 50, NPCIcons.CHILLED_JELLY_ICON),
     DemonicGorilla("Demonic gorilla", SpellType.Water, 35, NPCIcons.DEMONIC_GORILLA_ICON),
     Dharok("Dharok", SpellType.Air, 50, NPCIcons.DHAROK_ICON),
     Drake("Drake", SpellType.Water, 50, NPCIcons.DRAKE_ICON),
     FireGiant("Fire giant", SpellType.Water, 100, NPCIcons.FIRE_GIANT_ICON),
     FlightKilisa("Flight kilisa", SpellType.Air, 30, NPCIcons.AVIANSIE_ICON), // Needs icon
     FlockleaderGeerin("Flockleader geerin", SpellType.Air, 30, NPCIcons.AVIANSIE_ICON), // Needs icon
+    FrostCrab("Frost Crab", SpellType.Fire, 100, NPCIcons.FROST_CRAB),
+    FrostNagua("Frost Nagua",SpellType.Fire, 50, NPCIcons.FROST_NAGUA),
     Ghost("Ghost", SpellType.Air, 50, NPCIcons.GHOST_ICON),
     GiantMole("Giant mole", SpellType.Water, 50, NPCIcons.GIANT_MOLE_ICON),
     GiantSpider("Giant spider", SpellType.Fire, 50, NPCIcons.GIANT_SPIDER_ICON),
@@ -73,8 +75,10 @@ public enum NPCTypeWeakness
     Guthan("Guthan", SpellType.Air, 50, NPCIcons.GUTHAN_ICON),
     Hellhound("Hellhound", SpellType.Water, 50, NPCIcons.HELLHOUND_ICON),
     Hespori("Hespori", SpellType.Fire, 100, NPCIcons.HESPORI_ICON),
+    Hueycoatl("hueycoatl", SpellType.Earth, 60, NPCIcons.HUEYCOATL_ICON),
     IceDemon("Ice demon", SpellType.Fire, 150, NPCIcons.ICE_DEMON_ICON),
     IceGiant("Ice giant", SpellType.Fire, 100, NPCIcons.ICE_GIANT_ICON),
+    IceSpider("Ice spider", SpellType.Fire, 100, NPCIcons.ICE_SPIDER_ICON),
     IceTroll("Ice troll", SpellType.Fire, 100, NPCIcons.ICE_TROLL_ICON), // Ordinary, Male, Female, and Grunt all have the same %
     IceTrollRunt("Ice troll runt", SpellType.Fire, 50, NPCIcons.ICE_TROLL_RUNT_ICON),
     IceWarrior("Ice warrior", SpellType.Fire, 100, NPCIcons.ICE_WARRIOR_ICON),
@@ -98,7 +102,7 @@ public enum NPCTypeWeakness
     Skeleton("Skeleton", SpellType.Air, 35, NPCIcons.SKELETON_ICON),
     SoldierScarab("Soldier scarab", SpellType.Fire, 50, NPCIcons.SOLDIER_SCARAB_ICON),
     SpittingScarab("Spitting scarab", SpellType.Fire, 50, NPCIcons.SPITTING_SCARAB_ICON),
-    // Spiritual Warrior (Zaros), find how to differentiate between all different versions
+    // Spiritual Warrior (Zaros), find how to differentiate between all different spiritual warriors
     SteelDragon("Steel dragon", SpellType.Earth, 50, NPCIcons.STEEL_DRAGON_ICON),
     Torag("Torag", SpellType.Air, 50, NPCIcons.TORAG_ICON),
     Verac("Verac", SpellType.Air, 50, NPCIcons.VERAC_ICON),
