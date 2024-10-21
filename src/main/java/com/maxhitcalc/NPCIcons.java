@@ -38,6 +38,7 @@ public class NPCIcons
     public static final ImageIcon ABYSSAL_PORTAL_ICON;
     public static final ImageIcon ADAMANT_DRAGON_ICON;
     public static final ImageIcon AHRIM_ICON;
+    public static final ImageIcon AMOXLIATL;
     public static final ImageIcon ARAXXOR_ICON;
     public static final ImageIcon ARCANE_SCARAB_ICON;
     public static final ImageIcon AVIANSIE_ICON;
@@ -46,10 +47,13 @@ public class NPCIcons
     public static final ImageIcon BLUE_DRAGON_ICON;
     public static final ImageIcon BRONZE_DRAGON_ICON;
     public static final ImageIcon CERBERUS_ICON;
+    public static final ImageIcon CHILLED_JELLY_ICON;
     public static final ImageIcon DEMONIC_GORILLA_ICON;
     public static final ImageIcon DHAROK_ICON;
     public static final ImageIcon DRAKE_ICON;
     public static final ImageIcon FIRE_GIANT_ICON;
+    public static final ImageIcon FROST_CRAB;
+    public static final ImageIcon FROST_NAGUA;
     public static final ImageIcon GHOST_ICON;
     public static final ImageIcon GIANT_MOLE_ICON;
     public static final ImageIcon GIANT_SPIDER_ICON;
@@ -58,8 +62,10 @@ public class NPCIcons
     public static final ImageIcon GUTHAN_ICON;
     public static final ImageIcon HELLHOUND_ICON;
     public static final ImageIcon HESPORI_ICON;
+    public static final ImageIcon HUEYCOATL_ICON;
     public static final ImageIcon ICE_DEMON_ICON;
     public static final ImageIcon ICE_GIANT_ICON;
+    public static final ImageIcon ICE_SPIDER_ICON;
     public static final ImageIcon ICE_TROLL_ICON;
     public static final ImageIcon ICE_TROLL_RUNT_ICON;
     public static final ImageIcon ICE_WARRIOR_ICON;
@@ -96,6 +102,7 @@ public class NPCIcons
         final BufferedImage ABYSSAL_PORTAL_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/abyssal_portal.png");
         final BufferedImage ADAMANT_DRAGON_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/adamant_dragon.png");
         final BufferedImage AHRIM_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ahrim.png");
+        final BufferedImage AMOXLIATL_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/amoxliatl.png");
         final BufferedImage ARAXXOR_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/araxxor.png");
         final BufferedImage ARCANE_SCARAB_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/arcane_scarab.png");
         final BufferedImage AVIANSIE_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/aviansie.png");
@@ -104,10 +111,13 @@ public class NPCIcons
         final BufferedImage BLUE_DRAGON_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/blue_dragon.png");
         final BufferedImage BRONZE_DRAGON_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/bronze_dragon.png");
         final BufferedImage CERBERUS_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/cerberus.png");
+        final BufferedImage CHILLED_JELLY_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/chilled_jelly.png");
         final BufferedImage DEMONIC_GORILLA_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/demonic_gorilla.png");
         final BufferedImage DHAROK_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/dharok.png");
         final BufferedImage DRAKE_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/drake.png");
         final BufferedImage FIRE_GIANT_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/fire_giant.png");
+        final BufferedImage FROST_CRAB_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/frost_crab.png");
+        final BufferedImage FROST_NAGUA_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/frost_nagua.png");
         final BufferedImage GHOST_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ghost.png");
         final BufferedImage GIANT_MOLE_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/giant_mole.png");
         final BufferedImage GIANT_SPIDER_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/giant_spider.png");
@@ -116,8 +126,10 @@ public class NPCIcons
         final BufferedImage GUTHAN_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/guthan.png");
         final BufferedImage HELLHOUND_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/hellhound.png");
         final BufferedImage HESPORI_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/hespori.png");
+        final BufferedImage HUEYCOATL_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/hueycoatl.png");
         final BufferedImage ICE_DEMON_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ice_demon.png");
         final BufferedImage ICE_GIANT_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ice_giant.png");
+        final BufferedImage ICE_SPIDER_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ice_spider.png");
         final BufferedImage ICE_TROLL_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ice_troll.png");
         final BufferedImage ICE_TROLL_RUNT_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ice_troll_runt.png");
         final BufferedImage ICE_WARRIOR_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/npc_icons/ice_warrior.png");
@@ -153,6 +165,7 @@ public class NPCIcons
         ABYSSAL_PORTAL_ICON = new ImageIcon(ABYSSAL_PORTAL_IMG);
         ADAMANT_DRAGON_ICON = new ImageIcon(ADAMANT_DRAGON_IMG);
         AHRIM_ICON = new ImageIcon(AHRIM_IMG);
+        AMOXLIATL = new ImageIcon(AMOXLIATL_IMG);
         ARAXXOR_ICON = new ImageIcon(ARAXXOR_IMG);
         ARCANE_SCARAB_ICON = new ImageIcon(ARCANE_SCARAB_IMG);
         AVIANSIE_ICON = new ImageIcon(AVIANSIE_IMG);
@@ -161,10 +174,13 @@ public class NPCIcons
         BLUE_DRAGON_ICON = new ImageIcon(BLUE_DRAGON_IMG);
         BRONZE_DRAGON_ICON = new ImageIcon(BRONZE_DRAGON_IMG);
         CERBERUS_ICON = new ImageIcon(CERBERUS_IMG);
+        CHILLED_JELLY_ICON = new ImageIcon(CHILLED_JELLY_IMG);
         DEMONIC_GORILLA_ICON = new ImageIcon(DEMONIC_GORILLA_IMG);
         DHAROK_ICON = new ImageIcon(DHAROK_IMG);
         DRAKE_ICON = new ImageIcon(DRAKE_IMG);
         FIRE_GIANT_ICON = new ImageIcon(FIRE_GIANT_IMG);
+        FROST_CRAB = new ImageIcon(FROST_CRAB_IMG);
+        FROST_NAGUA = new ImageIcon(FROST_NAGUA_IMG);
         GHOST_ICON = new ImageIcon(GHOST_IMG);
         GIANT_MOLE_ICON = new ImageIcon(GIANT_MOLE_IMG);
         GIANT_SPIDER_ICON = new ImageIcon(GIANT_SPIDER_IMG);
@@ -173,8 +189,10 @@ public class NPCIcons
         GUTHAN_ICON = new ImageIcon(GUTHAN_IMG);
         HELLHOUND_ICON = new ImageIcon(HELLHOUND_IMG);
         HESPORI_ICON = new ImageIcon(HESPORI_IMG);
+        HUEYCOATL_ICON = new ImageIcon(HUEYCOATL_IMG);
         ICE_DEMON_ICON = new ImageIcon(ICE_DEMON_IMG);
         ICE_GIANT_ICON = new ImageIcon(ICE_GIANT_IMG);
+        ICE_SPIDER_ICON = new ImageIcon(ICE_SPIDER_IMG);
         ICE_TROLL_ICON = new ImageIcon(ICE_TROLL_IMG);
         ICE_TROLL_RUNT_ICON = new ImageIcon(ICE_TROLL_RUNT_IMG);
         ICE_WARRIOR_ICON = new ImageIcon(ICE_WARRIOR_IMG);
