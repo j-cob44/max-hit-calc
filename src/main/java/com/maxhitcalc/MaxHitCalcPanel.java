@@ -73,7 +73,7 @@ public class MaxHitCalcPanel extends PluginPanel
     private JLabel[] allNPCLabels;
     private Map<JLabel, String> npcLabels = new HashMap<>();
 
-    private String panelSelectedNPC = "";
+    private String panelSelectedNPCName = "";
 
 
     enum ColossalBladeSizeBonus
@@ -365,27 +365,16 @@ public class MaxHitCalcPanel extends PluginPanel
             {
                 JLabel currentLabel = (JLabel) e.getSource();
 
-                if(!panelSelectedNPC.isEmpty())
-                {
-                    for(JLabel label : allNPCLabels)
-                    {
-                        String searchedNPC = npcLabels.get(label);
-
-                        if(searchedNPC.equals(panelSelectedNPC))
-                        {
-                            label.setBorder(new EmptyBorder(0,0,0,0));
-                        }
-                    }
-                }
+                clearCurrentPanelNPC(); // remove border from previous npc
 
                 currentLabel.setBorder(new LineBorder(Color.ORANGE, 1));
 
-                panelSelectedNPC = npcLabels.get(currentLabel);
+                panelSelectedNPCName = npcLabels.get(currentLabel);
 
-                selectionNotice.setText(panelSelectedNPC);
+                selectionNotice.setText(panelSelectedNPCName);
 
                 // Recalculate plugin
-                plugin.selectedNPCName = panelSelectedNPC;
+                plugin.selectedNPCName = panelSelectedNPCName;
                 plugin.npcSelectedByPanel = true;
             }
         });
@@ -411,69 +400,78 @@ public class MaxHitCalcPanel extends PluginPanel
         // Reset size
         colossalBladeList.setSelectedIndex(0);
 
-        // Reset Selected NPC
-        if(!panelSelectedNPC.isEmpty())
-        {
-            for(JLabel label : allNPCLabels)
-            {
-                String searchedNPC = npcLabels.get(label);
+        // Reset border around npc
+        clearCurrentPanelNPC();
 
-                // Find Full correct name
-                if(searchedNPC.equals(panelSelectedNPC))
-                {
-                    label.setBorder(new EmptyBorder(0,0,0,0));
-                }
-
-                // Find Partial name , e.g. baby (black dragon)
-                if(plugin.selectedNPCName.toLowerCase().contains(searchedNPC.toLowerCase()))
-                {
-                    label.setBorder(new EmptyBorder(0,0,0,0));
-                }
-            }
-        }
-
-        panelSelectedNPC = "";
-        selectionNotice.setText(panelSelectedNPC);
-
+        // Clear Texts
+        panelSelectedNPCName = "";
+        selectionNotice.setText(panelSelectedNPCName);
     }
 
+    // Set panel info automatically from plugin
     void setNPCviaPlugin()
     {
         // Set Size
         int size = Math.min(plugin.NPCSize, 5);
         colossalBladeList.setSelectedIndex(size-1);
 
+        // Clear currently bordered npc on panel
+        clearCurrentPanelNPC();
+
         // Set NPC
+        selectionNotice.setText(plugin.selectedNPCName);
         if(plugin.selectedNPCName != null)
         {
             for(JLabel label : allNPCLabels)
             {
                 String searchedNPC = npcLabels.get(label);
 
-                if(!panelSelectedNPC.isEmpty())
-                {
-                    if(searchedNPC.equals(panelSelectedNPC))
-                    {
-                        label.setBorder(new EmptyBorder(0,0,0,0));
-                    }
-                }
-
                 // Full and Correct name found
                 if(searchedNPC.equals(plugin.selectedNPCName))
                 {
                     label.setBorder(new LineBorder(Color.ORANGE, 1));
+                    panelSelectedNPCName = plugin.selectedNPCName; // Full name
+                    break;
                 }
 
                 // Partial name found, e.g. baby (black dragon)
                 if(plugin.selectedNPCName.toLowerCase().contains(searchedNPC.toLowerCase()))
                 {
                     label.setBorder(new LineBorder(Color.ORANGE, 1));
+                    panelSelectedNPCName = searchedNPC.toLowerCase(); // Partial name
+                    break;
                 }
             }
-
-            panelSelectedNPC = plugin.selectedNPCName;
-            selectionNotice.setText(panelSelectedNPC);
         }
+    }
 
+    // Clears currently Selected in the panel
+    void clearCurrentPanelNPC()
+    {
+        for(JLabel label : allNPCLabels)
+        {
+            String searchedNPC = npcLabels.get(label);
+
+            if (!panelSelectedNPCName.isEmpty())
+            {
+                // Find Full correct name
+                if (searchedNPC.equals(panelSelectedNPCName))
+                {
+                    label.setBorder(new EmptyBorder(0, 0, 0, 0));
+                    break;
+                }
+
+                // Find Partial name , e.g. baby (black dragon)
+                if (panelSelectedNPCName.toLowerCase().contains(searchedNPC.toLowerCase()))
+                {
+                    label.setBorder(new EmptyBorder(0, 0, 0, 0));
+                    break;
+                }
+            }
+            else
+            {
+                break; // no npc currently selected in panel
+            }
+        }
     }
 }
