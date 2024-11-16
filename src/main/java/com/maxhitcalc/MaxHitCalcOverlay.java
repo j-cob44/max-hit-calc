@@ -38,7 +38,7 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
 import net.runelite.client.util.ColorUtil;
-import net.runelite.http.api.item.ItemStats;
+import net.runelite.client.game.ItemStats;
 import net.runelite.client.game.ItemManager;
 import javax.inject.Inject;
 import java.awt.*;
@@ -231,7 +231,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Prepare Tooltip
         if (itemID != -1)
         {
-            ItemStats stats = itemManager.getItemStats(itemID, false);
+            ItemStats stats = itemManager.getItemStats(itemID);
             if(stats != null)
             {
                 if(stats.getEquipment() != null)

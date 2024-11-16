@@ -126,9 +126,9 @@ public class MaxHit {
                     int equipmentID = equipmentItem.getId();
 
                     // Ensure not null
-                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    if(itemManager.getItemStats(equipmentID) != null)
                     {
-                        int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
+                        int equipmentStrengthStat = itemManager.getItemStats(equipmentID).getEquipment().getStr();
 
                         strengthBonus += equipmentStrengthStat;
                     }
@@ -425,11 +425,11 @@ public class MaxHit {
                     int equipmentID = equipmentItem.getId();
 
                     // Ensure not null
-                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    if(itemManager.getItemStats(equipmentID) != null)
                     {
                         if(!calcWithMelee)
                         {
-                            int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getRstr();
+                            int equipmentStrengthStat = itemManager.getItemStats(equipmentID).getEquipment().getRstr();
 
                             if (equipmentID != ammoID || !skipAmmo)
                             {
@@ -439,7 +439,7 @@ public class MaxHit {
                         }
                         else
                         {
-                            int equipmentStrengthStat = itemManager.getItemStats(equipmentID, false).getEquipment().getStr();
+                            int equipmentStrengthStat = itemManager.getItemStats(equipmentID).getEquipment().getStr();
 
                             if (equipmentID != ammoID || !skipAmmo)
                             {
@@ -782,9 +782,9 @@ public class MaxHit {
                     double equipmentMagicBonusStat = 0;
 
                     // Ensure not null
-                    if(itemManager.getItemStats(equipmentID, false) != null)
+                    if(itemManager.getItemStats(equipmentID) != null)
                     {
-                        equipmentMagicBonusStat = itemManager.getItemStats(equipmentID, false).getEquipment().getMdmg();
+                        equipmentMagicBonusStat = itemManager.getItemStats(equipmentID).getEquipment().getMdmg();
 
                         magicdamagebonus += (equipmentMagicBonusStat/100);
                     }
