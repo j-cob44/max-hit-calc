@@ -418,7 +418,14 @@ public class MaxHitCalcPanel extends PluginPanel
             {
                 String searchedNPC = npcLabels.get(label);
 
+                // Find Full correct name
                 if(searchedNPC.equals(panelSelectedNPC))
+                {
+                    label.setBorder(new EmptyBorder(0,0,0,0));
+                }
+
+                // Find Partial name , e.g. baby (black dragon)
+                if(plugin.selectedNPCName.toLowerCase().contains(searchedNPC.toLowerCase()))
                 {
                     label.setBorder(new EmptyBorder(0,0,0,0));
                 }
@@ -451,7 +458,14 @@ public class MaxHitCalcPanel extends PluginPanel
                     }
                 }
 
+                // Full and Correct name found
                 if(searchedNPC.equals(plugin.selectedNPCName))
+                {
+                    label.setBorder(new LineBorder(Color.ORANGE, 1));
+                }
+
+                // Partial name found, e.g. baby (black dragon)
+                if(plugin.selectedNPCName.toLowerCase().contains(searchedNPC.toLowerCase()))
                 {
                     label.setBorder(new LineBorder(Color.ORANGE, 1));
                 }
