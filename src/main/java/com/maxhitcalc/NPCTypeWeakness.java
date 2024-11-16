@@ -142,7 +142,7 @@ public enum NPCTypeWeakness
         // Search names that aren't complete, e.g: baby (black dragon)
         for (NPCTypeWeakness npc : NPCTypeWeakness.values())
         {
-            if(npc.NPCName.toLowerCase().contains(name.toLowerCase())){
+            if(name.toLowerCase().contains(npc.NPCName.toLowerCase())){
                 return npc;
             }
         }
