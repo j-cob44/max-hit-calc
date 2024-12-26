@@ -49,7 +49,7 @@ public class PredictNextMax extends MaxHit
         double currentMaxHit = Math.floor(calculateMeleeMaxHit(playerEquipment, weaponAttackStyle, attackStyleID, false));
 
         // Predict Next Prayer Bonus for Next Max Hit
-        for(int i = 1; i <= 20; i++)
+        for(int i = 1; i <= 23; i++)
         {
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
@@ -108,7 +108,7 @@ public class PredictNextMax extends MaxHit
         }
 
         // Predict Next Strength Bonus for Next Max Hit
-        for(int i = 1; i <= 20; i++)
+        for(int i = 1; i <= 25; i++)
         {
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
@@ -284,7 +284,7 @@ public class PredictNextMax extends MaxHit
         }
 
         // Predict Next Prayer Bonus for Next Max Hit
-        for(int i = 1; i <= 20; i++)
+        for(int i = 1; i <= 23; i++)
         {
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
