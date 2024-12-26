@@ -430,16 +430,6 @@ public class PredictNextMax extends MaxHit
             double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
             predictedMaxHit = predictedMaxHit * correctTomeSpellBonus;
 
-            // Smoke Battlestaff Bonus
-            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
-            {
-                if (spell != null && spell.getSpellbook().contains("standard")) {
-                    double SmokeStandardSpellsBonus = predictedMaxHit * 0.1f;
-                    predictedMaxHit = predictedMaxHit + SmokeStandardSpellsBonus;
-                }
-            }
-
             // Final step: Calculate and add spell type weakness Bonus
             if (spell != null && spell.hasType())
             {

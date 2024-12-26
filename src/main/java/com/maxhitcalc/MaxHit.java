@@ -846,6 +846,15 @@ public class MaxHit {
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus*100 + "%", null);
 
+        // Smoke Battlestaff Dmg Bonus
+        CombatSpell spell = getSpell();
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+                magicdamagebonus += 0.1;
+            }
+        }
+
         return 1 + magicdamagebonus; // Default is 1.
     }
 
@@ -954,19 +963,8 @@ public class MaxHit {
         double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
 
-        CombatSpell spell = getSpell();
-
-        // Smoke Battlestaff Bonus
-        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
-        {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
-                double SmokeStandardSpellsBonus = maxDamage * 0.1f;
-                maxDamage = maxDamage + SmokeStandardSpellsBonus;
-            }
-        }
-
         // Final step: Calculate and add spell type weakness Bonus
+        CombatSpell spell = getSpell();
         if (spell != null && spell.hasType())
         {
             if (plugin.selectedNPCName != null)
