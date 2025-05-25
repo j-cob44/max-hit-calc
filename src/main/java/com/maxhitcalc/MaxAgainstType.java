@@ -298,6 +298,12 @@ public class MaxAgainstType extends MaxHit {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
 
+            // Dragonbane, added 5 January 2017 ; OR potentially "new" type since value is different from original, added 25 September 2024
+            if(weaponItemName.contains("Dragon hunter"))
+            {
+                typeBonusToApply.add(1.2);
+            }
+
             // Wilderness, added 26 July 2018
             if(weaponItemName.contains("Thammaron's sceptre"))
             {
