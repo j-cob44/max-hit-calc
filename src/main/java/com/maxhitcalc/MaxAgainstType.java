@@ -29,7 +29,7 @@
 package com.maxhitcalc;
 
 import net.runelite.api.*;
-import net.runelite.api.widgets.ComponentID;
+import net.runelite.api.gameval.InterfaceID;
 import net.runelite.client.game.ItemManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -404,7 +404,7 @@ public class MaxAgainstType extends MaxHit {
         else
         {
             // Check if casting without spell selected
-            if(client.getWidget(ComponentID.COMBAT_SPELL_ICON) == null)
+            if(client.getWidget(InterfaceID.CombatInterface.AUTOCAST_NORMAL) == null)
             {
                 return -1; // error
             }
@@ -412,11 +412,11 @@ public class MaxAgainstType extends MaxHit {
             // Get Spell Sprite ID
             if (weaponAttackStyle.equals(AttackStyle.CASTING))
             {
-                spellSpriteID = client.getWidget(ComponentID.COMBAT_SPELL_ICON).getSpriteId();
+                spellSpriteID = client.getWidget(InterfaceID.CombatInterface.AUTOCAST_NORMAL).getSpriteId();
             }
             else if (weaponAttackStyle.equals(AttackStyle.DEFENSIVE_CASTING))
             {
-                spellSpriteID = client.getWidget(ComponentID.COMBAT_DEFENSIVE_SPELL_ICON).getSpriteId();
+                spellSpriteID = client.getWidget(InterfaceID.CombatInterface.AUTOCAST_DEFENSIVE).getSpriteId();
             }
 
             CombatSpell selectedSpell = CombatSpell.getSpellBySpriteID(spellSpriteID);
