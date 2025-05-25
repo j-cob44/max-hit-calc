@@ -900,7 +900,7 @@ public class MaxHit {
         }
 
         // Twinflame Staff Magic Dmg Bonus
-        if (weaponItemName.toLowerCase().contains("Twinflame staff"))
+        if (weaponItemName.toLowerCase().contains("twinflame staff"))
         {
             if (spell != null && spell.getSpellbook().contains("standard")) {
                 magicdamagebonus += 0.1;
@@ -1049,7 +1049,7 @@ public class MaxHit {
 
         // Twinflame Staff Double Hit bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("Twinflame staff"))
+        if (weaponItemName.toLowerCase().contains("twinflame staff"))
         {
             if (spell != null && spell.getSpellbook().contains("standard")) {
 

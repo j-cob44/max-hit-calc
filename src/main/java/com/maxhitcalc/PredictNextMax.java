@@ -451,7 +451,7 @@ public class PredictNextMax extends MaxHit
 
             // Twinflame Staff Double Hit bonus
             String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponItemName.toLowerCase().contains("Twinflame staff"))
+            if (weaponItemName.toLowerCase().contains("twinflame staff"))
             {
                 if (spell != null && spell.getSpellbook().contains("standard")) {
 
