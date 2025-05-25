@@ -50,7 +50,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         // God Spells Cases
         if((spell == CombatSpell.FLAMES_OF_ZAMORAK) || (spell == CombatSpell.CLAWS_OF_GUTHIX) || (spell == CombatSpell.SARADOMIN_STRIKE))
         {
-            if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+            if (client.getVarpValue(272) > 0) // Varplayer: Charge God Spell
             {
                 if(spell == CombatSpell.CLAWS_OF_GUTHIX &&
                         (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))

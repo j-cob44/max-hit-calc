@@ -463,7 +463,7 @@ public class MaxAgainstType extends MaxHit {
                 // God Spell Cases with Charge
                 if((selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK) || (selectedSpell == CombatSpell.CLAWS_OF_GUTHIX) || (selectedSpell == CombatSpell.SARADOMIN_STRIKE))
                 {
-                    if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+                    if (client.getVarpValue(272) > 0) // Varplayer: Charge God Spell
                     {
                         if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
                                 (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
@@ -552,8 +552,8 @@ public class MaxAgainstType extends MaxHit {
 
     private double calculateTypeMaxHit()
     {
-        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(357);  // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
@@ -561,9 +561,9 @@ public class MaxAgainstType extends MaxHit {
 
         // Get Current Equipment
         Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        if (client.getItemContainer(94) != null ) // Equipment container ID
         {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+            playerEquipment = client.getItemContainer(94).getItems();
         }
         else {
             playerEquipment = null;
@@ -597,8 +597,8 @@ public class MaxAgainstType extends MaxHit {
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
-        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(357);  // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);

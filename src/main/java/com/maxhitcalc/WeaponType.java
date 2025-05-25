@@ -32,7 +32,6 @@ package com.maxhitcalc;
 import net.runelite.api.Client;
 import net.runelite.api.EnumID;
 import net.runelite.api.ParamID;
-import net.runelite.api.Varbits;
 import net.runelite.api.StructComposition;
 
 import static com.maxhitcalc.AttackStyle.*;

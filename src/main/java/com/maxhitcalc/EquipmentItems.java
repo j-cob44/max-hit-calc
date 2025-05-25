@@ -30,7 +30,6 @@ package com.maxhitcalc;
 
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
-import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 
 public class EquipmentItems
@@ -45,9 +44,9 @@ public class EquipmentItems
     public static Item[] getCurrentlyEquipped(Client client)
     {
         Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        if (client.getItemContainer(94) != null )
         {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+            playerEquipment = client.getItemContainer(94).getItems();
         }
         else
         {

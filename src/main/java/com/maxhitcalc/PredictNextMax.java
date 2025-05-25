@@ -486,8 +486,8 @@ public class PredictNextMax extends MaxHit
      * @return List of predictions
      */
     public List<Object> predict(){
-        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(357); // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);

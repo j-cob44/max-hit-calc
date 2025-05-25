@@ -116,7 +116,7 @@ public class MaxSpec
 
         if(weaponName.contains("Dragon hasta"))
         {
-            return 1.0 + (0.5 * ((double)client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) /1000));
+            return 1.0 + (0.5 * ((double)client.getVarpValue(300) /1000)); // Varplayer: Special Attack Percent
         }
 
         if(weaponName.contains("Dragon longsword"))

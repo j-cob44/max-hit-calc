@@ -205,7 +205,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Check if inventory item
         if(config.showInventoryTooltip())
         {
-            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.INVENTORY)
+            if (WidgetUtil.componentToInterface(widget.getId()) == 149) // Inventory Interface ID
             {
                 itemID = widget.getItemId();
             }
@@ -213,7 +213,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Check if Bank item
         if (config.showBankTooltip())
         {
-            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.BANK)
+            if (WidgetUtil.componentToInterface(widget.getId()) == 12) // Bank Interface ID
             {
                 itemID = widget.getItemId();
             }
@@ -221,7 +221,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Check if "Bank Invetory" Item, shows with either option true
         if (config.showInventoryTooltip() || config.showBankTooltip())
         {
-            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.BANK_INVENTORY)
+            if (WidgetUtil.componentToInterface(widget.getId()) == 15) // Bank Inventory Interface ID
             {
                 itemID = widget.getItemId();
             }
@@ -318,9 +318,9 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
                 // Get Current Equipment
                 Item[] playerEquipment;
-                if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+                if (client.getItemContainer(94) != null ) // Equipment Inventory ID
                 {
-                    playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+                    playerEquipment = client.getItemContainer(94).getItems();
                 }
                 else {
                     playerEquipment = null;
