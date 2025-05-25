@@ -163,6 +163,18 @@ public class SpellbookSpellMaxHit extends MaxHit
             }
         }
 
+        if (spell.getName().toLowerCase().contains("earth"))
+        {
+            // Check for tome of water
+            if (shieldItemName.contains("Tome of earth"))
+            {
+                if (!shieldItemName.contains("(empty)"))
+                {
+                    return 1.1;
+                }
+            }
+        }
+
         return 1;
     }
 
