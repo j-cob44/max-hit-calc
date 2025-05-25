@@ -533,6 +533,20 @@ public class MaxAgainstType extends MaxHit {
             }
         }
 
+        // Twinflame Staff Double Hit bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("Twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                {
+                    double bonusHit = maxDamage * 0.4;
+                    maxDamage = maxDamage + bonusHit;
+                }
+            }
+        }
+
         return maxDamage;
     }
 

@@ -899,6 +899,14 @@ public class MaxHit {
             }
         }
 
+        // Twinflame Staff Magic Dmg Bonus
+        if (weaponItemName.toLowerCase().contains("Twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+                magicdamagebonus += 0.1;
+            }
+        }
+
         return 1 + magicdamagebonus; // Default is 1.
     }
 
@@ -1035,6 +1043,20 @@ public class MaxHit {
                         double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
                         maxDamage = maxDamage + typeBonusDamage;
                     }
+                }
+            }
+        }
+
+        // Twinflame Staff Double Hit bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("Twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                {
+                    double bonusHit = maxDamage * 0.4;
+                    maxDamage = maxDamage + bonusHit;
                 }
             }
         }

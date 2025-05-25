@@ -449,6 +449,20 @@ public class PredictNextMax extends MaxHit
                 }
             }
 
+            // Twinflame Staff Double Hit bonus
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if (weaponItemName.toLowerCase().contains("Twinflame staff"))
+            {
+                if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                    if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                    {
+                        double bonusHit = predictedMaxHit * 0.4;
+                        predictedMaxHit = predictedMaxHit + bonusHit;
+                    }
+                }
+            }
+
             // Check if predicted is better than current
             if (Math.floor(predictedMaxHit) > currentMaxHit)
             {
