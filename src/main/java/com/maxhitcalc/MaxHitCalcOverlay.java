@@ -296,7 +296,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + widget.getSpriteId(), ""); // DEBUG
 
         // Get Spell Sprite ID if actually in Spellbook
-        if(group == InterfaceID.SPELLBOOK)
+        if(group == 218) // Spellbook Interface ID
         {
             spellSpriteID = widget.getSpriteId();
         }
@@ -387,9 +387,9 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
                 // Get Current Equipment
                 Item[] playerEquipment;
-                if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+                if (client.getItemContainer(94) != null ) // Equipment Inventory ID
                 {
-                    playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+                    playerEquipment = client.getItemContainer(94).getItems();
                 }
                 else {
                     playerEquipment = null;
