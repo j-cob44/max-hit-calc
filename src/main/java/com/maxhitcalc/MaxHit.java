@@ -58,27 +58,52 @@ public class MaxHit {
         // Melee Prayers
         if(weaponAttackStyle == AttackStyle.ACCURATE || weaponAttackStyle == AttackStyle.AGGRESSIVE || weaponAttackStyle == AttackStyle.CONTROLLED || weaponAttackStyle == AttackStyle.DEFENSIVE)
         {
-            if(client.isPrayerActive((Prayer.BURST_OF_STRENGTH))) return 1.05;
+            // Burst of Strength
+            if(client.getVarbitValue(4105) == 1) return 1.05;
 
-            if(client.isPrayerActive((Prayer.SUPERHUMAN_STRENGTH))) return 1.1;
+            // Superhuman Strength
+            if(client.getVarbitValue(4108) == 1) return 1.1;
 
-            if(client.isPrayerActive((Prayer.ULTIMATE_STRENGTH))) return 1.15;
+            // Ultimate Strength
+            if(client.getVarbitValue(4114) == 1) return 1.15;
 
-            if(client.isPrayerActive((Prayer.CHIVALRY))) return 1.18;
+            // Chivalry
+            if(client.getVarbitValue(4128) == 1) return 1.18;
 
-            if(client.isPrayerActive((Prayer.PIETY))) return 1.23;
+            // Piety
+            if(client.getVarbitValue(4129) == 1) return 1.23;
         }
 
         // Ranged Prayers
         if(weaponAttackStyle == AttackStyle.RANGING || weaponAttackStyle == AttackStyle.LONGRANGE)
         {
-            if(client.isPrayerActive((Prayer.SHARP_EYE))) return 1.05;
+            // Sharp Eye
+            if(client.getVarbitValue(4122) == 1) return 1.05;
 
-            if(client.isPrayerActive((Prayer.HAWK_EYE))) return 1.1;
+            // Hawk Eye
+            if(client.getVarbitValue(4124) == 1) return 1.1;
 
-            if(client.isPrayerActive((Prayer.EAGLE_EYE))) return 1.15;
+            // Eagle Eye / Deadeye
+            if(client.getVarbitValue(16090) == 1)
+            {
+                int deadeyeUnlocked = client.getVarbitValue(16097);
 
-            if(client.isPrayerActive((Prayer.RIGOUR))) return 1.23;
+                 System.out.println("deadEyeUnlocked = " + deadeyeUnlocked);
+
+                if (deadeyeUnlocked == 0)
+                {
+                     System.out.println("Eagle Eye Active");
+                    return 1.15;
+                }
+                else if (deadeyeUnlocked == 1)
+                {
+                     System.out.println("Dead eye Active");
+                    return 1.18;
+                }
+            }
+
+            // Rigour
+            if(client.getVarbitValue(5464) == 1) return 1.23;
         }
 
         return 1; // default
@@ -836,11 +861,30 @@ public class MaxHit {
         }
 
         // Prayer Bonuses
-        if(client.isPrayerActive(Prayer.MYSTIC_LORE)) magicdamagebonus += 0.01;
+        // Mystic Lore
+        if(client.getVarbitValue(4125) == 1) magicdamagebonus += 0.01;
 
-        if(client.isPrayerActive(Prayer.MYSTIC_MIGHT)) magicdamagebonus += 0.02;
+        // Mystic Might / Mystic Vigour
+        if(client.getVarbitValue(16091) == 1)
+        {
+            int vigourUnlocked = client.getVarbitValue(16098);
 
-        if(client.isPrayerActive(Prayer.AUGURY)) magicdamagebonus += 0.04;
+             System.out.println("MysticVigour = " + vigourUnlocked);
+
+            if (vigourUnlocked == 0)
+            {
+                 System.out.println("Mystic Might Active");
+                 magicdamagebonus += 0.02;
+            }
+            else if (vigourUnlocked == 1)
+            {
+                 System.out.println("Mystic Vigour Active");
+                magicdamagebonus += 0.03;
+            }
+        }
+
+        // Augury
+        if(client.getVarbitValue(5465) == 1) magicdamagebonus += 0.04;
 
 
         // Debug
