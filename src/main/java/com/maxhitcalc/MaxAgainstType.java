@@ -32,6 +32,7 @@ import net.runelite.api.Client;
 import net.runelite.api.Item;
 import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.Skill;
+import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.game.ItemManager;
@@ -556,9 +557,9 @@ public class MaxAgainstType extends MaxHit {
 
         // Get Current Equipment
         Item[] playerEquipment;
-        if (client.getItemContainer(94) != null ) // Equipment container ID
+        if (client.getItemContainer(InventoryID.WORN) != null ) // Equipment container ID = 94
         {
-            playerEquipment = client.getItemContainer(94).getItems();
+            playerEquipment = client.getItemContainer(InventoryID.WORN).getItems();
         }
         else
         {

@@ -37,6 +37,7 @@ import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.Skill;
 import net.runelite.api.events.*;
+import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.gameval.VarbitID;
@@ -206,8 +207,7 @@ public class MaxHitCalcPlugin extends Plugin
 	@Subscribe
 	public void onWidgetClosed(WidgetClosed widget)
 	{
-
-		if (widget.getGroupId() == 378) // Login Click to play screen interface id
+		if (widget.getGroupId() == InterfaceID.WELCOME_SCREEN) // "Click to play" screen interface id = 378
 		{
 			gameReady = true; // Set as soon as user closes welcome screen
 			calculateMaxes();
