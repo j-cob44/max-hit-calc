@@ -203,7 +203,7 @@ public class MaxHitCalcPlugin extends Plugin
 	public void onWidgetClosed(WidgetClosed widget)
 	{
 
-		if (widget.getGroupId() == InterfaceID.LOGIN_CLICK_TO_PLAY_SCREEN)
+		if (widget.getGroupId() == 378) // Login Click to play screen interface id
 		{
 			gameReady = true; // Set as soon as user closes welcome screen
 			calculateMaxes();
@@ -226,7 +226,7 @@ public class MaxHitCalcPlugin extends Plugin
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
 		// On Item Equip/de-equip
-		if(event.getContainerId() == InventoryID.EQUIPMENT.getId())
+		if(event.getContainerId() == 94) // Equipment Container ID
 		{
 			calculateMaxes();
 		}
@@ -260,7 +260,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		// On attack style changed
-		if (event.getVarpId() == VarPlayer.ATTACK_STYLE)
+		if (event.getVarpId() == 43) // Varplayer: Attack Style
 		{
 			calculateMaxes();
 		}
@@ -272,13 +272,13 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		// On soul stack changed
-		if (event.getVarpId() == 3784) // Should be replaced with VarPlayer.SOUL_STACK when implemented. See this PR for more info: https://github.com/runelite/runelite/pull/17390
+		if (event.getVarpId() == 3784) // Varplayer: Soul Stack
 		{
 			calculateMaxes();
 		}
 
 		// On Charge Spell Buff Start/End
-		if(event.getVarpId() == VarPlayer.CHARGE_GOD_SPELL)
+		if(event.getVarpId() == 272) // Varplayer: Charge God Spell
 		{
 			calculateMaxes();
 		}

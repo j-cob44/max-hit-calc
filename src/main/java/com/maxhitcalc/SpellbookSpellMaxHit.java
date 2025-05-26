@@ -50,7 +50,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         // God Spells Cases
         if((spell == CombatSpell.FLAMES_OF_ZAMORAK) || (spell == CombatSpell.CLAWS_OF_GUTHIX) || (spell == CombatSpell.SARADOMIN_STRIKE))
         {
-            if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+            if (client.getVarpValue(272) > 0) // Varplayer: Charge God Spell
             {
                 if(spell == CombatSpell.CLAWS_OF_GUTHIX &&
                         (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
@@ -163,6 +163,18 @@ public class SpellbookSpellMaxHit extends MaxHit
             }
         }
 
+        if (spell.getName().toLowerCase().contains("earth"))
+        {
+            // Check for tome of water
+            if (shieldItemName.contains("Tome of earth"))
+            {
+                if (!shieldItemName.contains("(empty)"))
+                {
+                    return 1.1;
+                }
+            }
+        }
+
         return 1;
     }
 
@@ -189,16 +201,6 @@ public class SpellbookSpellMaxHit extends MaxHit
         double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, spell); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
 
-        // Smoke Battlestaff Bonus
-        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
-        {
-            if (spell.getSpellbook().contains("standard")) {
-                double SmokeStandardSpellsBonus = maxDamage * 0.1f;
-                maxDamage = maxDamage + SmokeStandardSpellsBonus;
-            }
-        }
-
         // Final step: Calculate and add spell type weakness Bonus
         if(spell.hasType())
         {
@@ -214,6 +216,20 @@ public class SpellbookSpellMaxHit extends MaxHit
                         double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
                         maxDamage = maxDamage + typeBonusDamage;
                     }
+                }
+            }
+        }
+
+        // Twinflame Staff Double Hit bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                {
+                    double bonusHit = maxDamage * 0.4;
+                    maxDamage = maxDamage + bonusHit;
                 }
             }
         }

@@ -58,27 +58,52 @@ public class MaxHit {
         // Melee Prayers
         if(weaponAttackStyle == AttackStyle.ACCURATE || weaponAttackStyle == AttackStyle.AGGRESSIVE || weaponAttackStyle == AttackStyle.CONTROLLED || weaponAttackStyle == AttackStyle.DEFENSIVE)
         {
-            if(client.isPrayerActive((Prayer.BURST_OF_STRENGTH))) return 1.05;
+            // Burst of Strength
+            if(client.getVarbitValue(4105) == 1) return 1.05;
 
-            if(client.isPrayerActive((Prayer.SUPERHUMAN_STRENGTH))) return 1.1;
+            // Superhuman Strength
+            if(client.getVarbitValue(4108) == 1) return 1.1;
 
-            if(client.isPrayerActive((Prayer.ULTIMATE_STRENGTH))) return 1.15;
+            // Ultimate Strength
+            if(client.getVarbitValue(4114) == 1) return 1.15;
 
-            if(client.isPrayerActive((Prayer.CHIVALRY))) return 1.18;
+            // Chivalry
+            if(client.getVarbitValue(4128) == 1) return 1.18;
 
-            if(client.isPrayerActive((Prayer.PIETY))) return 1.23;
+            // Piety
+            if(client.getVarbitValue(4129) == 1) return 1.23;
         }
 
         // Ranged Prayers
         if(weaponAttackStyle == AttackStyle.RANGING || weaponAttackStyle == AttackStyle.LONGRANGE)
         {
-            if(client.isPrayerActive((Prayer.SHARP_EYE))) return 1.05;
+            // Sharp Eye
+            if(client.getVarbitValue(4122) == 1) return 1.05;
 
-            if(client.isPrayerActive((Prayer.HAWK_EYE))) return 1.1;
+            // Hawk Eye
+            if(client.getVarbitValue(4124) == 1) return 1.1;
 
-            if(client.isPrayerActive((Prayer.EAGLE_EYE))) return 1.15;
+            // Eagle Eye / Deadeye
+            if(client.getVarbitValue(16090) == 1)
+            {
+                int deadeyeUnlocked = client.getVarbitValue(16097);
 
-            if(client.isPrayerActive((Prayer.RIGOUR))) return 1.23;
+                 System.out.println("deadEyeUnlocked = " + deadeyeUnlocked);
+
+                if (deadeyeUnlocked == 0)
+                {
+                     System.out.println("Eagle Eye Active");
+                    return 1.15;
+                }
+                else if (deadeyeUnlocked == 1)
+                {
+                     System.out.println("Dead eye Active");
+                    return 1.18;
+                }
+            }
+
+            // Rigour
+            if(client.getVarbitValue(5464) == 1) return 1.23;
         }
 
         return 1; // default
@@ -354,6 +379,12 @@ public class MaxHit {
         String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
         int ammoID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.AMMO);
 
+        String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
+        int capeID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.CAPE);
+
+        String quiverItemName;
+        int quiverItemID;
+
         boolean skipAmmo = false;
         boolean calcWithMelee = false;
 
@@ -414,6 +445,50 @@ public class MaxHit {
             skipAmmo = true;
             calcWithMelee = true;
         }
+
+        // Check Ammo type matches up with weapon
+        if(!skipAmmo)
+        {
+            // Check if ammo type matches with weapon, otherwise skip ammo slot in calc
+            if(ammoID != -1)
+            {
+                if(!EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName))
+                {
+                    // Ammo did not match weapon, skip ammo for calc
+                    skipAmmo = true;
+                }
+            }
+
+
+            // Quiver Check
+//            if(capeItemName.toLowerCase().contains("quiver"))
+//            {
+//                quiverItemName = EquipmentItems.getQuiverItemName(client);
+//                quiverItemID = EquipmentItems.getQuiverItemID(client);
+//
+//
+////                if(!capeItemName.toLowerCase().contains("uncharged"))
+////                {
+////                    rangedStrengthBonus += 1; // Bonus range strength to ammo when Quiver is charged
+////                }
+//
+//                if (ammoID != -1 && quiverItemID != -1)
+//                {
+//                    // determine if we use quiver's ammo, or default slot ammo, or Neither!
+//
+//                    if(weaponItemName.toLowerCase().contains("bow"))
+//                    {
+//                        if(ammoItemName.toLowerCase().contains())
+//                    }
+//                }
+//                else if (ammoID == -1 && quiverItemID >= 0) {
+//
+//                }
+//                else if(ammoID )
+//            }
+        }
+
+
 
         // Get Ranged Strength Bonus of each equipped Item
         for (Item equipmentItem: playerEquipment)
@@ -545,7 +620,6 @@ public class MaxHit {
 
     protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
     {
-        int spellSpriteID = -1;
         double basehit = 0;
 
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
@@ -651,7 +725,7 @@ public class MaxHit {
             CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
 
             // Debug
-            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "MH: Selected Spell: " + selectedSpell, null);
 
             // Specific Selected Spell Cases
             if (selectedSpell == null)
@@ -707,7 +781,7 @@ public class MaxHit {
                 // God Spell Cases with Charge
                 if((selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK) || (selectedSpell == CombatSpell.CLAWS_OF_GUTHIX) || (selectedSpell == CombatSpell.SARADOMIN_STRIKE))
                 {
-                    if (client.getVarpValue(VarPlayer.CHARGE_GOD_SPELL) > 0)
+                    if (client.getVarpValue(272) > 0) // Varplayer: Charge God Spell
                     {
                         if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
                                 (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
@@ -836,15 +910,51 @@ public class MaxHit {
         }
 
         // Prayer Bonuses
-        if(client.isPrayerActive(Prayer.MYSTIC_LORE)) magicdamagebonus += 0.01;
+        // Mystic Lore
+        if(client.getVarbitValue(4125) == 1) magicdamagebonus += 0.01;
 
-        if(client.isPrayerActive(Prayer.MYSTIC_MIGHT)) magicdamagebonus += 0.02;
+        // Mystic Might / Mystic Vigour
+        if(client.getVarbitValue(16091) == 1)
+        {
+            int vigourUnlocked = client.getVarbitValue(16098);
 
-        if(client.isPrayerActive(Prayer.AUGURY)) magicdamagebonus += 0.04;
+             System.out.println("MysticVigour = " + vigourUnlocked);
+
+            if (vigourUnlocked == 0)
+            {
+                 System.out.println("Mystic Might Active");
+                 magicdamagebonus += 0.02;
+            }
+            else if (vigourUnlocked == 1)
+            {
+                 System.out.println("Mystic Vigour Active");
+                magicdamagebonus += 0.03;
+            }
+        }
+
+        // Augury
+        if(client.getVarbitValue(5465) == 1) magicdamagebonus += 0.04;
 
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Bonus Magic Damage: " + magicdamagebonus*100 + "%", null);
+
+        // Smoke Battlestaff Dmg Bonus
+        CombatSpell spell = getSpell();
+        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+                magicdamagebonus += 0.1;
+            }
+        }
+
+        // Twinflame Staff Magic Dmg Bonus
+        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+                magicdamagebonus += 0.1;
+            }
+        }
 
         return 1 + magicdamagebonus; // Default is 1.
     }
@@ -927,6 +1037,18 @@ public class MaxHit {
                     }
                 }
             }
+
+            if (selectedSpell.getName().toLowerCase().contains("earth"))
+            {
+                // Check for tome of water
+                if (shieldItemName.contains("Tome of earth"))
+                {
+                    if (!shieldItemName.contains("(empty)"))
+                    {
+                        return 1.1;
+                    }
+                }
+            }
         }
 
         return 1;
@@ -954,19 +1076,8 @@ public class MaxHit {
         double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
 
-        CombatSpell spell = getSpell();
-
-        // Smoke Battlestaff Bonus
-        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
-        {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
-                double SmokeStandardSpellsBonus = maxDamage * 0.1f;
-                maxDamage = maxDamage + SmokeStandardSpellsBonus;
-            }
-        }
-
         // Final step: Calculate and add spell type weakness Bonus
+        CombatSpell spell = getSpell();
         if (spell != null && spell.hasType())
         {
             if (plugin.selectedNPCName != null)
@@ -985,6 +1096,20 @@ public class MaxHit {
             }
         }
 
+        // Twinflame Staff Double Hit bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                {
+                    double bonusHit = maxDamage * 0.4;
+                    maxDamage = maxDamage + bonusHit;
+                }
+            }
+        }
+
         return maxDamage;
     }
 
@@ -996,8 +1121,8 @@ public class MaxHit {
      */
     public double calculate(boolean isSpecialAttack)
     {
-        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(357);  // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);

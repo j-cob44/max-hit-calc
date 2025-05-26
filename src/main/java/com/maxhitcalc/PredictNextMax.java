@@ -49,7 +49,7 @@ public class PredictNextMax extends MaxHit
         double currentMaxHit = Math.floor(calculateMeleeMaxHit(playerEquipment, weaponAttackStyle, attackStyleID, false));
 
         // Predict Next Prayer Bonus for Next Max Hit
-        for(int i = 1; i <= 20; i++)
+        for(int i = 1; i <= 23; i++)
         {
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
@@ -108,7 +108,7 @@ public class PredictNextMax extends MaxHit
         }
 
         // Predict Next Strength Bonus for Next Max Hit
-        for(int i = 1; i <= 20; i++)
+        for(int i = 1; i <= 25; i++)
         {
             // Calculate Melee Max Hit
             // Step 1: Calculate effective Strength
@@ -284,7 +284,7 @@ public class PredictNextMax extends MaxHit
         }
 
         // Predict Next Prayer Bonus for Next Max Hit
-        for(int i = 1; i <= 20; i++)
+        for(int i = 1; i <= 23; i++)
         {
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
@@ -430,16 +430,6 @@ public class PredictNextMax extends MaxHit
             double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
             predictedMaxHit = predictedMaxHit * correctTomeSpellBonus;
 
-            // Smoke Battlestaff Bonus
-            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
-            {
-                if (spell != null && spell.getSpellbook().contains("standard")) {
-                    double SmokeStandardSpellsBonus = predictedMaxHit * 0.1f;
-                    predictedMaxHit = predictedMaxHit + SmokeStandardSpellsBonus;
-                }
-            }
-
             // Final step: Calculate and add spell type weakness Bonus
             if (spell != null && spell.hasType())
             {
@@ -455,6 +445,20 @@ public class PredictNextMax extends MaxHit
                             double typeBonusDamage = predictedMaxHit * ((double) bonusPercent / (double)100);
                             predictedMaxHit = predictedMaxHit + typeBonusDamage;
                         }
+                    }
+                }
+            }
+
+            // Twinflame Staff Double Hit bonus
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if (weaponItemName.toLowerCase().contains("twinflame staff"))
+            {
+                if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                    if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                    {
+                        double bonusHit = predictedMaxHit * 0.4;
+                        predictedMaxHit = predictedMaxHit + bonusHit;
                     }
                 }
             }
@@ -482,8 +486,8 @@ public class PredictNextMax extends MaxHit
      * @return List of predictions
      */
     public List<Object> predict(){
-        int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-        int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(357); // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);

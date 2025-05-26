@@ -30,8 +30,8 @@ package com.maxhitcalc;
 
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
-import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
+import net.runelite.api.gameval.InventoryID;
 
 public class EquipmentItems
 {
@@ -45,9 +45,9 @@ public class EquipmentItems
     public static Item[] getCurrentlyEquipped(Client client)
     {
         Item[] playerEquipment;
-        if (client.getItemContainer(InventoryID.EQUIPMENT) != null )
+        if (client.getItemContainer(94) != null )
         {
-            playerEquipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
+            playerEquipment = client.getItemContainer(94).getItems();
         }
         else
         {
@@ -101,5 +101,117 @@ public class EquipmentItems
         }
 
         return itemID;
+    }
+
+    public static Item[] getQuiverItem(Client client)
+    {
+        Item[] quiverItem;
+
+        if (client.getItemContainer(InventoryID.DIZANAS_QUIVER_AMMO) != null )
+        {
+            quiverItem = client.getItemContainer(InventoryID.DIZANAS_QUIVER_AMMO).getItems(); // returns as an array, but should only have 1 item or none
+        }
+        else
+        {
+            quiverItem = null;
+        }
+
+        return quiverItem;
+    }
+
+    public static String getQuiverItemName(Client client)
+    {
+        String itemName = "";
+
+        Item[] quiverItems = getQuiverItem(client);
+
+        if (quiverItems != null)
+        {
+            if(quiverItems.length > 0)
+            {
+                itemName = client.getItemDefinition(quiverItems[0].getId()).getName();
+            }
+        }
+
+        return itemName;
+    }
+
+    public static int getQuiverItemID(Client client)
+    {
+        int itemID = -1;
+
+        Item[] quiverItems = getQuiverItem(client);
+
+        if (quiverItems != null)
+        {
+            if(quiverItems.length > 0)
+            {
+                itemID = quiverItems[0].getId();
+            }
+        }
+
+        return itemID;
+    }
+
+    /**
+     * Returns if a given ammo could be fired from a weapon,
+     * does not take into account the tier of ammo or tier of weapon
+     *
+     * @param ammoTypeName name of ammo item
+     * @param weaponName name of weapon
+     *
+     * @return boolean, true or false
+     */
+    public static boolean doesAmmoMatchWeapon(String ammoTypeName, String weaponName)
+    {
+        // Arrows -> bows
+        if (ammoTypeName.toLowerCase().contains("arrow")) {
+            // Ogre arrow -> ogre bow
+            if (ammoTypeName.toLowerCase().contains("ogre")) {
+                if(weaponName.toLowerCase().contains("ogre")) return true;
+            }
+            // all other arrows -> any bow
+            else {
+                if(weaponName.toLowerCase().contains("bow") && !weaponName.toLowerCase().contains("crossbow")) return true;
+            }
+        }
+        // Brutal Arrows
+        else if(ammoTypeName.toLowerCase().contains("brutal")) {
+            if(weaponName.toLowerCase().contains("ogre")) return true;
+        }
+        // Bolts -> crossbows
+        else if(ammoTypeName.toLowerCase().contains("bolts")) {
+            // Kebbit bolts -> hunters' crossbow
+            if(ammoTypeName.toLowerCase().contains("kebbit")) {
+                if(weaponName.toLowerCase().contains("hunters' crossbow")) return true;
+            }
+            // Antler bolts -> hunter's sunlight crossbow
+            else if(ammoTypeName.toLowerCase().contains("antler")){
+                if(weaponName.toLowerCase().contains("hunters' sunlight crossbow")) return true;
+            }
+            // Bone bolts -> Dorgeshuun crossbow
+            else if (ammoTypeName.toLowerCase().contains("bone")) {
+                if(weaponName.toLowerCase().contains("dorgeshuun")) return true;
+            }
+            // All other types of bolts -> normal crossbows
+            else {
+                if(weaponName.toLowerCase().contains("crossbow")) return true;
+            }
+        }
+        // Bolt rack -> Karil's
+        else if(ammoTypeName.toLowerCase().contains("rack")) {
+            if(weaponName.toLowerCase().contains("karil's")) return true;
+        }
+        // Javelin -> Ballistae
+        else if(ammoTypeName.toLowerCase().contains("javelin")) {
+            if(weaponName.toLowerCase().contains("ballistae")) return true;
+        }
+        // Tar -> Salamander
+        else if(ammoTypeName.toLowerCase().contains("tar")) {
+            if(weaponName.toLowerCase().contains("salamader")) return true;
+        }
+
+        // otherwise, ammo does match!
+        return false;
     }
 }
