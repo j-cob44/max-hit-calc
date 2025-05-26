@@ -88,16 +88,16 @@ public class MaxHit {
             {
                 int deadeyeUnlocked = client.getVarbitValue(16097);
 
-                 System.out.println("deadEyeUnlocked = " + deadeyeUnlocked);
+                //System.out.println("deadEyeUnlocked = " + deadeyeUnlocked);
 
                 if (deadeyeUnlocked == 0)
                 {
-                     System.out.println("Eagle Eye Active");
+                    //System.out.println("Eagle Eye Active");
                     return 1.15;
                 }
                 else if (deadeyeUnlocked == 1)
                 {
-                     System.out.println("Dead eye Active");
+                    //System.out.println("Dead eye Active");
                     return 1.18;
                 }
             }
@@ -918,16 +918,16 @@ public class MaxHit {
         {
             int vigourUnlocked = client.getVarbitValue(16098);
 
-             System.out.println("MysticVigour = " + vigourUnlocked);
+            //System.out.println("MysticVigour = " + vigourUnlocked);
 
             if (vigourUnlocked == 0)
             {
-                 System.out.println("Mystic Might Active");
-                 magicdamagebonus += 0.02;
+                //System.out.println("Mystic Might Active");
+                magicdamagebonus += 0.02;
             }
             else if (vigourUnlocked == 1)
             {
-                 System.out.println("Mystic Vigour Active");
+                //System.out.println("Mystic Vigour Active");
                 magicdamagebonus += 0.03;
             }
         }
