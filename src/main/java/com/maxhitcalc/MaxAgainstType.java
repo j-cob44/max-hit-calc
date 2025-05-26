@@ -329,7 +329,6 @@ public class MaxAgainstType extends MaxHit {
     // Needed in Magic for Slayer Staff (e)
     protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
-        int spellSpriteID = -1;
         double basehit = 0;
         double magicLevel = client.getBoostedSkillLevel(Skill.MAGIC);
 
@@ -410,26 +409,18 @@ public class MaxAgainstType extends MaxHit {
         else
         {
             // Check if casting without spell selected
-            if(client.getWidget(InterfaceID.CombatInterface.AUTOCAST_NORMAL) == null)
+            int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+            if (selectedSpellId == 0)
             {
+                // no spell selected
                 return -1; // error
             }
 
-            // Get Spell Sprite ID
-            if (weaponAttackStyle.equals(AttackStyle.CASTING))
-            {
-                spellSpriteID = client.getWidget(InterfaceID.CombatInterface.AUTOCAST_NORMAL).getSpriteId();
-            }
-            else if (weaponAttackStyle.equals(AttackStyle.DEFENSIVE_CASTING))
-            {
-                spellSpriteID = client.getWidget(InterfaceID.CombatInterface.AUTOCAST_DEFENSIVE).getSpriteId();
-            }
-
-            CombatSpell selectedSpell = CombatSpell.getSpellBySpriteID(spellSpriteID);
+            CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId);
 
             // Debug
-            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell Sprite ID: " + spellSpriteID, null);
-            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "VsType: Selected Spell ID: " + selectedSpellId, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "VsType: Selected Spell: " + selectedSpell, null);
 
             // Specific Selected Spell Cases
             if (selectedSpell != null)
@@ -613,7 +604,8 @@ public class MaxAgainstType extends MaxHit {
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Type Modifiers: " + typeModifiersList.toString(), null);
 
         // Get Max hit
-        double maxHit = super.calculate(false); // Normal Max
+        MaxHit normalMaxCalc = new MaxHit(plugin, config, itemManager, client);
+        double maxHit = normalMaxCalc.calculate(false); // Normal Max
         double maxHitVsType = Math.floor(this.calculateTypeMaxHit()); // Vs Type Max
 
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
