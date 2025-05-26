@@ -30,6 +30,8 @@ package com.maxhitcalc;
 
 import net.runelite.api.Client;
 import net.runelite.api.Item;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.game.ItemManager;
 
 public class InventoryItemMaxHit
@@ -130,8 +132,8 @@ public class InventoryItemMaxHit
     public double predict(int itemID, int slotID)
     {
         // Initialize Variables
-        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
-        int weaponTypeID = client.getVarbitValue(357);  // Varbit: Equipped Weapon Type
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(VarbitID.COMBAT_WEAPON_CATEGORY);  // Varbit: Equipped Weapon Type
         AttackStyle attackStyle = null;
 
         // Get Current Equipment

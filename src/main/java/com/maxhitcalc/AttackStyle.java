@@ -30,7 +30,7 @@
 package com.maxhitcalc;
 
 import lombok.Getter;
-import net.runelite.api.*;
+import net.runelite.api.Skill;
 
 enum AttackStyle
 {

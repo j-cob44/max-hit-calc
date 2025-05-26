@@ -45,9 +45,9 @@ public class EquipmentItems
     public static Item[] getCurrentlyEquipped(Client client)
     {
         Item[] playerEquipment;
-        if (client.getItemContainer(94) != null )
+        if (client.getItemContainer(InventoryID.WORN) != null )
         {
-            playerEquipment = client.getItemContainer(94).getItems();
+            playerEquipment = client.getItemContainer(InventoryID.WORN).getItems();
         }
         else
         {

@@ -28,8 +28,12 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.*;
-import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.Client;
+import net.runelite.api.Item;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.Skill;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.game.ItemManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -409,7 +413,7 @@ public class MaxAgainstType extends MaxHit {
         else
         {
             // Check if casting without spell selected
-            int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+            int selectedSpellId = client.getVarbitValue(VarbitID.AUTOCAST_SPELL); // Varbit 276 is Selected Autocasted Spell
             if (selectedSpellId == 0)
             {
                 // no spell selected
@@ -454,7 +458,7 @@ public class MaxAgainstType extends MaxHit {
                 // God Spell Cases with Charge
                 if((selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK) || (selectedSpell == CombatSpell.CLAWS_OF_GUTHIX) || (selectedSpell == CombatSpell.SARADOMIN_STRIKE))
                 {
-                    if (client.getVarpValue(272) > 0) // Varplayer: Charge God Spell
+                    if (client.getVarpValue(VarPlayerID.MAGEARENA_CHARGE) > 0) // Varplayer: Charge God Spell
                     {
                         if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
                                 (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
@@ -532,8 +536,8 @@ public class MaxAgainstType extends MaxHit {
 
                 if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                 {
-                    double bonusHit = maxDamage * 0.4;
-                    maxDamage = maxDamage + bonusHit;
+                    double bonusHit = Math.floor(maxDamage) * 0.4;
+                    maxDamage = Math.floor(maxDamage) + Math.floor(bonusHit);
                 }
             }
         }
@@ -543,8 +547,8 @@ public class MaxAgainstType extends MaxHit {
 
     private double calculateTypeMaxHit()
     {
-        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
-        int weaponTypeID = client.getVarbitValue(357);  // Varbit: Equipped Weapon Type
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(VarbitID.COMBAT_WEAPON_CATEGORY);  // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
@@ -556,7 +560,8 @@ public class MaxAgainstType extends MaxHit {
         {
             playerEquipment = client.getItemContainer(94).getItems();
         }
-        else {
+        else
+        {
             playerEquipment = null;
         }
 
@@ -588,8 +593,8 @@ public class MaxAgainstType extends MaxHit {
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
-        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
-        int weaponTypeID = client.getVarbitValue(357);  // Varbit: Equipped Weapon Type
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(VarbitID.COMBAT_WEAPON_CATEGORY);  // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);

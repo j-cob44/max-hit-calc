@@ -28,7 +28,12 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.Item;
+import net.runelite.api.Skill;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.game.ItemManager;
 
 import java.util.ArrayList;
@@ -59,34 +64,34 @@ public class MaxHit {
         if(weaponAttackStyle == AttackStyle.ACCURATE || weaponAttackStyle == AttackStyle.AGGRESSIVE || weaponAttackStyle == AttackStyle.CONTROLLED || weaponAttackStyle == AttackStyle.DEFENSIVE)
         {
             // Burst of Strength
-            if(client.getVarbitValue(4105) == 1) return 1.05;
+            if(client.getVarbitValue(VarbitID.PRAYER_BURSTOFSTRENGTH) == 1) return 1.05;
 
             // Superhuman Strength
-            if(client.getVarbitValue(4108) == 1) return 1.1;
+            if(client.getVarbitValue(VarbitID.PRAYER_SUPERHUMANSTRENGTH) == 1) return 1.1;
 
             // Ultimate Strength
-            if(client.getVarbitValue(4114) == 1) return 1.15;
+            if(client.getVarbitValue(VarbitID.PRAYER_ULTIMATESTRENGTH) == 1) return 1.15;
 
             // Chivalry
-            if(client.getVarbitValue(4128) == 1) return 1.18;
+            if(client.getVarbitValue(VarbitID.PRAYER_CHIVALRY) == 1) return 1.18;
 
             // Piety
-            if(client.getVarbitValue(4129) == 1) return 1.23;
+            if(client.getVarbitValue(VarbitID.PRAYER_PIETY) == 1) return 1.23;
         }
 
         // Ranged Prayers
         if(weaponAttackStyle == AttackStyle.RANGING || weaponAttackStyle == AttackStyle.LONGRANGE)
         {
             // Sharp Eye
-            if(client.getVarbitValue(4122) == 1) return 1.05;
+            if(client.getVarbitValue(VarbitID.PRAYER_SHARPEYE) == 1) return 1.05;
 
             // Hawk Eye
-            if(client.getVarbitValue(4124) == 1) return 1.1;
+            if(client.getVarbitValue(VarbitID.PRAYER_HAWKEYE) == 1) return 1.1;
 
             // Eagle Eye / Deadeye
-            if(client.getVarbitValue(16090) == 1)
+            if(client.getVarbitValue(VarbitID.PRAYER_DEADEYE) == 1 || client.getVarbitValue(VarbitID.PRAYER_EAGLEEYE) == 1)
             {
-                int deadeyeUnlocked = client.getVarbitValue(16097);
+                int deadeyeUnlocked = client.getVarbitValue(VarbitID.PRAYER_DEADEYE_UNLOCKED);
 
                 //System.out.println("deadEyeUnlocked = " + deadeyeUnlocked);
 
@@ -103,7 +108,7 @@ public class MaxHit {
             }
 
             // Rigour
-            if(client.getVarbitValue(5464) == 1) return 1.23;
+            if(client.getVarbitValue(VarbitID.PRAYER_RIGOUR) == 1) return 1.23;
         }
 
         return 1; // default
@@ -111,7 +116,7 @@ public class MaxHit {
 
     protected double getSoulStackBonus()
     {
-        int soulStack = client.getVarpValue(3784); // Should be replaced with VarPlayer.SOUL_STACK when implemented. See this PR for more info: https://github.com/runelite/runelite/pull/17390
+        int soulStack = client.getVarpValue(VarPlayerID.SOULREAPER_STACKS);
 
         return 0.06 * soulStack;
     }
@@ -532,7 +537,8 @@ public class MaxHit {
     }
 
     // Get Gear Boost, for instance Crystal Armor set bonus
-    protected double getRangeGearBoost(Item[] playerEquipment){
+    protected double getRangeGearBoost(Item[] playerEquipment)
+    {
         double damagePercentBonus = 1;
 
         // Get Required Item Names for checks
@@ -715,7 +721,7 @@ public class MaxHit {
         // Autocasted Spell
         else
         {
-            int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+            int selectedSpellId = client.getVarbitValue(VarbitID.AUTOCAST_SPELL); // Varbit 276 is Selected Autocasted Spell
             if (selectedSpellId == 0)
             {
                 // no spell selected
@@ -781,7 +787,7 @@ public class MaxHit {
                 // God Spell Cases with Charge
                 if((selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK) || (selectedSpell == CombatSpell.CLAWS_OF_GUTHIX) || (selectedSpell == CombatSpell.SARADOMIN_STRIKE))
                 {
-                    if (client.getVarpValue(272) > 0) // Varplayer: Charge God Spell
+                    if (client.getVarpValue(VarPlayerID.MAGEARENA_CHARGE) > 0) // Varplayer: Charge God Spell
                     {
                         if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
                                 (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
@@ -825,7 +831,7 @@ public class MaxHit {
 
     // Get Spell Info
     protected CombatSpell getSpell(){
-        int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+        int selectedSpellId = client.getVarbitValue(VarbitID.AUTOCAST_SPELL); // Varbit 276 is Selected Autocasted Spell
         if (selectedSpellId == 0)
         {
             // no spell selected
@@ -879,7 +885,7 @@ public class MaxHit {
         }
 
         // Get Virtus Robe's Damage Bonus for Ancient Magicks
-        CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(client.getVarbitValue(276));
+        CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(client.getVarbitValue(VarbitID.AUTOCAST_SPELL));
         if(selectedSpell != null){
             if (selectedSpell.getName().toLowerCase().contains("smoke")
                     || selectedSpell.getName().toLowerCase().contains("shadow")
@@ -911,12 +917,12 @@ public class MaxHit {
 
         // Prayer Bonuses
         // Mystic Lore
-        if(client.getVarbitValue(4125) == 1) magicdamagebonus += 0.01;
+        if(client.getVarbitValue(VarbitID.PRAYER_MYSTICLORE) == 1) magicdamagebonus += 0.01;
 
         // Mystic Might / Mystic Vigour
-        if(client.getVarbitValue(16091) == 1)
+        if(client.getVarbitValue(VarbitID.PRAYER_MYSTICMIGHT) == 1 || client.getVarbitValue(VarbitID.PRAYER_MYSTICVIGOUR) == 1)
         {
-            int vigourUnlocked = client.getVarbitValue(16098);
+            int vigourUnlocked = client.getVarbitValue(VarbitID.PRAYER_MYSTIC_VIGOUR_UNLOCKED);
 
             //System.out.println("MysticVigour = " + vigourUnlocked);
 
@@ -933,7 +939,7 @@ public class MaxHit {
         }
 
         // Augury
-        if(client.getVarbitValue(5465) == 1) magicdamagebonus += 0.04;
+        if(client.getVarbitValue(VarbitID.PRAYER_AUGURY) == 1) magicdamagebonus += 0.04;
 
 
         // Debug
@@ -994,7 +1000,7 @@ public class MaxHit {
         String shieldItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.SHIELD);
 
         // Check if casting without spell selected
-        int selectedSpellId = client.getVarbitValue(276); // Varbit 276 is Selected Autocasted Spell
+        int selectedSpellId = client.getVarbitValue(VarbitID.AUTOCAST_SPELL); // Varbit 276 is Selected Autocasted Spell
         if (selectedSpellId == 0)
         {
             // no spell selected
@@ -1100,12 +1106,12 @@ public class MaxHit {
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponItemName.toLowerCase().contains("twinflame staff"))
         {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
-
+            if (spell != null && spell.getSpellbook().contains("standard"))
+            {
                 if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                 {
-                    double bonusHit = maxDamage * 0.4;
-                    maxDamage = maxDamage + bonusHit;
+                    double bonusHit = Math.floor(maxDamage) * 0.4;
+                    maxDamage = Math.floor(maxDamage) + Math.floor(bonusHit);
                 }
             }
         }
@@ -1121,8 +1127,8 @@ public class MaxHit {
      */
     public double calculate(boolean isSpecialAttack)
     {
-        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
-        int weaponTypeID = client.getVarbitValue(357);  // Varbit: Equipped Weapon Type
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(VarbitID.COMBAT_WEAPON_CATEGORY);  // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);

@@ -28,7 +28,12 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.Item;
+import net.runelite.api.Skill;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.game.ItemManager;
 import java.util.Arrays;
 import java.util.List;
@@ -457,8 +462,8 @@ public class PredictNextMax extends MaxHit
 
                     if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                     {
-                        double bonusHit = predictedMaxHit * 0.4;
-                        predictedMaxHit = predictedMaxHit + bonusHit;
+                        double bonusHit = Math.floor(predictedMaxHit) * 0.4;
+                        predictedMaxHit = Math.floor(predictedMaxHit) + Math.floor(bonusHit);
                     }
                 }
             }
@@ -485,9 +490,10 @@ public class PredictNextMax extends MaxHit
      *
      * @return List of predictions
      */
-    public List<Object> predict(){
-        int attackStyleID = client.getVarpValue(43); // Varplayer: Attack Style
-        int weaponTypeID = client.getVarbitValue(357); // Varbit: Equipped Weapon Type
+    public List<Object> predict()
+    {
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE); // Varplayer: Attack Style
+        int weaponTypeID = client.getVarbitValue(VarbitID.COMBAT_WEAPON_CATEGORY);  // Varbit: Equipped Weapon Type
 
         // Get Current Attack Style
         AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);

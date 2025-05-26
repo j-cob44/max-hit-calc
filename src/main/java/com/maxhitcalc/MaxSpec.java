@@ -28,7 +28,11 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.Item;
+import net.runelite.api.Skill;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.client.game.ItemManager;
 
 /**
@@ -116,7 +120,7 @@ public class MaxSpec
 
         if(weaponName.contains("Dragon hasta"))
         {
-            return 1.0 + (0.5 * ((double)client.getVarpValue(300) /1000)); // Varplayer: Special Attack Percent
+            return 1.0 + (0.5 * ((double)client.getVarpValue(VarPlayerID.SA_ENERGY) /1000)); // Varplayer: Special Attack Percent
         }
 
         if(weaponName.contains("Dragon longsword"))

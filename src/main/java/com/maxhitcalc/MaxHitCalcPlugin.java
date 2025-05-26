@@ -32,9 +32,14 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.NPC;
+import net.runelite.api.Skill;
 import net.runelite.api.events.*;
-import net.runelite.api.widgets.InterfaceID;
+import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.config.ConfigManager;
@@ -46,7 +51,6 @@ import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.ui.ClientToolbar;
-
 
 import java.awt.image.BufferedImage;
 
@@ -226,7 +230,7 @@ public class MaxHitCalcPlugin extends Plugin
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
 		// On Item Equip/de-equip
-		if(event.getContainerId() == 94) // Equipment Container ID
+		if(event.getContainerId() == InventoryID.WORN) // Equipment Container ID
 		{
 			calculateMaxes();
 		}
@@ -254,31 +258,31 @@ public class MaxHitCalcPlugin extends Plugin
 //		System.out.println("Varbit value: " + event.getValue());
 
 		// On prayer changed: 83 = normal prayerbook
-		if (event.getVarpId() == 83)
+		if (event.getVarpId() == VarPlayerID.PRAYER0)
 		{
 			calculateMaxes();
 		}
 
 		// On attack style changed
-		if (event.getVarpId() == 43) // Varplayer: Attack Style
+		if (event.getVarpId() == VarPlayerID.COM_MODE) // Varplayer: Attack Style
 		{
 			calculateMaxes();
 		}
 
 		// On selected Spell changed
-		if (event.getVarbitId() == 276)
+		if (event.getVarbitId() == VarbitID.AUTOCAST_SPELL)
 		{
 			calculateMaxes();
 		}
 
 		// On soul stack changed
-		if (event.getVarpId() == 3784) // Varplayer: Soul Stack
+		if (event.getVarpId() == VarPlayerID.SOULREAPER_STACKS) // Varplayer: Soul Stack
 		{
 			calculateMaxes();
 		}
 
 		// On Charge Spell Buff Start/End
-		if(event.getVarpId() == 272) // Varplayer: Charge God Spell
+		if(event.getVarpId() == VarPlayerID.MAGEARENA_CHARGE) // Varplayer: Charge God Spell
 		{
 			calculateMaxes();
 		}

@@ -28,9 +28,13 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.*;
+import net.runelite.api.Client;
 import net.runelite.api.Menu;
+import net.runelite.api.MenuEntry;
+import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.widgets.*;
+import net.runelite.api.Item;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -182,7 +186,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
         }
     }
 
-    private void getInventoryMaxHitTooltip(int maxHit){
+    private void getInventoryMaxHitTooltip(int maxHit)
+    {
         // Tooltip on item in inventory
         Menu clientMenu = client.getMenu();
         MenuEntry[] menu = clientMenu.getMenuEntries();
@@ -205,7 +210,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Check if inventory item
         if(config.showInventoryTooltip())
         {
-            if (WidgetUtil.componentToInterface(widget.getId()) == 149) // Inventory Interface ID
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.INVENTORY) // Inventory Interface ID
             {
                 itemID = widget.getItemId();
             }
@@ -213,7 +218,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Check if Bank item
         if (config.showBankTooltip())
         {
-            if (WidgetUtil.componentToInterface(widget.getId()) == 12) // Bank Interface ID
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.BANKMAIN) // Bank Interface ID
             {
                 itemID = widget.getItemId();
             }
@@ -221,7 +226,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         // Check if "Bank Invetory" Item, shows with either option true
         if (config.showInventoryTooltip() || config.showBankTooltip())
         {
-            if (WidgetUtil.componentToInterface(widget.getId()) == 15) // Bank Inventory Interface ID
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.BANKSIDE) // Bank Inventory Interface ID
             {
                 itemID = widget.getItemId();
             }
@@ -271,7 +276,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
         }
     }
 
-    private void getSpellbookMaxHitTooltip(){
+    private void getSpellbookMaxHitTooltip()
+    {
         // Tooltip on item in inventory
         Menu clientMenu = client.getMenu();
         MenuEntry[] menu = clientMenu.getMenuEntries();
@@ -296,7 +302,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + widget.getSpriteId(), ""); // DEBUG
 
         // Get Spell Sprite ID if actually in Spellbook
-        if(group == 218) // Spellbook Interface ID
+        if(group == InterfaceID.MAGIC_SPELLBOOK) // Spellbook Interface ID = 218
         {
             spellSpriteID = widget.getSpriteId();
         }
@@ -318,9 +324,9 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
                 // Get Current Equipment
                 Item[] playerEquipment;
-                if (client.getItemContainer(94) != null ) // Equipment Inventory ID
+                if (client.getItemContainer(InventoryID.WORN) != null ) // Equipment Inventory ID
                 {
-                    playerEquipment = client.getItemContainer(94).getItems();
+                    playerEquipment = client.getItemContainer(InventoryID.WORN).getItems();
                 }
                 else {
                     playerEquipment = null;
@@ -340,7 +346,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
         }
     }
 
-    private void getAutocastSelectionMaxHitTooltip(){
+    private void getAutocastSelectionMaxHitTooltip()
+    {
         // Tooltip on item in inventory
         Menu clientMenu = client.getMenu();
         MenuEntry[] menu = clientMenu.getMenuEntries();
@@ -365,7 +372,7 @@ public class MaxHitCalcOverlay extends OverlayPanel
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spell Sprite ID: " + widget.getSpriteId(), ""); // DEBUG
 
         // Get Spell Sprite ID if actually in Autocast Selection
-        if(group == 201)
+        if(group == InterfaceID.AUTOCAST) // Autocast Interface = 201
         {
             spellSpriteID = widget.getSpriteId();
         }
@@ -387,11 +394,12 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
                 // Get Current Equipment
                 Item[] playerEquipment;
-                if (client.getItemContainer(94) != null ) // Equipment Inventory ID
+                if (client.getItemContainer(InventoryID.WORN) != null ) // Equipment Inventory ID
                 {
-                    playerEquipment = client.getItemContainer(94).getItems();
+                    playerEquipment = client.getItemContainer(InventoryID.WORN).getItems();
                 }
-                else {
+                else
+                {
                     playerEquipment = null;
                 }
 

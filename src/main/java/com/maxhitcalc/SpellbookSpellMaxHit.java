@@ -29,7 +29,11 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.Item;
+import net.runelite.api.Skill;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.client.game.ItemManager;
 
 public class SpellbookSpellMaxHit extends MaxHit
@@ -50,7 +54,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         // God Spells Cases
         if((spell == CombatSpell.FLAMES_OF_ZAMORAK) || (spell == CombatSpell.CLAWS_OF_GUTHIX) || (spell == CombatSpell.SARADOMIN_STRIKE))
         {
-            if (client.getVarpValue(272) > 0) // Varplayer: Charge God Spell
+            if (client.getVarpValue(VarPlayerID.MAGEARENA_CHARGE) > 0) // Varplayer: Charge God Spell
             {
                 if(spell == CombatSpell.CLAWS_OF_GUTHIX &&
                         (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
@@ -228,8 +232,8 @@ public class SpellbookSpellMaxHit extends MaxHit
 
                 if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                 {
-                    double bonusHit = maxDamage * 0.4;
-                    maxDamage = maxDamage + bonusHit;
+                    double bonusHit = Math.floor(maxDamage) * 0.4;
+                    maxDamage = Math.floor(maxDamage) + Math.floor(bonusHit);
                 }
             }
         }
