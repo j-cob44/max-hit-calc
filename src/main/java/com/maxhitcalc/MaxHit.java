@@ -379,6 +379,12 @@ public class MaxHit {
         String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
         int ammoID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.AMMO);
 
+        String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
+        int capeID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.CAPE);
+
+        String quiverItemName;
+        int quiverItemID;
+
         boolean skipAmmo = false;
         boolean calcWithMelee = false;
 
@@ -439,6 +445,50 @@ public class MaxHit {
             skipAmmo = true;
             calcWithMelee = true;
         }
+
+        // Check Ammo type matches up with weapon
+        if(!skipAmmo)
+        {
+            // Check if ammo type matches with weapon, otherwise skip ammo slot in calc
+            if(ammoID != -1)
+            {
+                if(!EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName))
+                {
+                    // Ammo did not match weapon, skip ammo for calc
+                    skipAmmo = true;
+                }
+            }
+
+
+            // Quiver Check
+//            if(capeItemName.toLowerCase().contains("quiver"))
+//            {
+//                quiverItemName = EquipmentItems.getQuiverItemName(client);
+//                quiverItemID = EquipmentItems.getQuiverItemID(client);
+//
+//
+////                if(!capeItemName.toLowerCase().contains("uncharged"))
+////                {
+////                    rangedStrengthBonus += 1; // Bonus range strength to ammo when Quiver is charged
+////                }
+//
+//                if (ammoID != -1 && quiverItemID != -1)
+//                {
+//                    // determine if we use quiver's ammo, or default slot ammo, or Neither!
+//
+//                    if(weaponItemName.toLowerCase().contains("bow"))
+//                    {
+//                        if(ammoItemName.toLowerCase().contains())
+//                    }
+//                }
+//                else if (ammoID == -1 && quiverItemID >= 0) {
+//
+//                }
+//                else if(ammoID )
+//            }
+        }
+
+
 
         // Get Ranged Strength Bonus of each equipped Item
         for (Item equipmentItem: playerEquipment)
@@ -570,7 +620,6 @@ public class MaxHit {
 
     protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
     {
-        int spellSpriteID = -1;
         double basehit = 0;
 
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
@@ -676,7 +725,7 @@ public class MaxHit {
             CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(selectedSpellId); // returns null as default
 
             // Debug
-            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Selected Spell: " + selectedSpell, null);
+            //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "MH: Selected Spell: " + selectedSpell, null);
 
             // Specific Selected Spell Cases
             if (selectedSpell == null)
