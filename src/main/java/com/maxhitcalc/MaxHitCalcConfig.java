@@ -146,6 +146,16 @@ public interface MaxHitCalcConfig extends Config
 		return true;
 	}
 
+	// Whether to show or hide the plugin's side panel
+	@ConfigItem(
+			keyName = "showPanel",
+			name = "Show Side Panel",
+			description = "Enable or disable the side panel",
+			position = 5,
+			section = mainPanelSettings
+	)
+	default boolean showPanel() { return true; }
+
 	// Show Predicted Requirements for next Max Hit
 	@ConfigItem(
 			keyName = "displayDoubleHitWeaponsAsOneHit",
