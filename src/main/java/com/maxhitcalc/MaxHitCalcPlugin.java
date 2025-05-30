@@ -189,7 +189,9 @@ public class MaxHitCalcPlugin extends Plugin
 				.panel(panel)
 				.build();
 
-		clientToolbar.addNavigation(navButton);
+		if(config.showPanel()) {
+			clientToolbar.addNavigation(navButton);
+		}
 	}
 
 	@Override
@@ -325,6 +327,13 @@ public class MaxHitCalcPlugin extends Plugin
 			{
 				clientThread.invoke(this::calculateMaxes);
 			}
+		}
+
+		// Show or hide the side panel
+		if(config.showPanel()) {
+			clientToolbar.addNavigation(navButton);
+		} else {
+			clientToolbar.removeNavigation(navButton);
 		}
 	}
 
