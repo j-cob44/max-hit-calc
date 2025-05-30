@@ -390,6 +390,12 @@ public class MaxHitCalcPanel extends PluginPanel
         plugin.dartSettingChanged = true;
     }
 
+    void configDartSwitched()
+    {
+        dartList.setSelectedIndex(config.blowpipeDartType().ordinal());
+        plugin.selectedDartType = config.blowpipeDartType();
+    }
+
     void onCBladeSettingSwitched()
     {
         plugin.NPCSize = Math.max(1, colossalBladeList.getSelectedIndex()+1); // index 0 == 1, index 1 == 2, etc...

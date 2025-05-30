@@ -73,8 +73,7 @@ public interface MaxHitCalcConfig extends Config
 			keyName = "blowpipeDartType",
 			name = "Blowpipe Dart Type",
 			description = "Sets the Dart type for calculation",
-			position = 0,
-			hidden = true
+			position = 0
 	)
 	default BlowpipeDartType blowpipeDartType()
 	{

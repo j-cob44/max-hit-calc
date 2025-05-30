@@ -326,14 +326,20 @@ public class MaxHitCalcPlugin extends Plugin
 			if(gameReady)
 			{
 				clientThread.invoke(this::calculateMaxes);
-			}
-		}
 
-		// Show or hide the side panel
-		if(config.showPanel()) {
-			clientToolbar.addNavigation(navButton);
-		} else {
-			clientToolbar.removeNavigation(navButton);
+				// Update on panel if updated in settings
+				if(event.getKey().equals("blowpipeDartType"))
+				{
+					panel.configDartSwitched();
+				}
+			}
+
+			// Show or hide the side panel
+			if(config.showPanel()) {
+				clientToolbar.addNavigation(navButton);
+			} else {
+				clientToolbar.removeNavigation(navButton);
+			}
 		}
 	}
 
