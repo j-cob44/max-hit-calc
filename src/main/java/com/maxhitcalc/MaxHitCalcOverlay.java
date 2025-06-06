@@ -237,6 +237,22 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 itemID = widget.getItemId();
             }
         }
+        // Check if Group Storage item
+        if (config.showBankTooltip())
+        {
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.SHARED_BANK) // Bank Interface ID
+            {
+                itemID = widget.getItemId();
+            }
+        }
+        // Check if "Group Storage Invetory" Item, shows with either option true
+        if (config.showInventoryTooltip() || config.showBankTooltip())
+        {
+            if (WidgetUtil.componentToInterface(widget.getId()) == InterfaceID.SHARED_BANK_SIDE) // Bank Inventory Interface ID
+            {
+                itemID = widget.getItemId();
+            }
+        }
 
 
         // Prepare Tooltip
