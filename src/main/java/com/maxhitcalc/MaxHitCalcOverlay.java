@@ -35,6 +35,9 @@ import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.widgets.*;
 import net.runelite.api.Item;
+import net.runelite.client.plugins.itemstats.StatChange;
+import net.runelite.client.plugins.itemstats.Effect;
+import net.runelite.client.plugins.itemstats.ItemStatChanges;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -48,6 +51,7 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.util.List;
 
+
 public class MaxHitCalcOverlay extends OverlayPanel
 {
     private final MaxHitCalcPlugin plugin;
@@ -56,6 +60,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
     private TooltipManager tooltipManager;
     @Inject
     private ItemManager itemManager;
+    @Inject
+    private ItemStatChanges statChanges;
     @Inject
     private Client client;
 
@@ -270,7 +276,45 @@ public class MaxHitCalcOverlay extends OverlayPanel
                     }
 
                 }
+                else
+                {
+                    // Check for Consumable
+                    final Effect change = statChanges.get(itemID);
 
+                    if(change != null)
+                    {
+                        StatChange[] statChanges = change.calculate(client).getStatChanges();
+
+                        if(statChanges.length > 0)
+                        {
+                            StatChangedMaxHit statcChangedMaxHits = new StatChangedMaxHit(plugin, config, itemManager, client);
+                            int maxWithChangedStats = (int) statcChangedMaxHits.predict(statChanges);
+
+                            // If no error
+                            if (maxWithChangedStats != -1){
+                                int deltaMax = maxWithChangedStats - maxHit;
+
+                                // Display depending on Negative or Positive Increase
+                                String tooltip = "";
+                                if(deltaMax < 0)
+                                {
+                                    // Negative
+                                    tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("-" + Math.abs(deltaMax), Color.RED);
+                                }
+                                else if (deltaMax > 0)
+                                {
+                                    tooltip = "Max hit: " + ColorUtil.wrapWithColorTag("+" + deltaMax, Color.GREEN);
+                                }
+                                else
+                                {
+                                    return;
+                                }
+
+                                tooltipManager.add(new Tooltip(tooltip));
+                            }
+                        }
+                    }
+                }
             }
 
         }

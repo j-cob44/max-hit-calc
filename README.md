@@ -22,7 +22,8 @@ Main Panel and Tooltip examples: <br>
 
 Inventory Tooltips: <br>
 ![Inventory Example 1](/assets/inventory_example1.png)
-![Inventory Example 2](/assets/inventory_example2.png) <br>
+![Inventory Example 2](/assets/inventory_example2.png)
+![Inventory Example 3](/assets/inventory_example3.png)<br>
 
 Spellbook Tooltips: <br>
 ![Spellbook Example 1](/assets/spellbook_example1.png)
@@ -45,5 +46,5 @@ Sidebar Panel and Settings Panel: <br>
 Any feedback/issues can be made through Github: https://github.com/j-cob44/max-hit-calc/issues <br>
 And suggestions can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 
-Jacob Burton (j-cob44), May 2025 <br>
-Version 2.0.2
+Jacob Burton (j-cob44), June 2025 <br>
+Version 2.0.3
