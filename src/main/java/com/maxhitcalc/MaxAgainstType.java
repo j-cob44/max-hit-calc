@@ -444,7 +444,36 @@ public class MaxAgainstType extends MaxHit {
                 }
                 else
                 {
-                    basehit = selectedSpell.getBaseDamage();
+                    // FIND TIER, FIND HIGHEST IN TIER
+                    if (selectedSpell.getTier() == 0)
+                    {
+                        // NO TIER,
+                        basehit = selectedSpell.getBaseDamage();
+                    }
+                    else
+                    {
+                        // GET TIER, Get highest tier in level
+                        int spellTier = selectedSpell.getTier();
+                        String spellbook = selectedSpell.getSpellbook();
+
+                        CombatSpell[] spellsInTier = CombatSpell.getSpellsOfTier(spellTier, spellbook);
+
+                        for(CombatSpell spell : spellsInTier)
+                        {
+                            if(magicLevel >= spell.getReqLevel())
+                            {
+                                if (basehit <= spell.getBaseDamage())
+                                {
+                                    // new highest found
+                                    basehit = spell.getBaseDamage();
+                                }
+                            }
+                        }
+
+                        // Error, didn't find usable spell
+                        if (basehit == 0)
+                            return -1; // error
+                    }
                 }
 
                 // Purging Staff Boost to Demonbane spells
@@ -509,25 +538,6 @@ public class MaxAgainstType extends MaxHit {
         maxDamage = maxDamage * correctTomeSpellBonus;
 
         CombatSpell spell = getSpell();
-
-        // Final step: Calculate and add spell type weakness Bonus
-        if (spell != null && spell.hasType())
-        {
-            if (plugin.selectedNPCName != null)
-            {
-                NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
-                if (weaknessBonus != null)
-                {
-                    if(spell.getSpellType() == weaknessBonus.getElementalWeakness())
-                    {
-                        int bonusPercent = weaknessBonus.getWeaknessPercent();
-
-                        double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
-                        maxDamage = maxDamage + typeBonusDamage;
-                    }
-                }
-            }
-        }
 
         // Twinflame Staff Double Hit bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
@@ -615,6 +625,7 @@ public class MaxAgainstType extends MaxHit {
         double maxHitVsType = Math.floor(this.calculateTypeMaxHit()); // Vs Type Max
 
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        CombatSpell spell = getSpell();
 
         // Remove bonuses that are constant from normal max hit in order to calculate max vs type.
         // Remove default + 2 colossal blade bonus
@@ -653,6 +664,51 @@ public class MaxAgainstType extends MaxHit {
             maxHitVsType = maxHitVsType + 10;
         }
 
+        // Final step: Calculate and add spell type weakness Bonus
+        if (spell != null && spell.hasType())
+        {
+            // Get original base hit to add elemental bonus
+            double spellBaseHit = 0;
+            double magicLevel = client.getBoostedSkillLevel(Skill.MAGIC);
+
+            if (spell.getTier() == 0)
+            {
+                // NO TIER,
+                spellBaseHit = spell.getBaseDamage();
+            }
+            else {
+                // GET TIER, Get highest tier in level
+                int spellTier = spell.getTier();
+                String spellbook = spell.getSpellbook();
+
+                CombatSpell[] spellsInTier = CombatSpell.getSpellsOfTier(spellTier, spellbook);
+
+                for (CombatSpell itSpell : spellsInTier) {
+                    if (magicLevel >= spell.getReqLevel()) {
+                        if (spellBaseHit <= itSpell.getBaseDamage()) {
+                            // new highest found
+                            spellBaseHit = itSpell.getBaseDamage();
+                        }
+                    }
+                }
+            }
+
+            if (plugin.selectedNPCName != null)
+            {
+                NPCTypeWeakness weaknessBonus = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
+                if (weaknessBonus != null)
+                {
+                    if(spell.getSpellType() == weaknessBonus.getElementalWeakness())
+                    {
+                        int bonusPercent = weaknessBonus.getWeaknessPercent();
+
+                        double typeBonusDamage = spellBaseHit * ((double) bonusPercent / (double)100);
+                        maxHitVsType = maxHitVsType + typeBonusDamage;
+                    }
+                }
+            }
+        }
+
         if(maxHit >= maxHitVsType)
         {
             return 0; // No Type Bonus
@@ -661,6 +717,5 @@ public class MaxAgainstType extends MaxHit {
         {
             return maxHitVsType;
         }
-
     }
 }
