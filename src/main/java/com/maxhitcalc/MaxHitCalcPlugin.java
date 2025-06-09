@@ -114,6 +114,7 @@ public class MaxHitCalcPlugin extends Plugin
 	// Vars for Calculations
 	public int NPCSize = 1;
 	boolean npcSizeSettingChanged = false;
+	boolean markOfDarknessActive = false;
 
 	public BlowpipeDartType selectedDartType = BlowpipeDartType.MITHRIL;
 	boolean dartSettingChanged = false;
@@ -121,10 +122,24 @@ public class MaxHitCalcPlugin extends Plugin
 
 
 
-//	DEBUG
-//	@Subscribe
-//	public void onChatMessage(ChatMessage chatMessageReceived)
-//	{
+	@Subscribe
+	public void onChatMessage(ChatMessage chatMessageReceived)
+	{
+		String message = chatMessageReceived.getMessage().toLowerCase();
+
+		// Mark of darkness workaround since it doesn't seem to change a varbit
+		if(message.contains("you have placed a mark of darkness upon yourself."))
+		{
+			markOfDarknessActive = true;
+			calculateMaxes();
+		}
+		if(message.contains("your mark of darkness has faded away."))
+		{
+			markOfDarknessActive = false;
+			calculateMaxes();
+		}
+
+		// DEBUG CHAT COMMANDS
 //		if(chatMessageReceived.getMessage().equals("!Allstyles"))
 //		{
 //			System.out.println("================S===============");
@@ -147,7 +162,7 @@ public class MaxHitCalcPlugin extends Plugin
 //			System.out.println("ASID: " + attackStyleID);
 //			System.out.println("=================E==================");
 //		}
-//	}
+	}
 
 	@Provides
 	MaxHitCalcConfig provideConfig(ConfigManager configManager)

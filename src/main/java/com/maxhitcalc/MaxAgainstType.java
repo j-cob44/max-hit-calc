@@ -664,6 +664,27 @@ public class MaxAgainstType extends MaxHit {
             maxHitVsType = maxHitVsType + 10;
         }
 
+        // Mark of darkness bonuses
+        if(spell != null)
+        {
+            if(plugin.markOfDarknessActive)
+            {
+                if(spell.getName().toLowerCase().contains("demonbane"))
+                {
+                    if(weaponName.toLowerCase().contains("purging staff"))
+                    {
+                        double bonusDmg = Math.floor(maxHitVsType) * 0.5;
+                        maxHitVsType = Math.floor(maxHitVsType) + Math.floor(bonusDmg);
+                    }
+                    else
+                    {
+                        double bonusDmg = Math.floor(maxHitVsType) * 0.25;
+                        maxHitVsType = Math.floor(maxHitVsType) + Math.floor(bonusDmg);
+                    }
+                }
+            }
+        }
+
         // Final step: Calculate and add spell type weakness Bonus
         if (spell != null && spell.hasType())
         {
