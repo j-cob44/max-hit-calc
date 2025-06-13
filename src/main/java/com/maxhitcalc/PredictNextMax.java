@@ -447,7 +447,7 @@ public class PredictNextMax extends MaxHit
                         {
                             int bonusPercent = weaknessBonus.getWeaknessPercent();
 
-                            double typeBonusDamage = predictedMaxHit * ((double) bonusPercent / (double)100);
+                            double typeBonusDamage = spellBaseMaxHit * ((double) bonusPercent / (double)100);
                             predictedMaxHit = predictedMaxHit + typeBonusDamage;
                         }
                     }

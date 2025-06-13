@@ -324,7 +324,7 @@ public class StatChangedMaxHit
                     {
                         int bonusPercent = weaknessBonus.getWeaknessPercent();
 
-                        double typeBonusDamage = maxDamage * ((double) bonusPercent / (double)100);
+                        double typeBonusDamage = spellBaseMaxHit * ((double) bonusPercent / (double)100);
                         maxDamage = maxDamage + typeBonusDamage;
                     }
                 }
