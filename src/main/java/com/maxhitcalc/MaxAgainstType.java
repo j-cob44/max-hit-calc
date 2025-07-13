@@ -306,7 +306,7 @@ public class MaxAgainstType extends MaxHit {
             // Dragonbane, added 5 January 2017 ; OR potentially "new" type since value is different from original, added 25 September 2024
             if(weaponItemName.contains("Dragon hunter"))
             {
-                typeBonusToApply.add(1.2);
+                typeBonusToApply.add(1.4);
             }
 
             // Wilderness, added 26 July 2018
