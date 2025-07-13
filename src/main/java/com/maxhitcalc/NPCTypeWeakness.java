@@ -36,7 +36,7 @@ import javax.swing.*;
 /**
  *
  * Contains all known type bonuses against different NPC's.
- * Updated based on https://oldschool.runescape.wiki/w/Elemental_weakness
+ * Updated based on https://oldschool.runescape.wiki/w/Elemental_weakness and the Weakness Changes 2025 Proposal
  * Last updated on 7/12/25
  *
  */
@@ -60,7 +60,7 @@ public enum NPCTypeWeakness
     AncientWyvern("Ancient Wyvern", SpellType.Air, 35),
     AncientZygomite("Ancient Zygomite", SpellType.Fire, 40),
     AngryBarbarianSpirit("Angry Barbarian Spirit", SpellType.Air, 30),
-    AnimatedArmour("Armour", SpellType.Earth, 30),
+    AnimatedArmour("Armour", SpellType.Earth, 30, true), // all metal types
     AnimatedSpade("Animated Spade", SpellType.Earth, 25),
     Ankou("Ankou", SpellType.Air, 40),
     Apparition("Apparition", SpellType.Air, 40),
@@ -77,7 +77,7 @@ public enum NPCTypeWeakness
     BalfrugKreeyath("Balfrug Kreeyath", SpellType.Water, 25),
     Banshee("Banshee", SpellType.Air, 30),
     BarkBlamishSnail("Bark Blamish Snail", SpellType.Earth, 30),
-    Basilisk("Basilisk", SpellType.Earth, 40),
+    Basilisk("Basilisk", SpellType.Earth, 40, true), // normal and monstrous
     Bat("Bat", SpellType.Air, 35),
     BearCub("Bear Cub", SpellType.Fire, 25),
     Berry("Berry", SpellType.Earth, 20),
@@ -242,7 +242,6 @@ public enum NPCTypeWeakness
     KetZek("Ket-Zek", SpellType.Water, 40),
     KetlaTheUnworthy("Ketla the Unworthy", SpellType.Air, 15),
     Kephri("Kephri", SpellType.Fire, 35), // 40% with shield, not possible to calculate
-    KhazardScorpion("Khazard Scorpion", SpellType.Fire, 25),
     Killerwatt("Killerwatt", SpellType.Air, 60),
     KingBlackDragon("King Black Dragon", SpellType.Water, 50),
     KingSandCrab("King Sand Crab", SpellType.Earth, 15),
@@ -265,7 +264,6 @@ public enum NPCTypeWeakness
     Mogre("Mogre", SpellType.Earth, 20),
     Molanisk("Molanisk", SpellType.Earth, 20),
     MonkeyZombie("Monkey Zombie", SpellType.Fire, 50),
-    MonstrousBasilisk("Monstrous Basilisk", SpellType.Earth, 40),
     MossGiant("Moss Giant", SpellType.Fire, 50),
     MossGuardian("Moss Guardian", SpellType.Fire, 50),
     Mother("Mother", SpellType.Fire, 20),
@@ -291,8 +289,6 @@ public enum NPCTypeWeakness
     PerstenTheDeceitful("Persten the Deceitful", SpellType.Air, 15),
     PhantomMuspah("Phantom Muspah", SpellType.Air, 65),
     PhrinShade("Phrin Shade", SpellType.Air, 40),
-    PitScorpion("Pit Scorpion", SpellType.Fire, 25),
-    PoisonScorpion("Poison Scorpion", SpellType.Fire, 25),
     PoisonSpider("Poison Spider", SpellType.Fire, 40),
     Porcupine("Porcupine", SpellType.Fire, 20),
     Pyrefiend("Pyrefiend", SpellType.Water, 100),
@@ -310,7 +306,6 @@ public enum NPCTypeWeakness
     ReanimatedHellhound("Reanimated Hellhound", SpellType.Water, 10),
     ReanimatedImp("Reanimated Imp", SpellType.Water, 10),
     ReanimatedKalphite("Reanimated Kalphite", SpellType.Fire, 50),
-    ReanimatedScorpion("Reanimated Scorpion", SpellType.Fire, 25),
     RedDragon("Red Dragon", SpellType.Water, 50, true), // Brutal, Baby, and normal black dragons all have the same %
     RepugnantSpectre("Repugnant Spectre", SpellType.Air, 40),
     Revenant("Revenant", SpellType.Air, 30),
@@ -331,7 +326,7 @@ public enum NPCTypeWeakness
     ScarredImp("Scarred Imp", SpellType.Water, 10),
     ScarredLesserDemon("Scarred Lesser Demon", SpellType.Water, 10),
     Scorpia("Scorpia", SpellType.Fire, 35),
-    Scorpion("Scorpion", SpellType.Fire, 25),
+    Scorpion("Scorpion", SpellType.Fire, 25, true), // normal, Khazard, Pit, Poison, and reanimated
     ScreamingBanshee("Screaming Banshee", SpellType.Air, 40),
     ScreamingTwistedBanshee("Screaming Twisted Banshee", SpellType.Air, 40),
     SeaSnake("Sea Snake", SpellType.Earth, 20, true), // Giant, young and Hatchling
@@ -418,7 +413,7 @@ public enum NPCTypeWeakness
     ZaklnGritch("Zakl'n Gritch", SpellType.Water, 30),
     Zebak("Zebak", SpellType.Earth, 40),
     Zombie("Zombie", SpellType.Fire, 50, true), // normal, pirate, rat, swab, champion
-    ZombifiedSpawn("ZombifiedSpawn", SpellType.Fire, 50),
+    ZombifiedSpawn("Zombified Spawn", SpellType.Fire, 50),
     Zulrah("Zulrah", SpellType.Fire, 50),
     Zygomite("Zygomite", SpellType.Fire, 40);
 
