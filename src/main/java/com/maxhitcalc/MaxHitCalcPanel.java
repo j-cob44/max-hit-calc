@@ -73,7 +73,7 @@ public class MaxHitCalcPanel extends PluginPanel
     // NPC Selection Data
     private JComboBox npcList = new JComboBox();
     private JLabel npcNameHeader = new JLabel("No NPC Selected", SwingConstants.LEFT);
-    private JLabel npcIcon = new JLabel("---");
+    private JLabel weaknessLabel = new JLabel("---");
     private JLabel weaknessIcon = new JLabel("---");
     private JLabel weaknessPercentLabel = new JLabel("---");
 
@@ -304,10 +304,10 @@ public class MaxHitCalcPanel extends PluginPanel
         JPanel imagePanel = new JPanel(new GridLayout(1, 3, 0, 0));
 
         // Selected NPC icon
-        npcIcon = new JLabel("---");
-        npcIcon.setHorizontalAlignment(SwingConstants.CENTER);
-        npcIcon.setVerticalAlignment(SwingConstants.CENTER);
-        imagePanel.add(npcIcon);
+        weaknessLabel = new JLabel("---");
+        weaknessLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        weaknessLabel.setVerticalAlignment(SwingConstants.CENTER);
+        imagePanel.add(weaknessLabel);
 
         // NPC weakness icon
         weaknessIcon = new JLabel("---");
@@ -398,25 +398,16 @@ public class MaxHitCalcPanel extends PluginPanel
     void setNpcInfoPanel(NPCTypeWeakness selectedNPCWeakness){
         npcNameHeader.setText(selectedNPCWeakness.getNPCName());
 
-        npcIcon.setText("");
-        if(selectedNPCWeakness.getIcon() != null)
-        {
-            npcIcon.setIcon(selectedNPCWeakness.getIcon());
-        }
-        else
-        {
-            npcIcon.setText("No pic.");
-            npcIcon.setIcon(null);
-        }
+        weaknessLabel.setText("Weakness:");
 
         weaknessIcon.setText("");
         switch (selectedNPCWeakness.getElementalWeakness())
         {
-            case Air: weaknessIcon.setIcon(NPCIcons.AIR_RUNE_ICON); break;
-            case Water: weaknessIcon.setIcon(NPCIcons.WATER_RUNE_ICON); break;
-            case Earth: weaknessIcon.setIcon(NPCIcons.EARTH_RUNE_ICON); break;
-            case Fire: weaknessIcon.setIcon(NPCIcons.FIRE_RUNE_ICON); break;
-            case NoType: weaknessIcon.setIcon(NPCIcons.EMPTY_RUNE_ICON); break;
+            case Air: weaknessIcon.setIcon(PanelIcons.AIR_RUNE_ICON); break;
+            case Water: weaknessIcon.setIcon(PanelIcons.WATER_RUNE_ICON); break;
+            case Earth: weaknessIcon.setIcon(PanelIcons.EARTH_RUNE_ICON); break;
+            case Fire: weaknessIcon.setIcon(PanelIcons.FIRE_RUNE_ICON); break;
+            case NoType: weaknessIcon.setIcon(PanelIcons.EMPTY_RUNE_ICON); break;
         }
 
         weaknessPercentLabel.setText(selectedNPCWeakness.getWeaknessPercent() + "%");
@@ -427,8 +418,7 @@ public class MaxHitCalcPanel extends PluginPanel
     {
         npcNameHeader.setText("No NPC Selected");
 
-        npcIcon.setIcon(null);
-        npcIcon.setText("---");
+        weaknessLabel.setText("---");
 
         weaknessIcon.setIcon(null);
         weaknessIcon.setText("---");
@@ -483,8 +473,10 @@ public class MaxHitCalcPanel extends PluginPanel
             // Set name
             npcNameHeader.setText(plugin.selectedNPCName);
 
+            weaknessLabel.setText("Weakness:");
+
             weaknessIcon.setText("");
-            weaknessIcon.setIcon(NPCIcons.EMPTY_RUNE_ICON);
+            weaknessIcon.setIcon(PanelIcons.EMPTY_RUNE_ICON);
 
             weaknessPercentLabel.setText("0%");
         }
