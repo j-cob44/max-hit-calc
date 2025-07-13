@@ -377,22 +377,21 @@ public class MaxHitCalcPlugin extends Plugin
 
 					if(rawNPC != null)
 					{
-						// Do nothing for combat dummy or bankers
-						if(!rawNPC.getName().toLowerCase().contains("combat dummy") && !rawNPC.getName().toLowerCase().contains("banker"))
+						// Do nothing for combat dummy or bankers, etc
+						if(rawNPC.getCombatLevel() == 0) return; // Can't fight it, don't calc it
+
+						if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
 						{
-							if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
-							{
-								selectedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
-							}
-
-							// Get necessary vars: name and size
-							selectedNPCName = rawNPC.getComposition().getName();
-							NPCSize = Math.max(1, rawNPC.getComposition().getSize()); // enforce to 1, incase of error
-
-							panel.setNPCviaPlugin();
-
-							calculateMaxes();
+							selectedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
 						}
+
+						// Get necessary vars: name and size
+						selectedNPCName = rawNPC.getComposition().getName();
+						NPCSize = Math.max(1, rawNPC.getComposition().getSize()); // enforce to 1, incase of error
+
+						panel.setNPCviaPlugin();
+
+						calculateMaxes();
 					}
 				}
 			}
