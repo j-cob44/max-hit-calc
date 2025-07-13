@@ -33,6 +33,7 @@ import com.google.inject.Inject;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -69,11 +70,12 @@ public class MaxHitCalcPanel extends PluginPanel
     private JComboBox dartList = new JComboBox();
     private JComboBox colossalBladeList = new JComboBox();
 
-    private JLabel selectionNotice;
-    private JLabel[] allNPCLabels;
-    private Map<JLabel, String> npcLabels = new HashMap<>();
-
-    private String panelSelectedNPCName = "";
+    // NPC Selection Data
+    private JComboBox npcList = new JComboBox();
+    private JLabel npcNameHeader = new JLabel("No NPC Selected", SwingConstants.LEFT);
+    private JLabel weaknessLabel = new JLabel("---");
+    private JLabel weaknessIcon = new JLabel("---");
+    private JLabel weaknessPercentLabel = new JLabel("---");
 
 
     enum ColossalBladeSizeBonus
@@ -137,7 +139,6 @@ public class MaxHitCalcPanel extends PluginPanel
         titleLabel.setText("Calculation Settings");
 
         titlePanel.add(titleLabel);
-        //titlePanel.add(Box.createGlue()); // Adds a break
 
 
         // Content section
@@ -145,7 +146,7 @@ public class MaxHitCalcPanel extends PluginPanel
         contentPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         contentPanel.setLayout(new GridLayout(0, 1));
 
-        // Blowpipe Dart Setting
+        // Construct main panel
         JPanel panel = new JPanel();
         panel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -154,36 +155,39 @@ public class MaxHitCalcPanel extends PluginPanel
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 0;
 
+        // Blowpipe Dart Setting
         JLabel dartSettingLabel = new JLabel("Blowpipe Dart:");
         dartSettingLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        //dartSettingLabel.setLayout(new GridLayout(2, 1));
 
         c.gridx = 0;
         c.gridy = 0;
         c.ipady = 0;
-        c.weightx = 0.5;
+        c.weightx = 0.7;
         c.weighty = 0;
         c.insets = new Insets(0,0,0,0);  //top padding
         c.anchor = GridBagConstraints.LINE_START;
-        c.gridwidth = 2;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 1;
 
         panel.add(dartSettingLabel, c);
 
 
         // Create Dropdown menu for selecting Dart type
         dartList = new JComboBox(BlowpipeDartType.values());
+        dartList.setPrototypeDisplayValue("123456789");
         BlowpipeDartType selectedDart = (BlowpipeDartType)configManager.getConfiguration("MaxHitCalc", "blowpipeDartType", BlowpipeDartType.class);
         dartList.setSelectedIndex(selectedDart.ordinal()); // 0 = Mithril
         dartList.addActionListener(e -> onDartSwitched());
 
-        c.gridx = 2;
+        c.gridx = 1;
         c.gridy = 0;
         c.ipady = 0;
-        c.weightx = 0.5;
+        c.weightx = 0.3;
         c.weighty = 0;
         c.insets = new Insets(0,0,0,0);  //top padding
-        c.anchor = GridBagConstraints.LINE_END;
-        c.gridwidth = 2;
+//        c.anchor = GridBagConstraints.LINE_END;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 1;
 
         panel.add(dartList, c);
 
@@ -207,27 +211,28 @@ public class MaxHitCalcPanel extends PluginPanel
         c.gridx = 0;
         c.gridy = 2;
         c.ipady = 0;
-        c.weightx = 0.5;
+        c.weightx = 0.7;
         c.weighty = 0;
         c.insets = new Insets(0,0,0,0);  //top padding
         c.anchor = GridBagConstraints.LINE_START;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
 
         panel.add(cbladeSettingLabel, c);
 
         // Dropdown for NPC Size
         colossalBladeList = new JComboBox(ColossalBladeSizeBonus.values());
+        colossalBladeList.setPrototypeDisplayValue("12345");
         colossalBladeList.setSelectedIndex(0);
         colossalBladeList.addActionListener(e -> onCBladeSettingSwitched());
 
-        c.gridx = 2;
+        c.gridx = 1;
         c.gridy = 2;
         c.ipady = 0;
-        c.weightx = 0.5;
+        c.weightx = 0.3;
         c.weighty = 0;
         c.insets = new Insets(0,0,0,0);  //top padding
         c.anchor = GridBagConstraints.LINE_END;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
 
         panel.add(colossalBladeList, c);
 
@@ -242,79 +247,103 @@ public class MaxHitCalcPanel extends PluginPanel
 
         panel.add(Box.createGlue(), c);
 
-        // NPC Selection Title
-        JLabel npcSelectionTitleLabel = new JLabel("Selected NPC:");
-        npcSelectionTitleLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+        // Select NPC
+        JLabel npcWeaknessLabel = new JLabel("Select NPC:");
+        npcWeaknessLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        npcWeaknessLabel.setLayout(new GridLayout(2, 1));
 
         c.gridx = 0;
         c.gridy = 4;
         c.ipady = 0;
-        c.weightx = 0;
+        c.weightx = 0.5;
         c.weighty = 0;
         c.insets = new Insets(0,0,0,0);  //top padding
         c.anchor = GridBagConstraints.LINE_START;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
 
-        panel.add(npcSelectionTitleLabel, c);
+        panel.add(npcWeaknessLabel, c);
 
-        // NPC Selection
-        selectionNotice = new JLabel("");
-        selectionNotice.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        // Dropdown for NPC selection
+        npcList = new JComboBox(NPCTypeWeakness.values());
+        npcList.setPrototypeDisplayValue("1234567890123");
+        npcList.setSelectedIndex(0);
+        npcList.addActionListener(e -> onNpcSelected());
 
-        c.gridx = 2;
+        c.gridx = 1;
         c.gridy = 4;
         c.ipady = 0;
-        c.weightx = 0;
+        c.weightx = 0.5;
         c.weighty = 0;
         c.insets = new Insets(0,0,0,0);  //top padding
         c.anchor = GridBagConstraints.LINE_END;
+        c.gridwidth = 1;
+
+        panel.add(npcList, c);
+
+        c.gridx = 0;
+        c.gridy = 5;
+        c.ipady = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(10,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.CENTER;
         c.gridwidth = 2;
 
-        panel.add(selectionNotice, c);
+        panel.add(Box.createGlue(), c);
 
-        int totalCells = NPCTypeWeakness.values().length;
-        allNPCLabels = new JLabel[totalCells];
+        // Selected NPC info panel
+        JPanel selectedNPCPanel = new JPanel(new BorderLayout(10, 10));
+        selectedNPCPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        selectedNPCPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        int columns = 4;
-        int rows = (int) Math.ceil(((double) totalCells/(double)columns));
-        int index = 0;
+        npcNameHeader = new JLabel("No NPC Selected", SwingConstants.LEFT);
+        npcNameHeader.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        selectedNPCPanel.add(npcNameHeader, BorderLayout.NORTH);
 
-        int finalRow = 6;
+        JPanel imagePanel = new JPanel(new GridLayout(1, 3, 0, 0));
 
-        for(int i = 0; i < rows; i++)
-        {
-            for(int j = 0; j < columns; j++)
-            {
-                if(index >= totalCells)
-                {
+        // Selected NPC icon
+        weaknessLabel = new JLabel("---");
+        weaknessLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        weaknessLabel.setVerticalAlignment(SwingConstants.CENTER);
+        imagePanel.add(weaknessLabel);
 
+        // NPC weakness icon
+        weaknessIcon = new JLabel("---");
+        weaknessIcon.setHorizontalAlignment(SwingConstants.CENTER);
+        weaknessIcon.setVerticalAlignment(SwingConstants.CENTER);
+        imagePanel.add(weaknessIcon);
 
-                    //panel.add(new JLabel(""), c);
-                }
-                else
-                {
-                    NPCTypeWeakness currentNPC = NPCTypeWeakness.values()[index];
-                    JLabel createLabel = createIcon(currentNPC.getIcon(), currentNPC.getNPCName());
+        weaknessPercentLabel = new JLabel("---");
+        weaknessPercentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        weaknessPercentLabel.setVerticalAlignment(SwingConstants.CENTER);
+        imagePanel.add(weaknessPercentLabel);
 
-                    allNPCLabels[index] = createLabel;
-                    npcLabels.put(createLabel, currentNPC.getNPCName());
+        selectedNPCPanel.add(imagePanel, BorderLayout.CENTER);
 
-                    c.gridx = 0+j;
-                    c.gridy = 5+i;
-                    c.ipady = 0;
-                    c.weightx = 0.5;
-                    c.weighty = 0;
-                    c.insets = new Insets(0,0,0,0);  //top padding
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.gridwidth = 1;
-                    c.gridheight = 1;
+        c.gridx = 0;
+        c.gridy = 6;
+        c.ipady = 0;
+        c.weightx = 2;
+        c.weighty = 0;
+//        c.insets = new Insets(0,0,0,0);  //top padding
+//        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 2;
 
-                    panel.add(createLabel, c);
-                    index++;
-                }
-            }
-            finalRow = 6+i; // needed for last button
-        }
+        panel.add(selectedNPCPanel, c);
+
+        c.gridx = 0;
+        c.gridy = 7;
+        c.ipady = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(10,0,0,0);  //top padding
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridwidth = 2;
+
+        panel.add(Box.createGlue(), c);
 
         JButton resetButton = new JButton("Reset");
         resetButton.addMouseListener(new MouseAdapter() {
@@ -325,13 +354,13 @@ public class MaxHitCalcPanel extends PluginPanel
         });
 
         c.gridx = 0;
-        c.gridy = finalRow;
+        c.gridy = 8;
         c.ipady = 0;
         c.weightx = 0;
         c.weighty = 0;
         c.insets = new Insets(0,0,0,0);  //top padding
         c.anchor = GridBagConstraints.CENTER;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
         c.gridheight = 0;
 
         panel.add(resetButton, c);
@@ -350,37 +379,53 @@ public class MaxHitCalcPanel extends PluginPanel
         eventBus.unregister(this);
     }
 
-    private JLabel createIcon(ImageIcon icon, String npcName)
-    {
-        ImageIcon resizedImage = new ImageIcon(icon.getImage().getScaledInstance(-1, 39, Image.SCALE_DEFAULT));
-
-        JLabel iconLabel = new JLabel(resizedImage);
-        iconLabel.setLayout(new BorderLayout());
-        iconLabel.setBorder(new EmptyBorder(1,1,1,1));
-        iconLabel.setToolTipText(npcName);
-        iconLabel.addMouseListener(new MouseAdapter()
+    void onNpcSelected(){
+        if(npcList.getSelectedIndex() == 0)
         {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                JLabel currentLabel = (JLabel) e.getSource();
+            // handle as reset, means NONE is selected
+            resetNpcInfoPanel();
+        }
+        else {
+            NPCTypeWeakness selectedNPCWeakness = NPCTypeWeakness.values()[npcList.getSelectedIndex()];
+            setNpcInfoPanel(selectedNPCWeakness);
 
-                clearCurrentPanelNPC(); // remove border from previous npc
-
-                currentLabel.setBorder(new LineBorder(Color.ORANGE, 1));
-
-                panelSelectedNPCName = npcLabels.get(currentLabel);
-
-                selectionNotice.setText(panelSelectedNPCName);
-
-                // Recalculate plugin
-                plugin.selectedNPCName = panelSelectedNPCName;
-                plugin.npcSelectedByPanel = true;
-            }
-        });
-
-        return iconLabel;
+            // Recalculate plugin
+            plugin.selectedNPCName = selectedNPCWeakness.getNPCName();
+            plugin.npcSelectedByPanel = true;
+        }
     }
+
+    void setNpcInfoPanel(NPCTypeWeakness selectedNPCWeakness){
+        npcNameHeader.setText(selectedNPCWeakness.getNPCName());
+
+        weaknessLabel.setText("Weakness:");
+
+        weaknessIcon.setText("");
+        switch (selectedNPCWeakness.getElementalWeakness())
+        {
+            case Air: weaknessIcon.setIcon(PanelIcons.AIR_RUNE_ICON); break;
+            case Water: weaknessIcon.setIcon(PanelIcons.WATER_RUNE_ICON); break;
+            case Earth: weaknessIcon.setIcon(PanelIcons.EARTH_RUNE_ICON); break;
+            case Fire: weaknessIcon.setIcon(PanelIcons.FIRE_RUNE_ICON); break;
+            case NoType: weaknessIcon.setIcon(PanelIcons.EMPTY_RUNE_ICON); break;
+        }
+
+        weaknessPercentLabel.setText(selectedNPCWeakness.getWeaknessPercent() + "%");
+    }
+
+
+    void resetNpcInfoPanel()
+    {
+        npcNameHeader.setText("No NPC Selected");
+
+        weaknessLabel.setText("---");
+
+        weaknessIcon.setIcon(null);
+        weaknessIcon.setText("---");
+
+        weaknessPercentLabel.setText("---");
+    }
+
 
     void onDartSwitched()
     {
@@ -406,12 +451,8 @@ public class MaxHitCalcPanel extends PluginPanel
         // Reset size
         colossalBladeList.setSelectedIndex(0);
 
-        // Reset border around npc
-        clearCurrentPanelNPC();
-
-        // Clear Texts
-        panelSelectedNPCName = "";
-        selectionNotice.setText(panelSelectedNPCName);
+        // Reset Npc selection panel
+        resetNpcInfoPanel();
     }
 
     // Set panel info automatically from plugin
@@ -421,63 +462,23 @@ public class MaxHitCalcPanel extends PluginPanel
         int size = Math.min(plugin.NPCSize, 5);
         colossalBladeList.setSelectedIndex(size-1);
 
-        // Clear currently bordered npc on panel
-        clearCurrentPanelNPC();
-
-        // Set NPC
-        selectionNotice.setText(plugin.selectedNPCName);
-        if(plugin.selectedNPCName != null)
-        {
-            for(JLabel label : allNPCLabels)
-            {
-                String searchedNPC = npcLabels.get(label);
-
-                // Full and Correct name found
-                if(searchedNPC.equals(plugin.selectedNPCName))
-                {
-                    label.setBorder(new LineBorder(Color.ORANGE, 1));
-                    panelSelectedNPCName = plugin.selectedNPCName; // Full name
-                    break;
-                }
-
-                // Partial name found, e.g. baby (black dragon)
-                if(plugin.selectedNPCName.toLowerCase().contains(searchedNPC.toLowerCase()))
-                {
-                    label.setBorder(new LineBorder(Color.ORANGE, 1));
-                    panelSelectedNPCName = searchedNPC.toLowerCase(); // Partial name
-                    break;
-                }
-            }
+        // Set NPC Info panel
+        NPCTypeWeakness selectedNpc = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
+        if (selectedNpc != null) {
+            setNpcInfoPanel(selectedNpc);
         }
-    }
+        else {
+            resetNpcInfoPanel();
 
-    // Clears currently Selected in the panel
-    void clearCurrentPanelNPC()
-    {
-        for(JLabel label : allNPCLabels)
-        {
-            String searchedNPC = npcLabels.get(label);
+            // Set name
+            npcNameHeader.setText(plugin.selectedNPCName);
 
-            if (!panelSelectedNPCName.isEmpty())
-            {
-                // Find Full correct name
-                if (searchedNPC.equals(panelSelectedNPCName))
-                {
-                    label.setBorder(new EmptyBorder(0, 0, 0, 0));
-                    break;
-                }
+            weaknessLabel.setText("Weakness:");
 
-                // Find Partial name , e.g. baby (black dragon)
-                if (panelSelectedNPCName.toLowerCase().contains(searchedNPC.toLowerCase()))
-                {
-                    label.setBorder(new EmptyBorder(0, 0, 0, 0));
-                    break;
-                }
-            }
-            else
-            {
-                break; // no npc currently selected in panel
-            }
+            weaknessIcon.setText("");
+            weaknessIcon.setIcon(PanelIcons.EMPTY_RUNE_ICON);
+
+            weaknessPercentLabel.setText("0%");
         }
     }
 }
