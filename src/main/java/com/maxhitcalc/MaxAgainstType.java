@@ -537,22 +537,6 @@ public class MaxAgainstType extends MaxHit {
         double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
 
-        CombatSpell spell = getSpell();
-
-        // Twinflame Staff Double Hit bonus
-        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("twinflame staff"))
-        {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
-
-                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
-                {
-                    double bonusHit = Math.floor(maxDamage) * 0.4;
-                    maxDamage = Math.floor(maxDamage) + Math.floor(bonusHit);
-                }
-            }
-        }
-
         return maxDamage;
     }
 
@@ -726,6 +710,21 @@ public class MaxAgainstType extends MaxHit {
                         double typeBonusDamage = spellBaseHit * ((double) bonusPercent / (double)100);
                         maxHitVsType = maxHitVsType + typeBonusDamage;
                     }
+                }
+            }
+        }
+
+        // Twinflame Staff Double Hit bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                {
+                    double bonusHit = Math.floor(maxHitVsType) * 0.4;
+                    System.out.println("bonusHit: " + bonusHit);
+                    maxHitVsType = Math.floor(maxHitVsType) + Math.floor(bonusHit);
                 }
             }
         }
