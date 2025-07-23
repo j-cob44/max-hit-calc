@@ -47,4 +47,4 @@ Any feedback/issues can be made through Github: https://github.com/j-cob44/max-h
 And suggestions can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 
 Jacob Burton (j-cob44), July 2025 <br>
-Version 2.1.0
+Version 2.1.1
