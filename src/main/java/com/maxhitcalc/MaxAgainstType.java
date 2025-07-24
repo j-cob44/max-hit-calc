@@ -200,7 +200,13 @@ public class MaxAgainstType extends MaxHit {
             // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022
             if(weaponItemName.contains("Keris"))
             {
-                typeBonusToApply.add(1.33);
+                if(weaponItemName.contains("amascut"))
+                {
+                    typeBonusToApply.add(1.15);
+                }
+                else {
+                    typeBonusToApply.add(1.33);
+                }
             }
 
             // Demonbane, added 10 July 2024
