@@ -190,6 +190,11 @@ public class MaxSpec
             return 1.25;
         }
 
+        if(weaponName.contains("Arkan blade"))
+        {
+            return 1.5;
+        }
+
         // Ranged Checks
         if(weaponName.contains("Dark bow"))
         {
@@ -245,6 +250,12 @@ public class MaxSpec
         if(weaponName.contains("Toxic blowpipe"))
         {
             return 1.5;
+        }
+
+        // Magic weapon checks
+        if(weaponName.contains("Eye of Ayak"))
+        {
+            return 1.3;
         }
 
         return 0; // Not a spec weapon with a damage boost
