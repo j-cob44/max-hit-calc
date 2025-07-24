@@ -59,7 +59,8 @@ public class MaxSpec
         String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
 
         // Check if we even have a spec weapon
-        // Melee Checks
+        // ***********************************************************************
+        // Melee Spec weapon checks
         if(weaponName.contains("Armadyl godsword"))
         {
             return 1.375;
@@ -143,11 +144,6 @@ public class MaxSpec
             return 1.1;
         }
 
-        if(weaponName.contains("Abyssal dagger"))
-        {
-            return 0.85;
-        }
-
         if(weaponName.contains("Abyssal bludgeon"))
         {
             double currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
@@ -195,7 +191,8 @@ public class MaxSpec
             return 1.5;
         }
 
-        // Ranged Checks
+        // ***********************************************************************
+        // Ranged Spec weapon checks
         if(weaponName.contains("Dark bow"))
         {
             if(ammoItemName.contains("Dragon arrow"))
@@ -213,6 +210,10 @@ public class MaxSpec
             {
                 return 1.1;
             }
+        }
+        if(weaponName.contains("Dragon crossbow"))
+        {
+            return 1.2;
         }
         if(weaponName.contains("crossbow"))
         {
@@ -252,7 +253,13 @@ public class MaxSpec
             return 1.5;
         }
 
-        // Magic weapon checks
+        if(weaponName.contains("ballista"))
+        {
+            return 1.25;
+        }
+
+        // ***********************************************************************
+        // Magic Spec weapon checks
         if(weaponName.contains("Eye of Ayak"))
         {
             return 1.3;
@@ -294,7 +301,8 @@ public class MaxSpec
 
         if(weaponName.contains("Abyssal dagger"))
         {
-            return hit * 2;
+            int secondHit = (int)(hit * 0.85);
+            return hit + secondHit;
         }
 
         if(weaponName.contains("Saradomin sword"))
