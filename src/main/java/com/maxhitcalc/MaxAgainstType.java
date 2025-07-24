@@ -337,7 +337,7 @@ public class MaxAgainstType extends MaxHit {
         return typeBonusToApply; // List of Modifiers
     }
 
-    // Needed in Magic for Slayer Staff (e)
+    // Needed for type calculations with Slayer Staff (e) and Purging Staff vs Demons
     protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         double basehit = 0;
@@ -415,6 +415,11 @@ public class MaxAgainstType extends MaxHit {
         else if(weaponItemName.contains("Bone staff"))
         {
             basehit = Math.floor(magicLevel/3) + 5;
+        }
+        // The Eye of Ayak
+        else if(weaponItemName.contains("Eye of Ayak"))
+        {
+            basehit = Math.floor(magicLevel/3) - 6;
         }
         // Autocasted Spell
         else
