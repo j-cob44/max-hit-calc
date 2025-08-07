@@ -177,7 +177,7 @@ public enum NPCTypeWeakness
     GiantCryptSpider("Giant Crypt Spider", SpellType.Fire, 40),
     GiantFrog("Giant Frog", SpellType.Earth, 25),
     GiantLobster("Giant Lobster", SpellType.Earth, 25),
-    GiantMole("Giant Mole", SpellType.Water, 50),
+    GiantMole("Giant Mole", SpellType.Earth, 50),
     GiantMosquito("Giant Mosquito", SpellType.Fire, 40),
     GiantRoc("Giant Roc", SpellType.Air, 35),
     GiantRockCrab("Giant Rock Crab", SpellType.Earth, 20),

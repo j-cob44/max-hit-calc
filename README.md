@@ -46,5 +46,5 @@ Sidebar Panel and Settings Panel: <br>
 Any feedback/issues can be made through Github: https://github.com/j-cob44/max-hit-calc/issues <br>
 And suggestions can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 
-Jacob Burton (j-cob44), July 2025 <br>
+Jacob Burton (j-cob44), August 2025 <br>
 Version 2.1.1
