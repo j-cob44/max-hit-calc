@@ -200,7 +200,13 @@ public class MaxAgainstType extends MaxHit {
             // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022
             if(weaponItemName.contains("Keris"))
             {
-                typeBonusToApply.add(1.33);
+                if(weaponItemName.contains("amascut"))
+                {
+                    typeBonusToApply.add(1.15);
+                }
+                else {
+                    typeBonusToApply.add(1.33);
+                }
             }
 
             // Demonbane, added 10 July 2024
@@ -331,7 +337,7 @@ public class MaxAgainstType extends MaxHit {
         return typeBonusToApply; // List of Modifiers
     }
 
-    // Needed in Magic for Slayer Staff (e)
+    // Needed for type calculations with Slayer Staff (e) and Purging Staff vs Demons
     protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle)
     {
         double basehit = 0;
@@ -409,6 +415,11 @@ public class MaxAgainstType extends MaxHit {
         else if(weaponItemName.contains("Bone staff"))
         {
             basehit = Math.floor(magicLevel/3) + 5;
+        }
+        // The Eye of Ayak
+        else if(weaponItemName.contains("Eye of Ayak"))
+        {
+            basehit = Math.floor(magicLevel/3) - 6;
         }
         // Autocasted Spell
         else
@@ -536,22 +547,6 @@ public class MaxAgainstType extends MaxHit {
         // Tome Bonuses
         double correctTomeSpellBonus = getTomeSpellBonus(playerEquipment, weaponAttackStyle); // default 1
         maxDamage = maxDamage * correctTomeSpellBonus;
-
-        CombatSpell spell = getSpell();
-
-        // Twinflame Staff Double Hit bonus
-        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("twinflame staff"))
-        {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
-
-                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
-                {
-                    double bonusHit = Math.floor(maxDamage) * 0.4;
-                    maxDamage = Math.floor(maxDamage) + Math.floor(bonusHit);
-                }
-            }
-        }
 
         return maxDamage;
     }
@@ -726,6 +721,21 @@ public class MaxAgainstType extends MaxHit {
                         double typeBonusDamage = spellBaseHit * ((double) bonusPercent / (double)100);
                         maxHitVsType = maxHitVsType + typeBonusDamage;
                     }
+                }
+            }
+        }
+
+        // Twinflame Staff Double Hit bonus
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        {
+            if (spell != null && spell.getSpellbook().contains("standard")) {
+
+                if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
+                {
+                    double bonusHit = Math.floor(maxHitVsType) * 0.4;
+                    System.out.println("bonusHit: " + bonusHit);
+                    maxHitVsType = Math.floor(maxHitVsType) + Math.floor(bonusHit);
                 }
             }
         }

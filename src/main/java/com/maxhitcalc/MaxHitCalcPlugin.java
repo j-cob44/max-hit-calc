@@ -140,6 +140,16 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		// DEBUG CHAT COMMANDS
+//		if(chatMessageReceived.getMessage().equals("!Mhcdebug"))
+//		{
+//			calculateMaxes();
+//			System.out.println("=================S==================");
+//			System.out.println("MH: " + maxHit);
+//			System.out.println("MS: " + maxSpec);
+//			System.out.println("MHvT: " + maxVsType);
+//			System.out.println("MSvT: " + maxSpecVsType);
+//			System.out.println("=================E==================");
+//		}
 //		if(chatMessageReceived.getMessage().equals("!Allstyles"))
 //		{
 //			System.out.println("================S===============");
