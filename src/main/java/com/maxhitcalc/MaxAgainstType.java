@@ -734,7 +734,6 @@ public class MaxAgainstType extends MaxHit {
                 if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                 {
                     double bonusHit = Math.floor(maxHitVsType) * 0.4;
-                    System.out.println("bonusHit: " + bonusHit);
                     maxHitVsType = Math.floor(maxHitVsType) + Math.floor(bonusHit);
                 }
             }
