@@ -336,6 +336,7 @@ public enum NPCTypeWeakness
     Shadow("Shadow", SpellType.Air, 40),
     ShadowWyrm("Shadow Wyrm", SpellType.Air, 50),
     ShadowSpider("Shadow Spider", SpellType.Air, 40),
+    SkeletalHellhound("Skeletal Hellhound", SpellType.Earth, 35),
     SkeletalWyvern("Skeletal Wyvern", SpellType.Fire, 25),
     Skeleton("Skeleton", SpellType.Earth, 40, true), // normal, mage, brute, fremennik, guard, heavy, hero, thug, champion
     SkeletonHellhound("Skeleton Hellhound", SpellType.Earth, 30),
