@@ -50,7 +50,7 @@ public enum NPCTypeWeakness
     AbyssalPortal("Abyssal Portal", SpellType.Fire, 50),
     AdamantDragon("Adamant Dragon", SpellType.Earth, 50),
     AgrithNaar("Agrith Naar", SpellType.Water, 25),
-    Ahrim("Ahrim", SpellType.Air, 50),
+    Ahrim("Ahrim", SpellType.Air, 50, true),
     AirElemental("Air Elemental", SpellType.Air, 30),
     AkkhasShadow("Akkha's Shadow", SpellType.Air, 60),
     AlbinoBat("Albino Bat", SpellType.Air, 40),
@@ -131,7 +131,7 @@ public enum NPCTypeWeakness
     Delrith("Delrith", SpellType.Water, 15),
     DemonicGorilla("Demonic Gorilla", SpellType.Water, 35),
     DeviantSpectre("Deviant Spectre", SpellType.Air, 30),
-    Dharok("Dharok", SpellType.Air, 50),
+    Dharok("Dharok", SpellType.Air, 50, true),
     DontKnowWhat("Don't Know What", SpellType.Fire, 40),
     Doomion("Doomion", SpellType.Water, 25),
     Drake("Drake", SpellType.Water, 50),
@@ -193,7 +193,7 @@ public enum NPCTypeWeakness
     GreatOlm("Great Olm", SpellType.Earth, 50),
     GreenDragon("Green Dragon", SpellType.Water, 50, true), // Brutal, Baby, and normal blue dragons all have the same %
     GrizzlyBear("Grizzly Bear", SpellType.Fire, 20), // normal and cub
-    Guthan("Guthan", SpellType.Air, 50),
+    Guthan("Guthan", SpellType.Air, 50, true),
     HarpieBugSwarm("Harpie Bug Swarm", SpellType.Fire, 50),
     Hellhound("Hellhound", SpellType.Water, 50),
     Hespori("Hespori", SpellType.Fire, 100),
@@ -237,7 +237,7 @@ public enum NPCTypeWeakness
     Kalrag("Kalrag", SpellType.Fire, 10),
     Kamil("Kamil", SpellType.Fire, 10),
     Karamel("Karamel", SpellType.Fire, 40),
-    Karil("Karil", SpellType.Air, 50),
+    Karil("Karil", SpellType.Air, 50, true),
     KasondeTheCraven("Kasonde the Craven", SpellType.Air, 15),
     KetZek("Ket-Zek", SpellType.Water, 40),
     KetlaTheUnworthy("Ketla the Unworthy", SpellType.Air, 15),
@@ -370,7 +370,7 @@ public enum NPCTypeWeakness
     TheForsakenAssassin("The Forsaken Assassin", SpellType.Air, 15),
     ThermonuclearSmokeDevil("Thermonuclear Smoke Devil", SpellType.Air, 40),
     TokXil("Tok-Xil", SpellType.Water, 40),
-    Torag("Torag", SpellType.Air, 50),
+    Torag("Torag", SpellType.Air, 50, true),
     TormentedDemon("Tormented Demon", SpellType.Water, 30),
     TormentedSoul("Tormented Soul", SpellType.Air, 20),
     Tortoise("Tortoise", SpellType.Earth, 20),
@@ -390,7 +390,7 @@ public enum NPCTypeWeakness
     UriumShade("Urium Shade", SpellType.Air, 40),
     Vardorvis("Vardorvis", SpellType.Fire, 35),
     Venenatis("Venenatis", SpellType.Fire, 40, true), // venenatis and spiderlings
-    Verac("Verac", SpellType.Air, 50),
+    Verac("Verac", SpellType.Air, 50, true),
     // verzik vitur phase 3?
     VespineSoldier("Vespine Soldier", SpellType.Fire, 40),
     Vespula("Vespula", SpellType.Fire, 50),
