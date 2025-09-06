@@ -239,6 +239,7 @@ public class PredictNextMax extends MaxHit
     private List<Object> predictNextRangeMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID)
     {
         int nextRangedLevel = 0;
+        int nextStrengthLevel = 0;
         int nextRangeEquipmentBonus = 0;
         double nextPrayerBonus = 0;
 
@@ -247,6 +248,13 @@ public class PredictNextMax extends MaxHit
         // Predict Next Ranged Level for Next Max Hit
         for(int i = 1; i <= 20; i++)
         {
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            // If using the atlatl, calculate with strength instead of ranged
+            if(weaponItemName.contains("atlatl"))
+            {
+                break; // Changing range level wont affect atlatl calcs
+            }
+
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED) + i;
@@ -264,7 +272,6 @@ public class PredictNextMax extends MaxHit
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
-            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
             if(weaponItemName.contains("Bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
@@ -288,13 +295,19 @@ public class PredictNextMax extends MaxHit
             }
         }
 
-        // Predict Next Prayer Bonus for Next Max Hit
-        for(int i = 1; i <= 23; i++)
+        // Predict Next Strength Level for Next Max Hit (ATLATL)
+        for(int i = 1; i <= 20; i++)
         {
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+            if(!weaponItemName.contains("atlatl"))
+            {
+                break; // Changing strength level only affects atlatl
+            }
+
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
-            int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
-            double prayerBonus = getPrayerBonus(weaponAttackStyle) + (i * 0.01);
+            int rangedLevel = client.getBoostedSkillLevel(Skill.STRENGTH) + i;
+            double prayerBonus = getPrayerBonus(weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(playerEquipment); // default 1;
 
@@ -308,7 +321,57 @@ public class PredictNextMax extends MaxHit
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
+            if(weaponItemName.contains("Bone shortbow"))
+            {
+                predictedMaxHit = predictedMaxHit + 10;
+            }
+
+            // Tonalztics of Ralos (uncharged) max hit is 75% of normal
+            if(weaponItemName.contains("Tonalztics of ralos"))
+            {
+                predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
+                if(!weaponItemName.contains("(uncharged)"))
+                {
+                    predictedMaxHit = predictedMaxHit*2;
+                }
+            }
+
+            // Check if predicted is better than current
+            if (Math.floor(predictedMaxHit) > currentMaxHit)
+            {
+                nextStrengthLevel = i;
+                break;
+            }
+        }
+
+        // Predict Next Prayer Bonus for Next Max Hit
+        for(int i = 1; i <= 23; i++)
+        {
             String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
+            // Calculate Ranged Max Hit
+            // Step 1: Calculate effective ranged Strength
+            int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
+            double prayerBonus = getPrayerBonus(weaponAttackStyle) + (i * 0.01);
+            int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
+            double voidBonus = getVoidRangedBonus(playerEquipment); // default 1;
+
+            // If using the atlatl, calculate with strength instead of ranged
+            if(weaponItemName.contains("atlatl"))
+            {
+                rangedLevel  = client.getBoostedSkillLevel(Skill.STRENGTH);
+            }
+
+            double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
+
+            // Step 2: Calculate the max hit
+            double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
+            double gearBonus = getRangeGearBoost(playerEquipment);
+
+            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+
+            // Step 3: Bonus damage from special attack and effects
+            // Rat Default +10 damage Bonus
             if(weaponItemName.contains("Bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
@@ -335,12 +398,20 @@ public class PredictNextMax extends MaxHit
         // Predict Next Ranged Equipment Strength Bonus for Next Max Hit
         for(int i = 1; i <= 20; i++)
         {
+            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
             // Calculate Ranged Max Hit
             // Step 1: Calculate effective ranged Strength
             int rangedLevel = client.getBoostedSkillLevel(Skill.RANGED);
             double prayerBonus = getPrayerBonus(weaponAttackStyle);
             int styleBonus = getAttackStyleBonus(weaponAttackStyle, attackStyleID);
             double voidBonus = getVoidRangedBonus(playerEquipment); // default 1;
+
+            // If using the atlatl, calculate with strength instead of ranged
+            if(weaponItemName.contains("atlatl"))
+            {
+                rangedLevel  = client.getBoostedSkillLevel(Skill.STRENGTH);
+            }
 
             double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
@@ -352,7 +423,7 @@ public class PredictNextMax extends MaxHit
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
-            String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
             if(weaponItemName.contains("Bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
@@ -376,7 +447,7 @@ public class PredictNextMax extends MaxHit
             }
         }
 
-        List<Object> results = Arrays.asList("ranged", nextRangedLevel, nextRangeEquipmentBonus, nextPrayerBonus);
+        List<Object> results = Arrays.asList("ranged", nextRangedLevel, nextStrengthLevel, nextRangeEquipmentBonus, nextPrayerBonus);
 
         // Complete
         return results;
@@ -516,7 +587,7 @@ public class PredictNextMax extends MaxHit
         {
             List<Object> rangedResults = this.predictNextRangeMaxHit(playerEquipment, attackStyle, attackStyleID);
 
-            // index: 0 = "ranged", 1 = range level, 2 = range equipment strength bonus, 3 = prayer percent bonus
+            // index: 0 = "ranged", 1 = range level, 2 = strength level (Atlatl), 3 = range equipment strength bonus, 4 = prayer percent bonus
             return rangedResults;
         }
         else if ((attackStyle.equals(AttackStyle.CASTING)  || attackStyle.equals(AttackStyle.DEFENSIVE_CASTING)))

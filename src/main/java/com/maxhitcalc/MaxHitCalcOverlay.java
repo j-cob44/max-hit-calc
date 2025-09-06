@@ -165,12 +165,22 @@ public class MaxHitCalcOverlay extends OverlayPanel
 
         if (prediction.get(0).equals("melee"))
         {
-            result += prediction.get(1) + " Strength Levels </br>" + prediction.get(2) + " Strength Bonus </br>" + (int)((double)prediction.get(3) * 100) + "% Prayer Bonus";
+            result += prediction.get(1) + " Strength Levels </br>" + prediction.get(2) + " Strength Bonus </br>" + (int)((double)prediction.get(3) * 100) + "% Str. Prayer Bonus";
             return result;
         }
         else if (prediction.get(0).equals("ranged"))
         {
-            result += prediction.get(1) + " Ranged Levels </br>" + prediction.get(2) + " Ranged Strength Bonus </br>" + (int)((double)prediction.get(3) * 100) + "% Prayer Bonus";
+            // Atlatl check
+            if(prediction.get(1).equals(0) && !prediction.get(2).equals(0))
+            {
+                result += prediction.get(2) + " Strength Levels </br>" + prediction.get(3) + " Strength Bonus </br>";
+            }
+            else {
+                result += prediction.get(1) + " Ranged Levels </br>" + prediction.get(3) + " Ranged Strength Bonus </br>";
+            }
+
+            result += (int)((double)prediction.get(4) * 100) + "% Ranged Prayer Bonus";
+
             return result;
         }
         else if (prediction.get(0).equals("magic"))

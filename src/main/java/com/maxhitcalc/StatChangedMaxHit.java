@@ -231,9 +231,11 @@ public class StatChangedMaxHit
         return maxHit;
     }
 
-    // Calculate Ranged max hit with chagned stats
+    // Calculate Ranged max hit with changed stats
     protected double calculateRangedMaxHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, int attackStyleID, StatChange[] changedStats)
     {
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
         // Calculate Ranged Max Hit
         // Step 1: Calculate effective ranged Strength
         int rangedLevel = 1;
@@ -250,6 +252,19 @@ public class StatChangedMaxHit
         int styleBonus = maxHits.getAttackStyleBonus(weaponAttackStyle, attackStyleID);
         double voidBonus = maxHits.getVoidRangedBonus(playerEquipment); // default 1;
 
+        // If using the atlatl, calculate with strength instead of ranged
+        if(weaponItemName.contains("atlatl"))
+        {
+            if(checkIfStatChanged(changedStats, Skill.STRENGTH))
+            {
+                rangedLevel = getChangedStatValue(changedStats, Skill.STRENGTH);
+            }
+            else
+            {
+                rangedLevel  = client.getBoostedSkillLevel(Skill.STRENGTH);
+            }
+        }
+
         double effectiveRangedStrength = Math.floor((Math.floor(rangedLevel * prayerBonus) + styleBonus + 8) * voidBonus);
 
         // Step 2: Calculate the max hit
@@ -260,7 +275,6 @@ public class StatChangedMaxHit
 
         // Step 3: Bonus damage from special attack and effects
         // Rat Default +10 damage Bonus
-        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if(weaponItemName.contains("Bone shortbow"))
         {
             maxHit = maxHit + 10;
