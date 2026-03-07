@@ -399,9 +399,8 @@ public class MaxHit {
     protected double getRangedStrengthBonus(Item[] playerEquipment)
     {
         double rangedStrengthBonus = 0;
-
-        // Debug
-        //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Weapon Name: " + client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
+        boolean skipAmmo = false;
+        boolean calcWithMelee = false;
 
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         int weaponID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.WEAPON);
@@ -409,37 +408,33 @@ public class MaxHit {
         String ammoItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMMO);
         int ammoID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.AMMO);
 
-        String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
-        int capeID = EquipmentItems.getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.CAPE);
+        int quiverAmmoId = EquipmentItems.getQuiverItemID(client);
+        String quiverAmmoItemName = EquipmentItems.getQuiverItemName(client);
 
-        String quiverItemName;
-        int quiverItemID;
-
-        boolean skipAmmo = false;
-        boolean calcWithMelee = false;
-
-        // Cases to skip ammo: throwing weapons, crystal bow, blowpipe
-        if (weaponItemName.contains("dart") || weaponItemName.contains("knife") || weaponItemName.contains("thrownaxe") || weaponItemName.contains("Toktz-xil-ul"))
-        {
-            // "Stackable" Throwing weapons
-            skipAmmo = true;
-        }
-        else if(weaponItemName.contains("Morrigan's javelin") || weaponItemName.contains("Morrigan's throwing axe") || weaponItemName.contains("Mud pie"))
-        {
-            // Not Stackable Throwing Weapons
-            skipAmmo = true;
-        }
-        else if (weaponItemName.contains("Crystal bow")
+        boolean weaponDoesNotUseAmmo =  weaponItemName.contains("dart")
+                || weaponItemName.contains("knife")
+                || weaponItemName.contains("thrownaxe")
+                || weaponItemName.contains("Toktz-xil-ul")
+                || weaponItemName.contains("Morrigan's javelin")
+                || weaponItemName.contains("Morrigan's throwing axe")
+                || weaponItemName.contains("Mud pie")
+                || weaponItemName.contains("Crystal bow")
                 || weaponItemName.contains("faerdhinen")
                 || weaponItemName.contains("Webweaver")
-                || weaponItemName.contains("Craw's"))
+                || weaponItemName.contains("Craw's")
+                || weaponItemName.contains("Tonalztics")
+                || weaponItemName.contains("atlatl")
+                || weaponItemName.contains("Hunter's spear")
+                || weaponItemName.contains("blowpipe");
+
+        boolean weaponUsesMelee = weaponItemName.contains("atlatl")
+                || weaponItemName.contains("Hunter's spear");
+
+        if (weaponDoesNotUseAmmo)
         {
             skipAmmo = true;
         }
-        else if(weaponItemName.contains("blowpipe"))
-        {
-            skipAmmo = true;
-
+        if (weaponItemName.contains("blowpipe")) {
             if(plugin.selectedDartType == BlowpipeDartType.ADAMANT)
             {
                 rangedStrengthBonus += 17;
@@ -461,64 +456,37 @@ public class MaxHit {
                 rangedStrengthBonus += 9; // default and lowest (mithril)
             }
         }
-        else if(weaponItemName.contains("Tonalztics"))
+
+        if (weaponUsesMelee)
         {
-            skipAmmo = true;
-        }
-        else if(weaponItemName.contains("atlatl"))
-        {
-            skipAmmo = true;
-            calcWithMelee = true;
-        }
-        else if(weaponItemName.contains("Hunter's spear"))
-        {
-            skipAmmo = true;
             calcWithMelee = true;
         }
 
-        // Check Ammo type matches up with weapon
-        if(!skipAmmo)
+        if (!skipAmmo)
         {
-            // Check if ammo type matches with weapon, otherwise skip ammo slot in calc
-            if(ammoID != -1)
-            {
-                if(!EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName))
+            // determine if using ammo from quiver or ammo slot, if so, calculate range bonus here and skip ammo
+            boolean isQuiverEquipped = EquipmentItems.isQuiverEquipped(playerEquipment);
+            boolean canUseAmmo = ammoID != -1 && EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName);
+            boolean canUseQuiverAmmo = isQuiverEquipped && quiverAmmoId != -1 && EquipmentItems.doesAmmoMatchWeapon(quiverAmmoItemName, weaponItemName);
+
+            boolean shouldUseQuiverAmmo = isQuiverEquipped && !canUseAmmo && canUseQuiverAmmo;
+
+            if (isQuiverEquipped && (canUseAmmo || canUseQuiverAmmo)) {
+                if (!EquipmentItems.getQuiverItemName(client).contains("uncharged"))
                 {
-                    // Ammo did not match weapon, skip ammo for calc
-                    skipAmmo = true;
+                    rangedStrengthBonus += 1;
                 }
             }
 
+            if (shouldUseQuiverAmmo) {
+                skipAmmo = true;
+                rangedStrengthBonus += itemManager.getItemStats(quiverAmmoId).getEquipment().getRstr();
+            }
 
-            // Quiver Check
-//            if(capeItemName.toLowerCase().contains("quiver"))
-//            {
-//                quiverItemName = EquipmentItems.getQuiverItemName(client);
-//                quiverItemID = EquipmentItems.getQuiverItemID(client);
-//
-//
-////                if(!capeItemName.toLowerCase().contains("uncharged"))
-////                {
-////                    rangedStrengthBonus += 1; // Bonus range strength to ammo when Quiver is charged
-////                }
-//
-//                if (ammoID != -1 && quiverItemID != -1)
-//                {
-//                    // determine if we use quiver's ammo, or default slot ammo, or Neither!
-//
-//                    if(weaponItemName.toLowerCase().contains("bow"))
-//                    {
-//                        if(ammoItemName.toLowerCase().contains())
-//                    }
-//                }
-//                else if (ammoID == -1 && quiverItemID >= 0) {
-//
-//                }
-//                else if(ammoID )
-//            }
+            if (!canUseAmmo && !canUseQuiverAmmo) {
+                skipAmmo = true;
+            }
         }
-
-
 
         // Get Ranged Strength Bonus of each equipped Item
         for (Item equipmentItem: playerEquipment)
