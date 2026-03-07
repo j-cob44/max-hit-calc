@@ -28,10 +28,7 @@
 
 package com.maxhitcalc;
 
-import net.runelite.api.Client;
-import net.runelite.api.EquipmentInventorySlot;
-import net.runelite.api.Item;
-import net.runelite.api.Skill;
+import net.runelite.api.*;
 import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.game.ItemManager;
@@ -206,6 +203,34 @@ public class MaxHit {
 
         // Void Set incomplete, no bonus
         return 1;
+    }
+
+    /**
+     * Twisted bow has damage bonus up to 250% depending on opponent magic level
+     * https://oldschool.runescape.wiki/w/Twisted_bow#Passive_effect
+     *
+     * @return Percent damage multiplier for twisted bow for opponent NPC
+     */
+    protected double getTwistedBowDamageBonus() {
+        Actor opponent = client.getLocalPlayer().getInteracting();
+        if (!(opponent instanceof NPC)) {
+            return 1.0; // no bonus damage
+        }
+        NPCComposition opponentComposition = ((NPC) opponent).getComposition();
+        int opponentMagicLevel = opponentComposition.getStats()[NPCComposition.STAT_MAGIC];
+
+        // magic level is capped at 250 (350 if inside COX)
+        int magicLevelCap = 250;
+        if (client.getVarbitValue(VarbitID.RAIDS_CLIENT_INDUNGEON) == 1) {
+            magicLevelCap = 350;
+        }
+        opponentMagicLevel = Math.min(opponentMagicLevel, magicLevelCap);
+
+        double damageBonus = 250;
+        damageBonus += (3 * opponentMagicLevel - 14) / 100.0;
+        damageBonus -= Math.pow(0.3 * opponentMagicLevel - 140, 2) / 100.0;
+        damageBonus = Math.min(damageBonus, 250);
+        return damageBonus / 100.0; // return percent
     }
 
     // Passive Melee Set effects
@@ -627,6 +652,11 @@ public class MaxHit {
             {
                 maxHit = maxHit * 2;
             }
+        }
+
+        // Twisted bow damage multiplier
+        if (weaponItemName.equals("Twisted bow")) {
+            maxHit = Math.floor(maxHit * getTwistedBowDamageBonus());
         }
 
         return maxHit;
