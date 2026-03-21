@@ -191,10 +191,16 @@ public class MaxAgainstType extends MaxHit {
                 typeBonusToApply.add(1.25);
             }
 
-            // Golem bonus, added 14 April 2021, updated on 28 April 2021
+            // Golembane bonus, added 14 April 2021, updated on 28 April 2021
             if(weaponItemName.contains("Barronite mace"))
             {
                 typeBonusToApply.add(1.15);
+            }
+
+            // Golembane bonus, added 14 April 2021, however added to this weapon on 27 August 2025
+            if(weaponItemName.contains("Granite hammer"))
+            {
+                typeBonusToApply.add(1.3);
             }
 
             // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022

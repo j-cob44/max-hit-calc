@@ -80,7 +80,8 @@ public class InventoryItemMaxHit
                 || client.getItemDefinition(weaponID).getName().contains("wand")
                 || client.getItemDefinition(weaponID).getName().contains("crozier")
                 || client.getItemDefinition(weaponID).getName().contains("Void knight mace")
-                || client.getItemDefinition(weaponID).getName().contains("Blue moon spear"))
+                || client.getItemDefinition(weaponID).getName().contains("Blue moon spear")
+                || client.getItemDefinition(weaponID).getName().contains("Eye of ayak"))
         {
 
             attackStyle = AttackStyle.CASTING;
