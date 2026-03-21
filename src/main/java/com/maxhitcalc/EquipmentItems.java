@@ -28,13 +28,24 @@
 
 package com.maxhitcalc;
 
+import com.google.common.collect.ImmutableSet;
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.Item;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.client.game.ItemVariationMapping;
+
+import java.util.Set;
 
 public class EquipmentItems
 {
+    private static final Set<Integer> DIZANAS_QUIVER_IDS = ImmutableSet.<Integer>builder()
+            .addAll(ItemVariationMapping.getVariations(ItemVariationMapping.map(ItemID.DIZANAS_QUIVER_CHARGED)))
+            .addAll(ItemVariationMapping.getVariations(ItemVariationMapping.map(ItemID.DIZANAS_QUIVER_INFINITE)))
+            .addAll(ItemVariationMapping.getVariations(ItemVariationMapping.map(ItemID.SKILLCAPE_MAX_DIZANAS)))
+            .build();
     /**
      * Gets Currently Equipped Items
      *
@@ -103,34 +114,31 @@ public class EquipmentItems
         return itemID;
     }
 
-    public static Item[] getQuiverItem(Client client)
+    public static boolean isQuiverEquipped(Item[] playerEquipment)
     {
-        Item[] quiverItem;
+        int capeId = getItemIdInGivenSetSlot(playerEquipment, EquipmentInventorySlot.CAPE);
+        return DIZANAS_QUIVER_IDS.contains(capeId);
+    }
 
-        if (client.getItemContainer(InventoryID.DIZANAS_QUIVER_AMMO) != null )
-        {
-            quiverItem = client.getItemContainer(InventoryID.DIZANAS_QUIVER_AMMO).getItems(); // returns as an array, but should only have 1 item or none
+    public static Item getQuiverItem(Client client)
+    {
+        int ammoId = client.getVarpValue(VarPlayerID.DIZANAS_QUIVER_TEMP_AMMO);
+        int ammoAmount = client.getVarpValue(VarPlayerID.DIZANAS_QUIVER_TEMP_AMMO_AMOUNT);
+        if (ammoId != -1 && ammoAmount > 0) {
+            return new Item(ammoId, ammoAmount);
         }
-        else
-        {
-            quiverItem = null;
-        }
-
-        return quiverItem;
+        return null;
     }
 
     public static String getQuiverItemName(Client client)
     {
         String itemName = "";
 
-        Item[] quiverItems = getQuiverItem(client);
+        Item quiverItems = getQuiverItem(client);
 
         if (quiverItems != null)
         {
-            if(quiverItems.length > 0)
-            {
-                itemName = client.getItemDefinition(quiverItems[0].getId()).getName();
-            }
+            itemName = client.getItemDefinition(quiverItems.getId()).getName();
         }
 
         return itemName;
@@ -140,14 +148,12 @@ public class EquipmentItems
     {
         int itemID = -1;
 
-        Item[] quiverItems = getQuiverItem(client);
+        Item quiverItems = getQuiverItem(client);
 
         if (quiverItems != null)
         {
-            if(quiverItems.length > 0)
-            {
-                itemID = quiverItems[0].getId();
-            }
+            itemID = quiverItems.getId();
+
         }
 
         return itemID;
