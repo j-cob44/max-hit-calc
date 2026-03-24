@@ -41,6 +41,7 @@ import net.runelite.client.plugins.itemstats.ItemStatChanges;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
@@ -69,7 +70,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
     MaxHitCalcOverlay(MaxHitCalcPlugin plugin, MaxHitCalcConfig config)
     {
         setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
-        setLayer(OverlayLayer.ABOVE_SCENE);
+        setLayer(OverlayLayer.UNDER_WIDGETS);
+        setPriority(1f);
 
         this.plugin = plugin;
         this.config = config;
