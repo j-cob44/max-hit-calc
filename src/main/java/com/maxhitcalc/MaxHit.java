@@ -725,7 +725,7 @@ public class MaxHit {
             basehit = Math.floor(magicLevel/3) + 5;
         }
         // The Eye of Ayak
-        else if(weaponItemName.contains("Eye of Ayak"))
+        else if(weaponItemName.contains("Eye of ayak"))
         {
             basehit = Math.floor(magicLevel/3) - 6;
         }
@@ -1167,5 +1167,46 @@ public class MaxHit {
         {
             return -1;
         }
+    }
+
+    protected AttackStyle resolveAttackStyle(int attackStyleId, int weaponTypeId, Item[] playerEquipment)
+    {
+        try
+        {
+            AttackStyle[] styles = WeaponType.getWeaponTypeStyles(client, weaponTypeId);
+            if (styles != null && attackStyleId >= 0 && attackStyleId < styles.length && styles[attackStyleId] != null)
+            {
+                return styles[attackStyleId];
+            }
+        }
+        catch (Exception ignored)
+        {
+        }
+
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON).toLowerCase();
+
+        if (weaponName.contains("eye of ayak")
+                || weaponName.contains("trident")
+                || weaponName.contains("sceptre")
+                || weaponName.contains("staff")
+                || weaponName.contains("wand")
+                || weaponName.contains("tumeken"))
+        {
+            return AttackStyle.CASTING;
+        }
+
+        if (weaponName.contains("bow")
+                || weaponName.contains("blowpipe")
+                || weaponName.contains("ballista")
+                || weaponName.contains("knife")
+                || weaponName.contains("dart")
+                || weaponName.contains("thrownaxe")
+                || weaponName.contains("atlatl")
+                || weaponName.contains("hunter's spear"))
+        {
+            return AttackStyle.RANGING;
+        }
+
+        return AttackStyle.AGGRESSIVE;
     }
 }
