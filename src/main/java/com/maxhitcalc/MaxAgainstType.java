@@ -423,7 +423,7 @@ public class MaxAgainstType extends MaxHit {
             basehit = Math.floor(magicLevel/3) + 5;
         }
         // The Eye of Ayak
-        else if(weaponItemName.contains("Eye of ayak"))
+        else if(weaponItemName.contains("Eye of ayak") || weaponItemName.contains("Eye of Ayak") )
         {
             basehit = Math.floor(magicLevel/3) - 6;
         }
