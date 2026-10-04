@@ -193,7 +193,7 @@ public class EquipmentItems
             }
             // Antler bolts -> hunter's sunlight crossbow
             else if(ammoTypeName.toLowerCase().contains("antler")){
-                if(weaponName.toLowerCase().contains("hunter's sunlight crossbow")) return true;
+                if(weaponName.toLowerCase().contains("hunters' sunlight crossbow")) return true;
             }
             // Bone bolts -> Dorgeshuun crossbow
             else if (ammoTypeName.toLowerCase().contains("bone")) {
