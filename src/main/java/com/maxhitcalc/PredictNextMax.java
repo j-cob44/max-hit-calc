@@ -86,6 +86,16 @@ public class PredictNextMax extends MaxHit
                 }
             }
 
+            double inquisitorDamageBonus =
+                    getInquisitorDamageBonus(playerEquipment, weaponAttackStyle);
+
+            if(inquisitorDamageBonus > 1.0)
+            {
+                predictedMaxHit = Math.floor(
+                        predictedMaxHit * inquisitorDamageBonus
+                );
+            }
+
             // Osmumten's Fang Decrease
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
             if (weaponName.contains("Osmumten's fang"))
@@ -145,6 +155,16 @@ public class PredictNextMax extends MaxHit
                 }
             }
 
+            double inquisitorDamageBonus =
+                    getInquisitorDamageBonus(playerEquipment, weaponAttackStyle);
+
+            if(inquisitorDamageBonus > 1.0)
+            {
+                predictedMaxHit = Math.floor(
+                        predictedMaxHit * inquisitorDamageBonus
+                );
+            }
+
             // Osmumten's Fang Decrease
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
             if (weaponName.contains("Osmumten's fang"))
@@ -202,6 +222,16 @@ public class PredictNextMax extends MaxHit
                 {
                     predictedMaxHit += Math.floor(predictedMaxHit * bonus);
                 }
+            }
+
+            double inquisitorDamageBonus =
+                    getInquisitorDamageBonus(playerEquipment, weaponAttackStyle);
+
+            if(inquisitorDamageBonus > 1.0)
+            {
+                predictedMaxHit = Math.floor(
+                        predictedMaxHit * inquisitorDamageBonus
+                );
             }
 
             // Osmumten's Fang Decrease

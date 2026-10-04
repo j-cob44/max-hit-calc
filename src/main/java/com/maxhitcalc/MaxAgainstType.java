@@ -158,33 +158,6 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
 
-            // Inquisitor's Crush Bonus, added 6 February 2020, set effect removed 25 September 2024
-            // Now, wearing the Mace is the only requirement for the inquisitor's crush bonus
-            if (weaponItemName.contains("Inquisitor"))
-            {
-                // If on crush style, which for the mace is all styles except controlled
-                if (attackStyle != AttackStyle.CONTROLLED)
-                {
-                    typeBonusToApply.add(1.025); // +2.5% for the mace
-
-                    // +2.5% crush dmg bonus for each armor piece if wearing the mace
-                    if (headItemName.contains("Inquisitor's"))
-                    {
-                        typeBonusToApply.add(1.025);
-                    }
-
-                    if (bodyItemName.contains("Inquisitor's"))
-                    {
-                        typeBonusToApply.add(1.025);
-                    }
-
-                    if (legsItemName.contains("Inquisitor's"))
-                    {
-                        typeBonusToApply.add(1.025);
-                    }
-                }
-            }
-
             // Vampyre, added 4 June 2020
             if(weaponItemName.contains("Blisterwood flail"))
             {
@@ -219,6 +192,12 @@ public class MaxAgainstType extends MaxHit {
             if(weaponItemName.contains("Burning claws"))
             {
                 typeBonusToApply.add(1.05) ;
+            }
+
+            // Vampire weapon, updated with 2026 blood moon rises update
+            if(weaponItemName.contains("Sunspear"))
+            {
+                typeBonusToApply.add(1.5) ;
             }
 
         }

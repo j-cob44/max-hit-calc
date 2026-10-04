@@ -209,6 +209,15 @@ public class StatChangedMaxHit
             }
         }
 
+        // Inquisitor's Crush damage bonus
+        double inquisitorDamageBonus =
+                maxHits.getInquisitorDamageBonus(playerEquipment, weaponAttackStyle);
+
+        if(inquisitorDamageBonus > 1.0)
+        {
+            maxHit = Math.floor(maxHit * inquisitorDamageBonus);
+        }
+
         // Osmumten's Fang Decrease
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponName.contains("Osmumten's fang"))

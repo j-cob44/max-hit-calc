@@ -32,10 +32,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.NPC;
-import net.runelite.api.Skill;
+import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
@@ -61,8 +58,7 @@ import java.awt.image.BufferedImage;
 	description = "Calculates Max Hit stats for the current equipment setup.",
 	tags = "max hit, combat, stats, helpful, melee, ranged, magic"
 )
-public class MaxHitCalcPlugin extends Plugin
-{
+public class MaxHitCalcPlugin extends Plugin {
 	@Inject
 	private OverlayManager overlayManager;
 
@@ -120,21 +116,16 @@ public class MaxHitCalcPlugin extends Plugin
 	boolean dartSettingChanged = false;
 
 
-
-
 	@Subscribe
-	public void onChatMessage(ChatMessage chatMessageReceived)
-	{
+	public void onChatMessage(ChatMessage chatMessageReceived) {
 		String message = chatMessageReceived.getMessage().toLowerCase();
 
 		// Mark of darkness workaround since it doesn't seem to change a varbit
-		if(message.contains("you have placed a mark of darkness upon yourself."))
-		{
+		if (message.contains("you have placed a mark of darkness upon yourself.")) {
 			markOfDarknessActive = true;
 			calculateMaxes();
 		}
-		if(message.contains("your mark of darkness has faded away."))
-		{
+		if (message.contains("your mark of darkness has faded away.")) {
 			markOfDarknessActive = false;
 			calculateMaxes();
 		}
@@ -175,23 +166,18 @@ public class MaxHitCalcPlugin extends Plugin
 	}
 
 	@Provides
-	MaxHitCalcConfig provideConfig(ConfigManager configManager)
-	{
+	MaxHitCalcConfig provideConfig(ConfigManager configManager) {
 		return configManager.getConfig(MaxHitCalcConfig.class);
 	}
 
 	@Override
-	protected void startUp() throws Exception
-	{
+	protected void startUp() throws Exception {
 		overlayManager.add(pluginOverlay);
 
 		// Check if plugin started while game is running
-		if (client.getGameState().equals(GameState.LOGGED_IN))
-		{
+		if (client.getGameState().equals(GameState.LOGGED_IN)) {
 			gameReady = true; // Set true if game is logged in and ready
-		}
-		else
-		{
+		} else {
 			gameReady = false; // Set false on normal runelite boot
 		}
 
@@ -214,14 +200,13 @@ public class MaxHitCalcPlugin extends Plugin
 				.panel(panel)
 				.build();
 
-		if(config.showPanel()) {
+		if (config.showPanel()) {
 			clientToolbar.addNavigation(navButton);
 		}
 	}
 
 	@Override
-	protected void shutDown() throws Exception
-	{
+	protected void shutDown() throws Exception {
 		overlayManager.remove(pluginOverlay);
 
 		panel.deinit();
@@ -232,8 +217,7 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// On Widget Closed, check for when login screen is closed
 	@Subscribe
-	public void onWidgetClosed(WidgetClosed widget)
-	{
+	public void onWidgetClosed(WidgetClosed widget) {
 		if (widget.getGroupId() == InterfaceID.WELCOME_SCREEN) // "Click to play" screen interface id = 378
 		{
 			gameReady = true; // Set as soon as user closes welcome screen
@@ -243,21 +227,18 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// Un-ready when logged out.
 	@Subscribe
-	public void onGameStateChanged(GameStateChanged event)
-	{
+	public void onGameStateChanged(GameStateChanged event) {
 		// On return to login screen, gameReady = false
-		if (event.getGameState().equals(GameState.LOGIN_SCREEN))
-		{
+		if (event.getGameState().equals(GameState.LOGIN_SCREEN)) {
 			gameReady = false;
 		}
 	}
 
 	// OnItemContainerChanged, waiting for equipment container
 	@Subscribe
-	public void onItemContainerChanged(ItemContainerChanged event)
-	{
+	public void onItemContainerChanged(ItemContainerChanged event) {
 		// On Item Equip/de-equip
-		if(event.getContainerId() == InventoryID.WORN) // Equipment Container ID
+		if (event.getContainerId() == InventoryID.WORN) // Equipment Container ID
 		{
 			calculateMaxes();
 		}
@@ -265,17 +246,12 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// OnVarbitChanged, waiting for change in prayer, attack style, or selected spell
 	@Subscribe
-	public void onVarbitChanged(VarbitChanged event)
-	{
-		if(!gameReady)
-		{
+	public void onVarbitChanged(VarbitChanged event) {
+		if (!gameReady) {
 			// Fix for potential out-of-order startup problems (logging in without welcome screen)
-			if (client.getGameState() == GameState.LOGGED_IN)
-			{
+			if (client.getGameState() == GameState.LOGGED_IN) {
 				gameReady = true;
-			}
-			else
-			{
+			} else {
 				return; // do nothing, before you can see the game
 			}
 		}
@@ -285,8 +261,7 @@ public class MaxHitCalcPlugin extends Plugin
 //		System.out.println("Varbit value: " + event.getValue());
 
 		// On prayer changed: 83 = normal prayerbook
-		if (event.getVarpId() == VarPlayerID.PRAYER0)
-		{
+		if (event.getVarpId() == VarPlayerID.PRAYER0) {
 			calculateMaxes();
 		}
 
@@ -297,8 +272,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		// On selected Spell changed
-		if (event.getVarbitId() == VarbitID.AUTOCAST_SPELL)
-		{
+		if (event.getVarbitId() == VarbitID.AUTOCAST_SPELL) {
 			calculateMaxes();
 		}
 
@@ -309,7 +283,7 @@ public class MaxHitCalcPlugin extends Plugin
 		}
 
 		// On Charge Spell Buff Start/End
-		if(event.getVarpId() == VarPlayerID.MAGEARENA_CHARGE) // Varplayer: Charge God Spell
+		if (event.getVarpId() == VarPlayerID.MAGEARENA_CHARGE) // Varplayer: Charge God Spell
 		{
 			calculateMaxes();
 		}
@@ -317,50 +291,41 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// OnStatChanged, waiting for skill changes, boosted or levelled
 	@Subscribe
-	public void onStatChanged(StatChanged event)
-	{
+	public void onStatChanged(StatChanged event) {
 		// On Strength Changed
-		if(event.getSkill() == Skill.STRENGTH)
-		{
+		if (event.getSkill() == Skill.STRENGTH) {
 			calculateMaxes();
 		}
 		// On Ranged Changed
-		if(event.getSkill() == Skill.RANGED)
-		{
+		if (event.getSkill() == Skill.RANGED) {
 			calculateMaxes();
 		}
 		// On Magic Changed
-		if(event.getSkill() == Skill.MAGIC)
-		{
+		if (event.getSkill() == Skill.MAGIC) {
 			calculateMaxes();
 		}
 		// On HP Changed
-		if(event.getSkill() == Skill.HITPOINTS)
-		{
+		if (event.getSkill() == Skill.HITPOINTS) {
 			calculateMaxes();
 		}
 	}
 
 	// On config Changed, run calculations
 	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
+	public void onConfigChanged(ConfigChanged event) {
 		// Only update for this plugin!
-		if(event.getGroup().contains("MaxHitCalc"))
-		{
-			if(gameReady)
-			{
+		if (event.getGroup().contains("MaxHitCalc")) {
+			if (gameReady) {
 				clientThread.invoke(this::calculateMaxes);
 
 				// Update on panel if updated in settings
-				if(event.getKey().equals("blowpipeDartType"))
-				{
+				if (event.getKey().equals("blowpipeDartType")) {
 					panel.configDartSwitched();
 				}
 			}
 
 			// Show or hide the side panel
-			if(config.showPanel()) {
+			if (config.showPanel()) {
 				clientToolbar.addNavigation(navButton);
 			} else {
 				clientToolbar.removeNavigation(navButton);
@@ -370,29 +335,23 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// Get Selected NPC from interaction
 	@Subscribe
-	public void onInteractingChanged(InteractingChanged interaction)
-	{
+	public void onInteractingChanged(InteractingChanged interaction) {
 		// Verify interaction is between user and npc
-		if(interaction.getSource() != null)
-		{
+		if (interaction.getSource() != null) {
 			// Verify source == local player
 			String localPlayerName = client.getLocalPlayer().getName();
 			String sourceName = interaction.getSource().getName();
 
-			if(localPlayerName.equals(sourceName))
-			{
-				if(interaction.getTarget() != null)
-				{
-					NPC rawNPC = (NPC)interaction.getTarget();
+			if (localPlayerName.equals(sourceName)) {
+				if (interaction.getTarget() != null) {
+					NPC rawNPC = (NPC) interaction.getTarget();
 
-					if(rawNPC != null)
-					{
+					if (rawNPC != null) {
 						// Do nothing for combat dummy or bankers, etc
-						if(rawNPC.getCombatLevel() == 0) return; // Can't fight it, don't calc it
+						if (rawNPC.getCombatLevel() == 0) return; // Can't fight it, don't calc it
 
-						if(config.timeToWaitBeforeResettingSelectedNPC() > 0)
-						{
-							selectedNPCExpiryTime = client.getTickCount() + (int)((config.timeToWaitBeforeResettingSelectedNPC() * 60)/0.6);
+						if (config.timeToWaitBeforeResettingSelectedNPC() > 0) {
+							selectedNPCExpiryTime = client.getTickCount() + (int) ((config.timeToWaitBeforeResettingSelectedNPC() * 60) / 0.6);
 						}
 
 						// Get necessary vars: name and size
@@ -410,13 +369,10 @@ public class MaxHitCalcPlugin extends Plugin
 
 	// After certain amount of ticks, clear clickedNPC
 	@Subscribe
-	public void onGameTick(GameTick gameTick)
-	{
+	public void onGameTick(GameTick gameTick) {
 		// If NPC is selected, wait for time to expire to deselect it
-		if(selectedNPCName != null)
-		{
-			if (selectedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
-			{
+		if (selectedNPCName != null) {
+			if (selectedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0) {
 				selectedNPCName = null;
 				NPCSize = 1;
 				selectedNPCExpiryTime = Integer.MAX_VALUE; // Set higher than tick count
@@ -427,60 +383,78 @@ public class MaxHitCalcPlugin extends Plugin
 
 		// Check flags set by panel
 		// Update tick after panel settings are changed
-		if(npcSizeSettingChanged)
-		{
+		if (npcSizeSettingChanged) {
 			calculateMaxes();
 			npcSizeSettingChanged = false;
 		}
 
-		if(dartSettingChanged)
-		{
+		if (dartSettingChanged) {
 			calculateMaxes();
 			configManager.setConfiguration("MaxHitCalc", "blowpipeDartType", selectedDartType);
 			dartSettingChanged = false;
 		}
 
-		if(npcSelectedByPanel)
-		{
+		if (npcSelectedByPanel) {
 			calculateMaxes();
 			npcSelectedByPanel = false;
 		}
 
-		if (npcResetByPanel)
-		{
+		if (npcResetByPanel) {
 			calculateMaxes();
 			npcResetByPanel = false;
 		}
 	}
 
 	// Calculates all panel max hits.
-	public void calculateMaxes()
-	{
+	public void calculateMaxes() {
+		Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
+
 		// Calculate Normal Max Hits
-		maxHit = (int)Math.floor(maxHits.calculate(false));
+		maxHit = (int) Math.floor(maxHits.calculate(false));
+
+		if (config.displayMultiHitWeaponsAsOneHit()) {
+			int hallowfellMultiHit = maxHits.getHallowfellMultiHit(
+					maxHit,
+					playerEquipment
+			);
+
+			if (hallowfellMultiHit != 0) {
+				maxHit = hallowfellMultiHit;
+			}
+		}
 
 		// Calculate Special Attack Max Hit
-		maxSpec = (int)Math.floor(maxSpecs.calculate());
-		if(config.displayMultiHitWeaponsAsOneHit())
-		{
+		maxSpec = (int) Math.floor(maxSpecs.calculate());
+
+		if (config.displayMultiHitWeaponsAsOneHit()) {
 			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpec);
-			if(multiHitSpec != 0)
-			{
+
+			if (multiHitSpec != 0) {
 				maxSpec = multiHitSpec;
 			}
 		}
 
 		// Calculate Max Hit vs Types of NPCs
-		maxVsType = (int)Math.floor(maxAgainstTypes.calculate());
+		maxVsType = (int) Math.floor(maxAgainstTypes.calculate());
 
+		if (config.displayMultiHitWeaponsAsOneHit()) {
+			int hallowfellMultiHit = maxHits.getHallowfellMultiHit(
+					maxVsType,
+					playerEquipment
+			);
+
+			if (hallowfellMultiHit != 0) {
+				maxVsType = hallowfellMultiHit;
+			}
+		}
 
 		// Calculate Special Attack Max Hit vs Types of NPCs
-		maxSpecVsType = (int)Math.floor(maxSpecsAgainstTypes.calculate());
-		if(config.displayMultiHitWeaponsAsOneHit())
-		{
+		maxSpecVsType = (int) Math.floor(maxSpecsAgainstTypes.calculate());
+
+		if (config.displayMultiHitWeaponsAsOneHit()) {
 			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpecVsType);
-			if(multiHitSpec != 0)
-			{
+
+			if (multiHitSpec != 0) {
 				maxSpecVsType = multiHitSpec;
 			}
 		}

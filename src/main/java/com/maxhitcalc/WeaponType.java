@@ -33,6 +33,9 @@ import net.runelite.api.Client;
 import net.runelite.api.EnumID;
 import net.runelite.api.ParamID;
 import net.runelite.api.StructComposition;
+import net.runelite.api.SpriteID;
+import net.runelite.api.widgets.Widget;
+import net.runelite.api.gameval.InterfaceID;
 
 import static com.maxhitcalc.AttackStyle.*;
 
@@ -78,6 +81,115 @@ public class WeaponType
             styles[i++] = attackStyle;
         }
         return styles;
+    }
+
+    public static boolean isCrushStyle(Client client, int attackStyleID)
+    {
+        int componentId;
+
+        switch (attackStyleID)
+        {
+            case 0:
+                componentId = InterfaceID.CombatInterface._0;
+                break;
+            case 1:
+                componentId = InterfaceID.CombatInterface._1;
+                break;
+            case 2:
+                componentId = InterfaceID.CombatInterface._2;
+                break;
+            case 3:
+                componentId = InterfaceID.CombatInterface._3;
+                break;
+            default:
+                return false;
+        }
+
+        Widget styleWidget = client.getWidget(componentId);
+
+        if(styleWidget == null)
+        {
+            return false;
+        }
+
+        return containsCrushSprite(styleWidget);
+    }
+
+    private static boolean containsCrushSprite(Widget widget)
+    {
+        if(widget == null)
+        {
+            return false;
+        }
+
+        int spriteId = widget.getSpriteId();
+
+        switch (spriteId)
+        {
+            case SpriteID.COMBAT_STYLE_AXE_SMASH:
+
+            case SpriteID.COMBAT_STYLE_SPEAR_POUND:
+
+            case SpriteID.COMBAT_STYLE_MACE_PUMMEL:
+            case SpriteID.COMBAT_STYLE_MACE_POUND:
+            case SpriteID.COMBAT_STYLE_MACE_BLOCK:
+
+            case SpriteID.COMBAT_STYLE_UNARMED_KICK:
+            case SpriteID.COMBAT_STYLE_UNARMED_BLOCK:
+
+            case SpriteID.COMBAT_STYLE_STAFF_BASH:
+            case SpriteID.COMBAT_STYLE_STAFF_POUND:
+            case SpriteID.COMBAT_STYLE_STAFF_BLOCK:
+
+            case SpriteID.COMBAT_STYLE_PICKAXE_SMASH:
+            case SpriteID.COMBAT_STYLE_PICKAXE_BLOCK:
+
+            case SpriteID.COMBAT_STYLE_HAMMER_POUND:
+            case SpriteID.COMBAT_STYLE_HAMMER_PUMMEL:
+            case SpriteID.COMBAT_STYLE_HAMMER_BLOCK:
+                return true;
+        }
+
+        Widget[] children = widget.getChildren();
+
+        if(children != null)
+        {
+            for(Widget child : children)
+            {
+                if(containsCrushSprite(child))
+                {
+                    return true;
+                }
+            }
+        }
+
+        Widget[] dynamicChildren = widget.getDynamicChildren();
+
+        if(dynamicChildren != null)
+        {
+            for(Widget child : dynamicChildren)
+            {
+                if(containsCrushSprite(child))
+                {
+                    return true;
+                }
+            }
+        }
+
+        Widget[] staticChildren = widget.getStaticChildren();
+
+        if(staticChildren != null)
+        {
+            for(Widget child : staticChildren)
+            {
+                if(containsCrushSprite(child))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }
