@@ -260,7 +260,7 @@ public class MaxSpec
 
         // ***********************************************************************
         // Magic Spec weapon checks
-        if(weaponName.contains("Eye of ayak") || weaponItemName.contains("Eye of Ayak"))
+        if(weaponName.contains("Eye of ayak") || weaponName.contains("Eye of Ayak"))
         {
             return 1.3;
         }
