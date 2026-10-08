@@ -48,5 +48,5 @@ And suggestions can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 
 A BIG thank you to our Github contributors!
 
-Jacob Burton (j-cob44), March 2026 <br>
-Version 2.1.5
+Jacob Burton (j-cob44), October 2026 <br>
+Version 2.1.6
