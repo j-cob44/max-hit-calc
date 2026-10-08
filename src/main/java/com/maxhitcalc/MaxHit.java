@@ -152,10 +152,10 @@ public class MaxHit {
                         EquipmentInventorySlot.WEAPON
                 );
 
-        System.out.println(
-                "INQ TEST weapon=" + weaponItemName +
-                        " styleID=" + attackStyleID
-        );
+        // System.out.println(
+        //         "INQ TEST weapon=" + weaponItemName +
+        //                 " styleID=" + attackStyleID
+        // );
 
         if(!WeaponType.isCrushStyle(client, attackStyleID))
         {
