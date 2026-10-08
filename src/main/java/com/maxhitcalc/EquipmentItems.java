@@ -208,16 +208,16 @@ public class EquipmentItems
         else if(ammoTypeName.toLowerCase().contains("rack")) {
             if(weaponName.toLowerCase().contains("karil's")) return true;
         }
-        // Javelin -> Ballistae
+        // Javelin -> Ballista
         else if(ammoTypeName.toLowerCase().contains("javelin")) {
-            if(weaponName.toLowerCase().contains("ballistae")) return true;
+            if(weaponName.toLowerCase().contains("ballista")) return true;
         }
         // Tar -> Salamander
         else if(ammoTypeName.toLowerCase().contains("tar")) {
-            if(weaponName.toLowerCase().contains("salamader")) return true;
+            if(weaponName.toLowerCase().contains("salamander")) return true;
         }
 
-        // otherwise, ammo does match!
+        // otherwise, ammo does NOT match!
         return false;
     }
 }

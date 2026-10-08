@@ -118,6 +118,86 @@ public class MaxHit {
         return 0.06 * soulStack;
     }
 
+    protected int getHallowfellMultiHit(int hit, Item[] playerEquipment)
+    {
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(
+                client,
+                playerEquipment,
+                EquipmentInventorySlot.WEAPON
+        );
+
+        if(weaponName.contains("Hallowfell"))
+        {
+            int secondaryHit = (int)Math.floor(hit * 0.5);
+            return hit + secondaryHit + secondaryHit;
+        }
+
+        return 0;
+    }
+
+    protected double getInquisitorDamageBonus(Item[] playerEquipment, AttackStyle weaponAttackStyle)
+    {
+        double damageBonus = 1.0;
+
+        if(playerEquipment == null)
+        {
+            return damageBonus;
+        }
+
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE);
+        String weaponItemName =
+                EquipmentItems.getItemNameInGivenSetSlot(
+                        client,
+                        playerEquipment,
+                        EquipmentInventorySlot.WEAPON
+                );
+
+        System.out.println(
+                "INQ TEST weapon=" + weaponItemName +
+                        " styleID=" + attackStyleID
+        );
+
+        if(!WeaponType.isCrushStyle(client, attackStyleID))
+        {
+            return damageBonus;
+        }
+
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(
+                client,
+                playerEquipment,
+                EquipmentInventorySlot.HEAD
+        );
+
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(
+                client,
+                playerEquipment,
+                EquipmentInventorySlot.BODY
+        );
+
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(
+                client,
+                playerEquipment,
+                EquipmentInventorySlot.LEGS
+        );
+
+        if(headItemName.toLowerCase().contains("inquisitor"))
+        {
+            damageBonus += 0.005;
+        }
+
+        if(bodyItemName.toLowerCase().contains("inquisitor"))
+        {
+            damageBonus += 0.01;
+        }
+
+        if(legsItemName.toLowerCase().contains("inquisitor"))
+        {
+            damageBonus += 0.01;
+        }
+
+        return damageBonus;
+    }
+
     // Get Attack Style Bonus for Melee or Ranged
     protected int getAttackStyleBonus(AttackStyle weaponAttackStyle, int attackStyleID)
     {
@@ -335,6 +415,13 @@ public class MaxHit {
             }
         }
 
+        //Inquisitor's calc
+        double inquisitorDamageBonus = getInquisitorDamageBonus(playerEquipment, weaponAttackStyle);
+        if(inquisitorDamageBonus > 1.0)
+        {
+            maxHit = Math.floor(maxHit * inquisitorDamageBonus);
+        }
+
         // Osmumten's Fang Decrease
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponName.contains("Osmumten's fang"))
@@ -352,6 +439,7 @@ public class MaxHit {
         {
             maxHit = maxHit + 10;
         }
+
 
         // Complete
         return maxHit;
@@ -466,9 +554,11 @@ public class MaxHit {
         {
             // determine if using ammo from quiver or ammo slot, if so, calculate range bonus here and skip ammo
             boolean isQuiverEquipped = EquipmentItems.isQuiverEquipped(playerEquipment);
-            boolean canUseAmmo = ammoID != -1 && EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName);
-            boolean canUseQuiverAmmo = isQuiverEquipped && quiverAmmoId != -1 && EquipmentItems.doesAmmoMatchWeapon(quiverAmmoItemName, weaponItemName);
+            boolean isBallista = weaponItemName.toLowerCase().contains("ballista");
 
+            boolean canUseAmmo = ammoID != -1 && (EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName) || (isBallista && ammoItemName.toLowerCase().contains("javelin")));
+
+            boolean canUseQuiverAmmo = isQuiverEquipped && quiverAmmoId != -1 && (EquipmentItems.doesAmmoMatchWeapon(quiverAmmoItemName, weaponItemName) || (isBallista && quiverAmmoItemName.toLowerCase().contains("javelin")));
             boolean shouldUseQuiverAmmo = isQuiverEquipped && !canUseAmmo && canUseQuiverAmmo;
 
             if (isQuiverEquipped && (canUseAmmo || canUseQuiverAmmo)) {
@@ -547,8 +637,8 @@ public class MaxHit {
             if (headItemName.contains("Crystal helm"))
             {
                 if(!headItemName.contains("(basic)")
-                        || !headItemName.contains("(attuned)")
-                        || !headItemName.contains("(perfected)"))
+                        && !headItemName.contains("(attuned)")
+                        && !headItemName.contains("(perfected)"))
                 {
                     damagePercentBonus += 0.025;
                 }
@@ -557,8 +647,8 @@ public class MaxHit {
             if (bodyItemName.contains("Crystal body"))
             {
                 if(!bodyItemName.contains("(basic)")
-                        || !bodyItemName.contains("(attuned)")
-                        || !bodyItemName.contains("(perfected)"))
+                        && !bodyItemName.contains("(attuned)")
+                        && !bodyItemName.contains("(perfected)"))
                 {
                     damagePercentBonus += 0.075;
                 }
@@ -567,8 +657,8 @@ public class MaxHit {
             if (legsItemName.contains("Crystal legs"))
             {
                 if(!legsItemName.contains("(basic)")
-                        || !legsItemName.contains("(attuned)")
-                        || !legsItemName.contains("(perfected)"))
+                        && !legsItemName.contains("(attuned)")
+                        && !legsItemName.contains("(perfected)"))
                 {
                     damagePercentBonus += 0.05;
                 }
