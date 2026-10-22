@@ -290,7 +290,7 @@ public class StatChangedMaxHit
         }
 
         // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-        if(weaponItemName.contains("Tonalztics of ralos"))
+        if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
         {
             maxHit = Math.floor(maxHit * 0.75); // unknown if flooring here causes miscalcs
             if(!weaponItemName.contains("(uncharged)"))

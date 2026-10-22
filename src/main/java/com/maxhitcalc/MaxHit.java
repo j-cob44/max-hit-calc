@@ -507,7 +507,7 @@ public class MaxHit {
                 || weaponItemName.contains("Morrigan's throwing axe")
                 || weaponItemName.contains("Mud pie")
                 || weaponItemName.contains("Crystal bow")
-                || weaponItemName.contains("faerdhinen")
+                || weaponItemName.contains("Faerdhinen")
                 || weaponItemName.contains("Webweaver")
                 || weaponItemName.contains("Craw's")
                 || weaponItemName.contains("Tonalztics")
@@ -631,7 +631,7 @@ public class MaxHit {
         String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
 
 
-        if (weaponItemName.contains("Crystal bow") || weaponItemName.contains("faerdhinen"))
+        if (weaponItemName.contains("Crystal bow") || weaponItemName.contains("Faerdhinen"))
         {
             // Crystal Armor Damage bonus
             if (headItemName.contains("Crystal helm"))
@@ -703,7 +703,7 @@ public class MaxHit {
         }
 
         // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-        if(weaponItemName.contains("Tonalztics of ralos"))
+        if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
         {
             maxHit = Math.floor(maxHit * 0.75); // unknown if flooring here causes miscalcs
             if(!weaponItemName.contains("(uncharged)"))
@@ -733,12 +733,12 @@ public class MaxHit {
 
         // Powered Staff Check
         // Trident of the Seas
-        if(weaponItemName.contains("of the seas"))
+        if(weaponItemName.toLowerCase().contains("of the seas"))
         {
             basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
         }
         // Trident of the Swamp
-        else if(weaponItemName.contains("of the swamp"))
+        else if(weaponItemName.toLowerCase().contains("of the swamp"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
         }
@@ -1124,7 +1124,7 @@ public class MaxHit {
             if (selectedSpell.getName().toLowerCase().contains("fire"))
             {
                 // Check for tome of fire
-                if (shieldItemName.contains("Tome of fire"))
+                if (shieldItemName.toLowerCase().contains("tome of fire"))
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
@@ -1136,7 +1136,7 @@ public class MaxHit {
             if (selectedSpell.getName().toLowerCase().contains("water"))
             {
                 // Check for tome of water
-                if (shieldItemName.contains("Tome of water"))
+                if (shieldItemName.toLowerCase().contains("tome of water"))
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
@@ -1148,7 +1148,7 @@ public class MaxHit {
             if (selectedSpell.getName().toLowerCase().contains("earth"))
             {
                 // Check for tome of water
-                if (shieldItemName.contains("Tome of earth"))
+                if (shieldItemName.toLowerCase().contains("tome of earth"))
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
