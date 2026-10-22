@@ -308,7 +308,7 @@ public class PredictNextMax extends MaxHit
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.contains("Tonalztics of ralos"))
+            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))
@@ -357,7 +357,7 @@ public class PredictNextMax extends MaxHit
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.contains("Tonalztics of ralos"))
+            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))
@@ -408,7 +408,7 @@ public class PredictNextMax extends MaxHit
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.contains("Tonalztics of ralos"))
+            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))
@@ -460,7 +460,7 @@ public class PredictNextMax extends MaxHit
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.contains("Tonalztics of ralos"))
+            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))

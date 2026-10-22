@@ -347,12 +347,12 @@ public class MaxAgainstType extends MaxHit {
 
         // Powered Staff Check
         // Trident of the Seas
-        if(weaponItemName.contains("of the seas"))
+        if(weaponItemName.toLowerCase().contains("of the seas"))
         {
             basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
         }
         // Trident of the Swamp
-        else if(weaponItemName.contains("of the swamp"))
+        else if(weaponItemName.toLowerCase().contains("of the swamp"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
         }

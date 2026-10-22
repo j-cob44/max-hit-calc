@@ -65,7 +65,7 @@ public class InventoryItemMaxHit
                 || client.getItemDefinition(weaponID).getName().contains("thrownaxe")
                 || client.getItemDefinition(weaponID).getName().contains("Toktz-xil-ul")
                 || client.getItemDefinition(weaponID).getName().contains("blowpipe")
-                || client.getItemDefinition(weaponID).getName().contains("Tonalztics of ralos")
+                || client.getItemDefinition(weaponID).getName().contains("Tonalztics of Ralos")
                 || client.getItemDefinition(weaponID).getName().contains("Eclipse atlatl")
                 || client.getItemDefinition(weaponID).getName().contains("Hunter's spear"))
         {
@@ -81,7 +81,7 @@ public class InventoryItemMaxHit
                 || client.getItemDefinition(weaponID).getName().contains("crozier")
                 || client.getItemDefinition(weaponID).getName().contains("Void knight mace")
                 || client.getItemDefinition(weaponID).getName().contains("Blue moon spear")
-                || client.getItemDefinition(weaponID).getName().contains("Eye of ayak"))
+                || client.getItemDefinition(weaponID).getName().contains("Eye of Ayak"))
         {
 
             attackStyle = AttackStyle.CASTING;
