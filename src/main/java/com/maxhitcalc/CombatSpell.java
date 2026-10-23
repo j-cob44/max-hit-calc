@@ -121,7 +121,8 @@ public enum CombatSpell
     {
         for (CombatSpell spell : CombatSpell.values())
         {
-            if(spell.autocastVarbitValue == value){
+            if(spell.autocastVarbitValue == value)
+            {
                 return spell;
             }
         }
@@ -139,7 +140,8 @@ public enum CombatSpell
     {
         for (CombatSpell spell : CombatSpell.values())
         {
-            if(spell.spriteID == spriteID){
+            if(spell.spriteID == spriteID)
+            {
                 return spell;
             }
         }
@@ -158,7 +160,8 @@ public enum CombatSpell
         // Spells that
         for (CombatSpell spell : CombatSpell.values())
         {
-            if(spell.disabledSpriteID == spriteID){
+            if(spell.disabledSpriteID == spriteID)
+            {
                 return spell;
             }
         }
@@ -170,14 +173,16 @@ public enum CombatSpell
     /**
      * Returns if a CombatSpell has a Type
      */
-    public boolean hasType(){
+    public boolean hasType()
+    {
         if(this.spellType != SpellType.NoType)
             return true;
 
         return false;
     }
 
-    public static CombatSpell[] getSpellsOfTier(int tier, String spellbook){
+    public static CombatSpell[] getSpellsOfTier(int tier, String spellbook)
+    {
         ArrayList<CombatSpell> results = new ArrayList<>();
 
         for (CombatSpell spell : CombatSpell.values())

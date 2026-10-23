@@ -104,7 +104,8 @@ public class PredictNextMax extends MaxHit
             }
 
             // Colossal Blade Base Increase
-            if(weaponName.contains("colossal blade")){
+            if(weaponName.contains("colossal blade"))
+            {
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
@@ -173,7 +174,8 @@ public class PredictNextMax extends MaxHit
             }
 
             // Colossal Blade Base Increase
-            if(weaponName.contains("colossal blade")){
+            if(weaponName.contains("colossal blade"))
+            {
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
@@ -242,7 +244,8 @@ public class PredictNextMax extends MaxHit
             }
 
             // Colossal Blade Base Increase
-            if(weaponName.contains("colossal blade")){
+            if(weaponName.contains("colossal blade"))
+            {
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
@@ -559,7 +562,8 @@ public class PredictNextMax extends MaxHit
             String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
             if (weaponItemName.contains("twinflame staff"))
             {
-                if (spell != null && spell.getSpellbook().contains("standard")) {
+                if (spell != null && spell.getSpellbook().contains("standard"))
+                {
 
                     if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                     {

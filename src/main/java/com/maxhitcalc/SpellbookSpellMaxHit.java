@@ -228,7 +228,8 @@ public class SpellbookSpellMaxHit extends MaxHit
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponItemName.contains("twinflame staff"))
         {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
+            if (spell != null && spell.getSpellbook().contains("standard"))
+            {
 
                 if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                 {

@@ -516,7 +516,8 @@ public enum NPCTypeWeakness
         // Search exact name first
         for (NPCTypeWeakness npc : NPCTypeWeakness.values())
         {
-            if(npc.NPCName.equalsIgnoreCase(name)){
+            if(npc.NPCName.equalsIgnoreCase(name))
+            {
                 return npc;
             }
         }
@@ -526,7 +527,8 @@ public enum NPCTypeWeakness
         {
             if(npc.allowPartialSearch)
             {
-                if(name.toLowerCase().contains(npc.NPCName.toLowerCase())){
+                if(name.toLowerCase().contains(npc.NPCName.toLowerCase()))
+                {
                     return npc;
                 }
             }

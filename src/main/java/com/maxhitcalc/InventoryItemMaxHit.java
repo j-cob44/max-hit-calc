@@ -86,7 +86,8 @@ public class InventoryItemMaxHit
 
             attackStyle = AttackStyle.CASTING;
         }
-        else {
+        else
+        {
             // Assume Melee
             attackStyle = AttackStyle.AGGRESSIVE;
         }
@@ -173,7 +174,8 @@ public class InventoryItemMaxHit
             double magicMaxHit = maxHits.calculateMagicMaxHit(playerEquipment, attackStyle);
 
             // If -1, error, skip
-            if (magicMaxHit > -1){
+            if (magicMaxHit > -1)
+            {
                 return magicMaxHit;
             }
         }

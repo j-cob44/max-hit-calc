@@ -80,7 +80,8 @@ public class EquipmentItems
     {
         String itemName = "";
 
-        if(playerEquipment != null){
+        if(playerEquipment != null)
+        {
             if(playerEquipment.length > ITEMSLOT.getSlotIdx()
                     && playerEquipment[ITEMSLOT.getSlotIdx()] != null)
             {
@@ -103,7 +104,8 @@ public class EquipmentItems
     {
         int itemID = -1;
 
-        if(playerEquipment != null) {
+        if(playerEquipment != null)
+        {
             if(playerEquipment.length > ITEMSLOT.getSlotIdx()
                     && playerEquipment[ITEMSLOT.getSlotIdx()] != null)
             {
@@ -124,7 +126,8 @@ public class EquipmentItems
     {
         int ammoId = client.getVarpValue(VarPlayerID.DIZANAS_QUIVER_TEMP_AMMO);
         int ammoAmount = client.getVarpValue(VarPlayerID.DIZANAS_QUIVER_TEMP_AMMO_AMOUNT);
-        if (ammoId != -1 && ammoAmount > 0) {
+        if (ammoId != -1 && ammoAmount > 0)
+        {
             return new Item(ammoId, ammoAmount);
         }
         return null;
@@ -171,49 +174,61 @@ public class EquipmentItems
     public static boolean doesAmmoMatchWeapon(String ammoTypeName, String weaponName)
     {
         // Arrows -> bows
-        if (ammoTypeName.contains("arrow")) {
+        if (ammoTypeName.contains("arrow"))
+        {
             // Ogre arrow -> ogre bow
-            if (ammoTypeName.contains("ogre")) {
+            if (ammoTypeName.contains("ogre"))
+            {
                 if(weaponName.contains("ogre")) return true;
             }
             // all other arrows -> any bow
-            else {
+            else
+            {
                 if(weaponName.contains("bow") && !weaponName.contains("crossbow")) return true;
             }
         }
         // Brutal Arrows
-        else if(ammoTypeName.contains("brutal")) {
+        else if(ammoTypeName.contains("brutal"))
+        {
             if(weaponName.contains("ogre")) return true;
         }
         // Bolts -> crossbows
-        else if(ammoTypeName.contains("bolts")) {
+        else if(ammoTypeName.contains("bolts"))
+        {
             // Kebbit bolts -> hunters' crossbow
-            if(ammoTypeName.contains("kebbit")) {
+            if(ammoTypeName.contains("kebbit"))
+            {
                 if(weaponName.contains("hunters' crossbow")) return true;
             }
             // Antler bolts -> hunter's sunlight crossbow
-            else if(ammoTypeName.contains("antler")){
+            else if(ammoTypeName.contains("antler"))
+            {
                 if(weaponName.contains("hunters' sunlight crossbow")) return true;
             }
             // Bone bolts -> Dorgeshuun crossbow
-            else if (ammoTypeName.contains("bone")) {
+            else if (ammoTypeName.contains("bone"))
+            {
                 if(weaponName.contains("dorgeshuun")) return true;
             }
             // All other types of bolts -> normal crossbows
-            else {
+            else
+            {
                 if(weaponName.contains("crossbow")) return true;
             }
         }
         // Bolt rack -> Karil's
-        else if(ammoTypeName.contains("rack")) {
+        else if(ammoTypeName.contains("rack"))
+        {
             if(weaponName.contains("karil's")) return true;
         }
         // Javelin -> Ballista
-        else if(ammoTypeName.contains("javelin")) {
+        else if(ammoTypeName.contains("javelin"))
+        {
             if(weaponName.contains("ballista")) return true;
         }
         // Tar -> Salamander or Swamp lizard
-        else if(ammoTypeName.contains("tar")) {
+        else if(ammoTypeName.contains("tar"))
+        {
             if(weaponName.contains("salamander") || weaponName.contains("lizard")) return true;
         }
 

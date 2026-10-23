@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
-public class PanelIcons {
+public class PanelIcons
+{
     public static final ImageIcon AIR_RUNE_ICON;
     public static final ImageIcon WATER_RUNE_ICON;
     public static final ImageIcon EARTH_RUNE_ICON;
@@ -14,7 +15,8 @@ public class PanelIcons {
     public static final ImageIcon EMPTY_RUNE_ICON;
     public static final Dimension RUNE_ICON_SIZE; // largest icon sizes for UI
 
-    static {
+    static
+    {
         // Rune icons for weakness display
         final BufferedImage AIR_ICON_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/elemental_icons/air.png");
         final BufferedImage WATER_ICON_IMG = ImageUtil.loadImageResource(MaxHitCalcPlugin.class, "/elemental_icons/water.png");

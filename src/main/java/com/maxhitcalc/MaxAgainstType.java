@@ -42,7 +42,8 @@ import java.util.List;
 /**
  * Contains functions for calculating max hit vs specific types of npc.
  */
-public class MaxAgainstType extends MaxHit {
+public class MaxAgainstType extends MaxHit
+{
     MaxAgainstType(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
     {
         super(plugin, config, itemManager, client);
@@ -199,7 +200,8 @@ public class MaxAgainstType extends MaxHit {
                 {
                     typeBonusToApply.add(1.15);
                 }
-                else {
+                else
+                {
                     typeBonusToApply.add(1.33);
                 }
             }
@@ -712,16 +714,20 @@ public class MaxAgainstType extends MaxHit {
                 // NO TIER,
                 spellBaseHit = spell.getBaseDamage();
             }
-            else {
+            else
+            {
                 // GET TIER, Get highest tier in level
                 int spellTier = spell.getTier();
                 String spellbook = spell.getSpellbook();
 
                 CombatSpell[] spellsInTier = CombatSpell.getSpellsOfTier(spellTier, spellbook);
 
-                for (CombatSpell itSpell : spellsInTier) {
-                    if (magicLevel >= spell.getReqLevel()) {
-                        if (spellBaseHit <= itSpell.getBaseDamage()) {
+                for (CombatSpell itSpell : spellsInTier)
+                {
+                    if (magicLevel >= spell.getReqLevel())
+                    {
+                        if (spellBaseHit <= itSpell.getBaseDamage())
+                        {
                             // new highest found
                             spellBaseHit = itSpell.getBaseDamage();
                         }
@@ -749,7 +755,8 @@ public class MaxAgainstType extends MaxHit {
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponItemName.contains("twinflame staff"))
         {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
+            if (spell != null && spell.getSpellbook().contains("standard"))
+            {
 
                 if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                 {

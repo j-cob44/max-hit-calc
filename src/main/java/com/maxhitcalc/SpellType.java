@@ -28,7 +28,8 @@
 
 package com.maxhitcalc;
 
-public enum SpellType {
+public enum SpellType
+{
     Air,
     Water,
     Earth,

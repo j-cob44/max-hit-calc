@@ -39,7 +39,8 @@ import java.util.List;
 /**
  * Contains functions for calculating standard max hit.
  */
-public class MaxHit {
+public class MaxHit
+{
 
     protected MaxHitCalcPlugin plugin;
     protected MaxHitCalcConfig config;
@@ -344,9 +345,11 @@ public class MaxHit {
      *
      * @return Percent damage multiplier for twisted bow for opponent NPC
      */
-    protected double getTwistedBowDamageBonus() {
+    protected double getTwistedBowDamageBonus()
+    {
         Actor opponent = client.getLocalPlayer().getInteracting();
-        if (!(opponent instanceof NPC)) {
+        if (!(opponent instanceof NPC))
+        {
             return 1.0; // no bonus damage
         }
         NPCComposition opponentComposition = ((NPC) opponent).getComposition();
@@ -354,7 +357,8 @@ public class MaxHit {
 
         // magic level is capped at 250 (350 if inside COX)
         int magicLevelCap = 250;
-        if (client.getVarbitValue(VarbitID.RAIDS_CLIENT_INDUNGEON) == 1) {
+        if (client.getVarbitValue(VarbitID.RAIDS_CLIENT_INDUNGEON) == 1)
+        {
             magicLevelCap = 350;
         }
         opponentMagicLevel = Math.min(opponentMagicLevel, magicLevelCap);
@@ -483,7 +487,8 @@ public class MaxHit {
         }
 
         // Colossal Blade Base Increase
-        if(weaponName.contains("colossal blade")){
+        if(weaponName.contains("colossal blade"))
+        {
             maxHit = maxHit + 2;
         }
 
@@ -568,7 +573,8 @@ public class MaxHit {
         {
             skipAmmo = true;
         }
-        if (weaponItemName.contains("blowpipe")) {
+        if (weaponItemName.contains("blowpipe"))
+        {
             if(plugin.selectedDartType == BlowpipeDartType.ADAMANT)
             {
                 rangedStrengthBonus += 17;
@@ -607,19 +613,22 @@ public class MaxHit {
             boolean canUseQuiverAmmo = isQuiverEquipped && quiverAmmoId != -1 && (EquipmentItems.doesAmmoMatchWeapon(quiverAmmoItemName, weaponItemName) || (isBallista && quiverAmmoItemName.contains("javelin")));
             boolean shouldUseQuiverAmmo = isQuiverEquipped && !canUseAmmo && canUseQuiverAmmo;
 
-            if (isQuiverEquipped && (canUseAmmo || canUseQuiverAmmo)) {
+            if (isQuiverEquipped && (canUseAmmo || canUseQuiverAmmo))
+            {
                 if (!EquipmentItems.getQuiverItemName(client).contains("uncharged"))
                 {
                     rangedStrengthBonus += 1;
                 }
             }
 
-            if (shouldUseQuiverAmmo) {
+            if (shouldUseQuiverAmmo)
+            {
                 skipAmmo = true;
                 rangedStrengthBonus += itemManager.getItemStats(quiverAmmoId).getEquipment().getRstr();
             }
 
-            if (!canUseAmmo && !canUseQuiverAmmo) {
+            if (!canUseAmmo && !canUseQuiverAmmo)
+            {
                 skipAmmo = true;
             }
         }
@@ -759,7 +768,8 @@ public class MaxHit {
         }
 
         // Twisted bow damage multiplier
-        if (weaponItemName.equals("twisted bow")) {
+        if (weaponItemName.equals("twisted bow"))
+        {
             maxHit = Math.floor(maxHit * getTwistedBowDamageBonus());
         }
 
@@ -982,7 +992,8 @@ public class MaxHit {
     }
 
     // Get Spell Info
-    protected CombatSpell getSpell(){
+    protected CombatSpell getSpell()
+    {
         int selectedSpellId = client.getVarbitValue(VarbitID.AUTOCAST_SPELL); // Varbit 276 is Selected Autocasted Spell
         if (selectedSpellId == 0)
         {
@@ -1038,7 +1049,8 @@ public class MaxHit {
 
         // Get Virtus Robe's Damage Bonus for Ancient Magicks
         CombatSpell selectedSpell = CombatSpell.getSpellbyVarbitValue(client.getVarbitValue(VarbitID.AUTOCAST_SPELL));
-        if(selectedSpell != null){
+        if(selectedSpell != null)
+        {
             if (selectedSpell.getName().toLowerCase().contains("smoke")
                     || selectedSpell.getName().toLowerCase().contains("shadow")
                     || selectedSpell.getName().toLowerCase().contains("blood")
@@ -1101,7 +1113,8 @@ public class MaxHit {
         CombatSpell spell = getSpell();
         if (weaponItemName.contains("smoke battlestaff") || weaponItemName.contains("smoke staff"))
         {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
+            if (spell != null && spell.getSpellbook().contains("standard"))
+            {
                 magicdamagebonus += 0.1;
             }
         }
@@ -1109,7 +1122,8 @@ public class MaxHit {
         // Twinflame Staff Magic Dmg Bonus
         if (weaponItemName.contains("twinflame staff"))
         {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
+            if (spell != null && spell.getSpellbook().contains("standard"))
+            {
                 magicdamagebonus += 0.1;
             }
         }

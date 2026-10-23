@@ -95,41 +95,52 @@ public class MaxHitCalcPanel extends PluginPanel
 
     enum ColossalBladeSizeBonus
     {
-        ONE(1) {
+        ONE(1)
+        {
 
             @Override
-            public String toString() {
+            public String toString()
+            {
                 return "1x1";
             }
         },
-        TWO(2) {
+        TWO(2)
+        {
             @Override
-            public String toString() {
+            public String toString()
+            {
                 return "2x2";
             }
         },
-        THREE(3) {
+        THREE(3)
+        {
             @Override
-            public String toString() {
+            public String toString()
+            {
                 return "3x3";
             }
         },
-        FOUR(4) {
+        FOUR(4)
+        {
             @Override
-            public String toString() {
+            public String toString()
+            {
                 return "4x4";
             }
         },
-        FIVE(5) {
+        FIVE(5)
+        {
             @Override
-            public String toString() {
+            public String toString()
+            {
                 return "5x5 +";
             }
         };
 
         public final int monsterSize;
 
-        ColossalBladeSizeBonus(int monsterSize) {
+        ColossalBladeSizeBonus(int monsterSize)
+        {
             this.monsterSize = monsterSize;
         }
     }
@@ -466,9 +477,11 @@ public class MaxHitCalcPanel extends PluginPanel
         panel.add(Box.createGlue(), c);
 
         JButton resetButton = new JButton("Reset");
-        resetButton.addMouseListener(new MouseAdapter() {
+        resetButton.addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e)
+            {
                 resetNPCviaPanel();
             }
         });
@@ -578,7 +591,8 @@ public class MaxHitCalcPanel extends PluginPanel
         npcCommitting = false;
     }
 
-    void onNpcSelected(Object selected){
+    void onNpcSelected(Object selected)
+    {
         if(!(selected instanceof NPCTypeWeakness) || selected == NPCTypeWeakness.None)
         {
             // handle as reset, means NONE is selected
@@ -587,7 +601,8 @@ public class MaxHitCalcPanel extends PluginPanel
             plugin.selectedNPCName = null;
             plugin.npcSelectedByPanel = true;
         }
-        else {
+        else
+        {
             NPCTypeWeakness selectedNPCWeakness = (NPCTypeWeakness) selected;
             setNpcInfoPanel(selectedNPCWeakness);
 
@@ -597,7 +612,8 @@ public class MaxHitCalcPanel extends PluginPanel
         }
     }
 
-    void setNpcInfoPanel(NPCTypeWeakness selectedNPCWeakness){
+    void setNpcInfoPanel(NPCTypeWeakness selectedNPCWeakness)
+    {
         npcNameHeader.setText(selectedNPCWeakness.getNPCName());
 
         weaknessLabel.setText("Weakness:");
@@ -671,7 +687,8 @@ public class MaxHitCalcPanel extends PluginPanel
         plugin.npcSizeSettingChanged = true;
     }
 
-    void resetNPCviaPanel(){
+    void resetNPCviaPanel()
+    {
         // Reset size
         colossalBladeList.setSelectedIndex(0);
 
@@ -688,10 +705,12 @@ public class MaxHitCalcPanel extends PluginPanel
 
         // Set NPC Info panel
         NPCTypeWeakness selectedNpc = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
-        if (selectedNpc != null) {
+        if (selectedNpc != null)
+        {
             setNpcInfoPanel(selectedNpc);
         }
-        else {
+        else
+        {
             resetNpcInfoPanel();
 
             // Set name

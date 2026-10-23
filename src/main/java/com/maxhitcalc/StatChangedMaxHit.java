@@ -226,7 +226,8 @@ public class StatChangedMaxHit
         }
 
         // Colossal Blade Base Increase
-        if(weaponName.contains("colossal blade")){
+        if(weaponName.contains("colossal blade"))
+        {
             maxHit = maxHit + 2;
         }
 
@@ -406,7 +407,8 @@ public class StatChangedMaxHit
             double magicMaxHit = calculateMagicMaxHit(playerEquipment, attackStyle, changedStats);
 
             // If -1, error, skip
-            if (magicMaxHit > -1){
+            if (magicMaxHit > -1)
+            {
                 return magicMaxHit;
             }
         }
