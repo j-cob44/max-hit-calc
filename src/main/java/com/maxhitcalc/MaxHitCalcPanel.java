@@ -31,6 +31,9 @@ package com.maxhitcalc;
 import com.google.inject.Inject;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -38,6 +41,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
 import javax.swing.*;
+import javax.accessibility.Accessible;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import net.runelite.api.Client;
@@ -72,6 +79,12 @@ public class MaxHitCalcPanel extends PluginPanel
 
     // NPC Selection Data
     private JComboBox npcList = new JComboBox();
+    private DefaultComboBoxModel npcListModel = new DefaultComboBoxModel(NPCTypeWeakness.values());
+    private JTextField npcEditor;
+    private String npcFilterText = "";
+    private boolean npcFilterUpdating = false;
+    private boolean npcArrowKeyUsed = false;
+    private boolean npcCommitting = false;
     private JLabel npcNameHeader = new JLabel("No NPC Selected", SwingConstants.LEFT);
     private JLabel weaknessLabel = new JLabel("Weakness:");
     private JLabel weaknessIcon = new JLabel("---");
@@ -266,11 +279,90 @@ public class MaxHitCalcPanel extends PluginPanel
 
         panel.add(npcWeaknessLabel, c);
 
-        // Dropdown for NPC selection
-        npcList = new JComboBox(NPCTypeWeakness.values());
+        // Dropdown for NPC selection, typing in it narrows the list
+        npcList = new JComboBox(npcListModel);
+        npcList.setEditable(true);
         npcList.setPrototypeDisplayValue("1234567890123");
         npcList.setSelectedIndex(0);
-        npcList.addActionListener(e -> onNpcSelected());
+
+        // Wrap the themed editor so highlighting an entry never overwrites the search text
+        ComboBoxEditor themedEditor = npcList.getEditor();
+        npcList.setEditor(new ComboBoxEditor()
+        {
+            @Override
+            public Component getEditorComponent() { return themedEditor.getEditorComponent(); }
+
+            @Override
+            public void setItem(Object anObject) { /* search box keeps what was typed */ }
+
+            @Override
+            public Object getItem() { return themedEditor.getItem(); }
+
+            @Override
+            public void selectAll() { themedEditor.selectAll(); }
+
+            @Override
+            public void addActionListener(ActionListener l) { themedEditor.addActionListener(l); }
+
+            @Override
+            public void removeActionListener(ActionListener l) { themedEditor.removeActionListener(l); }
+        });
+
+        npcEditor = (JTextField) npcList.getEditor().getEditorComponent();
+        npcEditor.setText("");
+
+        npcEditor.getDocument().addDocumentListener(new DocumentListener()
+        {
+            @Override
+            public void insertUpdate(DocumentEvent e) { queueFilter(); }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) { queueFilter(); }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) { queueFilter(); }
+
+            // The model cannot be changed while the document is notifying
+            private void queueFilter()
+            {
+                npcArrowKeyUsed = false;
+                SwingUtilities.invokeLater(() -> filterNpcList(npcEditor.getText()));
+            }
+        });
+
+        npcEditor.addKeyListener(new KeyAdapter()
+        {
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    e.consume();
+                    commitNpcSelection();
+                }
+                else if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)
+                {
+                    npcArrowKeyUsed = true;
+
+                    if(!npcList.isPopupVisible()) npcList.showPopup();
+                }
+            }
+        });
+
+        // Clicking an entry in the popup is a pick
+        Accessible popupChild = npcList.getUI().getAccessibleChild(npcList, 0);
+        if(popupChild instanceof ComboPopup)
+        {
+            JList popupList = ((ComboPopup) popupChild).getList();
+            popupList.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseReleased(MouseEvent e)
+                {
+                    commitNpcSelection(popupList.getSelectedValue());
+                }
+            });
+        }
 
         c.gridx = 1;
         c.gridy = 4;
@@ -405,14 +497,96 @@ public class MaxHitCalcPanel extends PluginPanel
         eventBus.unregister(this);
     }
 
-    void onNpcSelected(){
-        if(npcList.getSelectedIndex() == 0)
+    // Narrows the dropdown to the entries starting with what has been typed
+    void filterNpcList(String text)
+    {
+        if(npcFilterUpdating) return;
+
+        String search = (text == null) ? "" : text.trim().toLowerCase();
+
+        if(search.equals(npcFilterText)) return; // nothing new typed
+
+        npcFilterText = search;
+        npcFilterUpdating = true;
+
+        npcListModel.removeAllElements();
+        for (NPCTypeWeakness npc : NPCTypeWeakness.values())
+        {
+            if(npc == NPCTypeWeakness.None || matchesSearch(npc, search))
+            {
+                npcListModel.addElement(npc);
+            }
+        }
+
+        // Rebuilding the model clears the editor, put what was typed back
+        npcList.getEditor().setItem(text);
+
+        if(npcList.isShowing())
+        {
+            npcList.hidePopup();
+
+            if(npcListModel.getSize() > 1) npcList.showPopup();
+        }
+
+        npcFilterUpdating = false;
+    }
+
+    // Matches either the enum name shown in the list or the in game name
+    private boolean matchesSearch(NPCTypeWeakness npc, String search)
+    {
+        return npc.name().toLowerCase().startsWith(search)
+                || npc.getNPCName().toLowerCase().startsWith(search);
+    }
+
+    void commitNpcSelection()
+    {
+        commitNpcSelection(null);
+    }
+
+    // Picks whatever was clicked, highlighted or typed, then empties the box
+    void commitNpcSelection(Object clicked)
+    {
+        if(npcCommitting) return;
+
+        npcCommitting = true;
+        npcList.hidePopup();
+
+        Object selected = clicked;
+
+        // The highlight wins while using arrow keys
+        if(selected == null && npcArrowKeyUsed && npcList.getSelectedItem() instanceof NPCTypeWeakness)
+        {
+            selected = npcList.getSelectedItem();
+        }
+
+        if(selected == null)
+        {
+            selected = NPCTypeWeakness.findWeaknessByName(npcEditor.getText().trim());
+        }
+
+        if(selected == null && npcListModel.getSize() == 2)
+        {
+            selected = npcListModel.getElementAt(1); // only one entry left besides None
+        }
+
+        onNpcSelected(selected);
+
+        npcEditor.setText(""); // ready for the next search, also restores the full list
+        npcArrowKeyUsed = false;
+        npcCommitting = false;
+    }
+
+    void onNpcSelected(Object selected){
+        if(!(selected instanceof NPCTypeWeakness) || selected == NPCTypeWeakness.None)
         {
             // handle as reset, means NONE is selected
             resetNpcInfoPanel();
+
+            plugin.selectedNPCName = null;
+            plugin.npcSelectedByPanel = true;
         }
         else {
-            NPCTypeWeakness selectedNPCWeakness = NPCTypeWeakness.values()[npcList.getSelectedIndex()];
+            NPCTypeWeakness selectedNPCWeakness = (NPCTypeWeakness) selected;
             setNpcInfoPanel(selectedNPCWeakness);
 
             // Recalculate plugin
