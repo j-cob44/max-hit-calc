@@ -54,34 +54,33 @@ public class InventoryItemMaxHit
     {
         AttackStyle attackStyle;
 
+        String weaponItemName = client.getItemDefinition(weaponID).getName().toLowerCase();
+
         // Ranged
-        if (client.getItemDefinition(weaponID).getName().contains("bow")
-                || client.getItemDefinition(weaponID).getName().contains("Bow")
-                || client.getItemDefinition(weaponID).getName().contains("chinchompa")
-                || client.getItemDefinition(weaponID).getName().contains("Chinchompa")
-                || client.getItemDefinition(weaponID).getName().contains("ballista")
-                || client.getItemDefinition(weaponID).getName().contains("dart")
-                || client.getItemDefinition(weaponID).getName().contains("knife")
-                || client.getItemDefinition(weaponID).getName().contains("thrownaxe")
-                || client.getItemDefinition(weaponID).getName().contains("Toktz-xil-ul")
-                || client.getItemDefinition(weaponID).getName().contains("blowpipe")
-                || client.getItemDefinition(weaponID).getName().contains("Tonalztics of Ralos")
-                || client.getItemDefinition(weaponID).getName().contains("Eclipse atlatl")
-                || client.getItemDefinition(weaponID).getName().contains("Hunter's spear"))
+        if (weaponItemName.contains("bow")
+                || weaponItemName.contains("chinchompa")
+                || weaponItemName.contains("ballista")
+                || weaponItemName.contains("dart")
+                || weaponItemName.contains("knife")
+                || weaponItemName.contains("thrownaxe")
+                || weaponItemName.contains("toktz-xil-ul")
+                || weaponItemName.contains("blowpipe")
+                || weaponItemName.contains("tonalztics of ralos")
+                || weaponItemName.contains("eclipse atlatl")
+                || weaponItemName.contains("hunter's spear"))
         {
             attackStyle = AttackStyle.RANGING;
         }
         // Magic
-        else if (client.getItemDefinition(weaponID).getName().contains("sceptre")
-                || client.getItemDefinition(weaponID).getName().contains("staff")
-                || client.getItemDefinition(weaponID).getName().contains("Trident")
-                || client.getItemDefinition(weaponID).getName().contains("Tumeken's shadow")
-                || client.getItemDefinition(weaponID).getName().contains("Staff")
-                || client.getItemDefinition(weaponID).getName().contains("wand")
-                || client.getItemDefinition(weaponID).getName().contains("crozier")
-                || client.getItemDefinition(weaponID).getName().contains("Void knight mace")
-                || client.getItemDefinition(weaponID).getName().contains("Blue moon spear")
-                || client.getItemDefinition(weaponID).getName().contains("Eye of Ayak"))
+        else if (weaponItemName.contains("sceptre")
+                || weaponItemName.contains("staff")
+                || weaponItemName.contains("trident")
+                || weaponItemName.contains("tumeken's shadow")
+                || weaponItemName.contains("wand")
+                || weaponItemName.contains("crozier")
+                || weaponItemName.contains("void knight mace")
+                || weaponItemName.contains("blue moon spear")
+                || weaponItemName.contains("eye of ayak"))
         {
 
             attackStyle = AttackStyle.CASTING;

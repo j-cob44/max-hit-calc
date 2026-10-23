@@ -126,7 +126,7 @@ public class MaxHit {
                 EquipmentInventorySlot.WEAPON
         );
 
-        if(weaponName.contains("Hallowfell"))
+        if(weaponName.contains("hallowfell"))
         {
             int secondaryHit = (int)Math.floor(hit * 0.5);
             return hit + secondaryHit + secondaryHit;
@@ -180,17 +180,17 @@ public class MaxHit {
                 EquipmentInventorySlot.LEGS
         );
 
-        if(headItemName.toLowerCase().contains("inquisitor"))
+        if(headItemName.contains("inquisitor"))
         {
             damageBonus += 0.005;
         }
 
-        if(bodyItemName.toLowerCase().contains("inquisitor"))
+        if(bodyItemName.contains("inquisitor"))
         {
             damageBonus += 0.01;
         }
 
-        if(legsItemName.toLowerCase().contains("inquisitor"))
+        if(legsItemName.contains("inquisitor"))
         {
             damageBonus += 0.01;
         }
@@ -257,22 +257,22 @@ public class MaxHit {
         String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
 
         // Check for set bonus
-        if (headItemName.contains("Void melee"))
+        if (headItemName.contains("void melee"))
         {
-            if (glovesItemName.contains("Void"))
+            if (glovesItemName.contains("void"))
             {
                 // Melee helm and gloves, check for elite or not
-                if (bodyItemName.contains("Void"))
+                if (bodyItemName.contains("void"))
                 {
-                    if (legsItemName.contains("Void"))
+                    if (legsItemName.contains("void"))
                     {
                         // Normal void set
                         return 1.1;
                     }
                 }
-                else if (bodyItemName.contains("Elite void"))
+                else if (bodyItemName.contains("elite void"))
                 {
-                    if(legsItemName.contains("Elite void"))
+                    if(legsItemName.contains("elite void"))
                     {
                         // Elite void set
                         return 1.1; // same for melee
@@ -328,13 +328,13 @@ public class MaxHit {
 
         // SPECIAL BONUSES MUST BE ORDERED CORRECTLY.
         // Dharok's Set Check
-        if (headItemName.contains("Dharok's"))
+        if (headItemName.contains("dharok's"))
         {
-            if(bodyItemName.contains("Dharok's"))
+            if(bodyItemName.contains("dharok's"))
             {
-                if(legsItemName.contains("Dharok's"))
+                if(legsItemName.contains("dharok's"))
                 {
-                    if(weaponItemName.contains("Dharok's"))
+                    if(weaponItemName.contains("dharok's"))
                     {
                         // Passed Check, Dharok's Set Equipped, Apply Effect
                         double baseHP = client.getRealSkillLevel(Skill.HITPOINTS);
@@ -348,11 +348,11 @@ public class MaxHit {
         }
 
         // Obsidian Set Check
-        if (headItemName.contains("Obsidian"))
+        if (headItemName.contains("obsidian"))
         {
-            if(bodyItemName.contains("Obsidian"))
+            if(bodyItemName.contains("obsidian"))
             {
-                if(legsItemName.contains("Obsidian"))
+                if(legsItemName.contains("obsidian"))
                 {
                     if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
                     {
@@ -365,7 +365,7 @@ public class MaxHit {
         // Berserker Necklace and Obisidian Melee Check
         if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
         {
-            if(ammuletItemName.contains("Berserker"))
+            if(ammuletItemName.contains("berserker"))
             {
                 specialBonusesToApply.add(0.2);
             }
@@ -424,18 +424,18 @@ public class MaxHit {
 
         // Osmumten's Fang Decrease
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponName.contains("Osmumten's fang"))
+        if (weaponName.contains("osmumten's fang"))
         {
             maxHit = maxHit * 0.85 + 1;
         }
 
         // Colossal Blade Base Increase
-        if(weaponName.contains("Colossal blade")){
+        if(weaponName.contains("colossal blade")){
             maxHit = maxHit + 2;
         }
 
         // Rat Default +10 damage Bonus
-        if(weaponName.contains("Bone mace"))
+        if(weaponName.contains("bone mace"))
         {
             maxHit = maxHit + 10;
         }
@@ -455,22 +455,22 @@ public class MaxHit {
         String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
 
         // Check for set bonus
-        if (headItemName.contains("Void ranger"))
+        if (headItemName.contains("void ranger"))
         {
-            if (glovesItemName.contains("Void"))
+            if (glovesItemName.contains("void"))
             {
                 // Ranged helm and gloves, check for elite or not
-                if (bodyItemName.contains("Void"))
+                if (bodyItemName.contains("void"))
                 {
-                    if (legsItemName.contains("Void"))
+                    if (legsItemName.contains("void"))
                     {
                         // Normal void set
                         return 1.1;
                     }
                 }
-                else if (bodyItemName.contains("Elite void"))
+                else if (bodyItemName.contains("elite void"))
                 {
-                    if(legsItemName.contains("Elite void"))
+                    if(legsItemName.contains("elite void"))
                     {
                         // Elite void set
                         return 1.125;
@@ -502,21 +502,21 @@ public class MaxHit {
         boolean weaponDoesNotUseAmmo =  weaponItemName.contains("dart")
                 || weaponItemName.contains("knife")
                 || weaponItemName.contains("thrownaxe")
-                || weaponItemName.contains("Toktz-xil-ul")
-                || weaponItemName.contains("Morrigan's javelin")
-                || weaponItemName.contains("Morrigan's throwing axe")
-                || weaponItemName.contains("Mud pie")
-                || weaponItemName.contains("Crystal bow")
-                || weaponItemName.contains("Faerdhinen")
-                || weaponItemName.contains("Webweaver")
-                || weaponItemName.contains("Craw's")
-                || weaponItemName.contains("Tonalztics")
+                || weaponItemName.contains("toktz-xil-ul")
+                || weaponItemName.contains("morrigan's javelin")
+                || weaponItemName.contains("morrigan's throwing axe")
+                || weaponItemName.contains("mud pie")
+                || weaponItemName.contains("crystal bow")
+                || weaponItemName.contains("faerdhinen")
+                || weaponItemName.contains("webweaver")
+                || weaponItemName.contains("craw's")
+                || weaponItemName.contains("tonalztics")
                 || weaponItemName.contains("atlatl")
-                || weaponItemName.contains("Hunter's spear")
+                || weaponItemName.contains("hunter's spear")
                 || weaponItemName.contains("blowpipe");
 
         boolean weaponUsesMelee = weaponItemName.contains("atlatl")
-                || weaponItemName.contains("Hunter's spear");
+                || weaponItemName.contains("hunter's spear");
 
         if (weaponDoesNotUseAmmo)
         {
@@ -554,11 +554,11 @@ public class MaxHit {
         {
             // determine if using ammo from quiver or ammo slot, if so, calculate range bonus here and skip ammo
             boolean isQuiverEquipped = EquipmentItems.isQuiverEquipped(playerEquipment);
-            boolean isBallista = weaponItemName.toLowerCase().contains("ballista");
+            boolean isBallista = weaponItemName.contains("ballista");
 
-            boolean canUseAmmo = ammoID != -1 && (EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName) || (isBallista && ammoItemName.toLowerCase().contains("javelin")));
+            boolean canUseAmmo = ammoID != -1 && (EquipmentItems.doesAmmoMatchWeapon(ammoItemName, weaponItemName) || (isBallista && ammoItemName.contains("javelin")));
 
-            boolean canUseQuiverAmmo = isQuiverEquipped && quiverAmmoId != -1 && (EquipmentItems.doesAmmoMatchWeapon(quiverAmmoItemName, weaponItemName) || (isBallista && quiverAmmoItemName.toLowerCase().contains("javelin")));
+            boolean canUseQuiverAmmo = isQuiverEquipped && quiverAmmoId != -1 && (EquipmentItems.doesAmmoMatchWeapon(quiverAmmoItemName, weaponItemName) || (isBallista && quiverAmmoItemName.contains("javelin")));
             boolean shouldUseQuiverAmmo = isQuiverEquipped && !canUseAmmo && canUseQuiverAmmo;
 
             if (isQuiverEquipped && (canUseAmmo || canUseQuiverAmmo)) {
@@ -631,10 +631,10 @@ public class MaxHit {
         String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
 
 
-        if (weaponItemName.contains("Crystal bow") || weaponItemName.contains("Faerdhinen"))
+        if (weaponItemName.contains("crystal bow") || weaponItemName.contains("faerdhinen"))
         {
             // Crystal Armor Damage bonus
-            if (headItemName.contains("Crystal helm"))
+            if (headItemName.contains("crystal helm"))
             {
                 if(!headItemName.contains("(basic)")
                         && !headItemName.contains("(attuned)")
@@ -644,7 +644,7 @@ public class MaxHit {
                 }
             }
 
-            if (bodyItemName.contains("Crystal body"))
+            if (bodyItemName.contains("crystal body"))
             {
                 if(!bodyItemName.contains("(basic)")
                         && !bodyItemName.contains("(attuned)")
@@ -654,7 +654,7 @@ public class MaxHit {
                 }
             }
 
-            if (legsItemName.contains("Crystal legs"))
+            if (legsItemName.contains("crystal legs"))
             {
                 if(!legsItemName.contains("(basic)")
                         && !legsItemName.contains("(attuned)")
@@ -697,13 +697,13 @@ public class MaxHit {
         // Step 3: Bonus damage from special attack and effects
         // Rat Default +10 damage Bonus
 
-        if(weaponItemName.contains("Bone shortbow"))
+        if(weaponItemName.contains("bone shortbow"))
         {
             maxHit = maxHit + 10;
         }
 
         // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-        if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
+        if(weaponItemName.contains("tonalztics of ralos"))
         {
             maxHit = Math.floor(maxHit * 0.75); // unknown if flooring here causes miscalcs
             if(!weaponItemName.contains("(uncharged)"))
@@ -713,7 +713,7 @@ public class MaxHit {
         }
 
         // Twisted bow damage multiplier
-        if (weaponItemName.equals("Twisted bow")) {
+        if (weaponItemName.equals("twisted bow")) {
             maxHit = Math.floor(maxHit * getTwistedBowDamageBonus());
         }
 
@@ -733,37 +733,37 @@ public class MaxHit {
 
         // Powered Staff Check
         // Trident of the Seas
-        if(weaponItemName.toLowerCase().contains("of the seas"))
+        if(weaponItemName.contains("of the seas"))
         {
             basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
         }
         // Trident of the Swamp
-        else if(weaponItemName.toLowerCase().contains("of the swamp"))
+        else if(weaponItemName.contains("of the swamp"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
         }
         // Sanquinesti Staff
-        else if(weaponItemName.contains("Sanguinesti"))
+        else if(weaponItemName.contains("sanguinesti"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 3) / 3))), 4); // Corrected, thanks to Mod Ash
         }
         // Thammaron's Sceptre
-        else if(weaponItemName.contains("Thammaron's"))
+        else if(weaponItemName.contains("thammaron's"))
         {
             basehit = (Math.floor(magicLevel/3) - 8);
         }
         // Accursed Sceptre
-        else if(weaponItemName.contains("Accursed"))
+        else if(weaponItemName.contains("accursed"))
         {
             basehit = (Math.floor(magicLevel/3) - 6);
         }
         // Tumeken's Shadow
-        else if(weaponItemName.contains("Tumeken"))
+        else if(weaponItemName.contains("tumeken"))
         {
             basehit = (Math.floor(magicLevel/3) + 1);
         }
         // Warped sceptre
-        else if(weaponItemName.contains("Warped sceptre"))
+        else if(weaponItemName.contains("warped sceptre"))
         {
             // Current Wiki Value
             basehit = Math.floor(((8*magicLevel)+96)/37);
@@ -780,42 +780,42 @@ public class MaxHit {
             */
         }
         // Crystal staff (basic)
-        else if(weaponItemName.contains("Crystal staff (basic)"))
+        else if(weaponItemName.contains("crystal staff (basic)"))
         {
             basehit = 23;
         }
         // Crystal staff (attuned)
-        else if(weaponItemName.contains("Crystal staff (attuned)"))
+        else if(weaponItemName.contains("crystal staff (attuned)"))
         {
             basehit = 31;
         }
         // Crystal staff (perfected)
-        else if(weaponItemName.contains("Crystal staff (perfected)"))
+        else if(weaponItemName.contains("crystal staff (perfected)"))
         {
             basehit = 39;
         }
         // Corrupted staff (basic)
-        else if(weaponItemName.contains("Corrupted staff (basic)"))
+        else if(weaponItemName.contains("corrupted staff (basic)"))
         {
             basehit = 23;
         }
         // Corrupted staff (attuned)
-        else if(weaponItemName.contains("Corrupted staff (attuned)"))
+        else if(weaponItemName.contains("corrupted staff (attuned)"))
         {
             basehit = 31;
         }
         // Corrupted staff (perfected)
-        else if(weaponItemName.contains("Corrupted staff (perfected)"))
+        else if(weaponItemName.contains("corrupted staff (perfected)"))
         {
             basehit = 39;
         }
         // Bone Staff
-        else if(weaponItemName.contains("Bone staff"))
+        else if(weaponItemName.contains("bone staff"))
         {
             basehit = Math.floor(magicLevel/3) + 5;
         }
         // The Eye of Ayak
-        else if(weaponItemName.contains("Eye of ayak") || weaponItemName.contains("Eye of Ayak"))
+        else if(weaponItemName.contains("eye of ayak"))
         {
             basehit = Math.floor(magicLevel/3) - 6;
         }
@@ -891,17 +891,17 @@ public class MaxHit {
                     if (client.getVarpValue(VarPlayerID.MAGEARENA_CHARGE) > 0) // Varplayer: Charge God Spell
                     {
                         if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
-                                (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
+                                (capeItemName.contains("guthix cape") ||  capeItemName.contains("guthix max cape")))
                         {
                             basehit = 30;
                         }
                         else if(selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK &&
-                                (capeItemName.toLowerCase().contains("zamorak cape") || capeItemName.toLowerCase().contains("zamorak max cape")))
+                                (capeItemName.contains("zamorak cape") || capeItemName.contains("zamorak max cape")))
                         {
                             basehit = 30;
                         }
                         else if(selectedSpell == CombatSpell.SARADOMIN_STRIKE &&
-                                (capeItemName.toLowerCase().contains("saradomin cape") || capeItemName.toLowerCase().contains("saradomin max cape")))
+                                (capeItemName.contains("saradomin cape") || capeItemName.contains("saradomin max cape")))
                         {
                             basehit = 30;
                         }
@@ -919,7 +919,7 @@ public class MaxHit {
                 // Chaos Gauntlet Bonus Check
                 if(selectedSpell.getName().toLowerCase().contains("bolt"))
                 {
-                    if (glovesItemName.toLowerCase().contains("chaos gauntlets"))
+                    if (glovesItemName.contains("chaos gauntlets"))
                     {
                         basehit += 3;
                     }
@@ -978,7 +978,7 @@ public class MaxHit {
         magicdamagebonus += getVoidMagicBonus(playerEquipment);
 
         // Get Tumeken's Shadow Bonus
-        if(weaponItemName.contains("Tumeken"))
+        if(weaponItemName.contains("tumeken"))
         {
             magicdamagebonus *= 3;
 
@@ -999,17 +999,17 @@ public class MaxHit {
                 String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
 
                 // Add bonus per robe
-                if(headItemName.toLowerCase().contains("virtus"))
+                if(headItemName.contains("virtus"))
                 {
                     magicdamagebonus += 0.03; // 1% added normally, add 3% to make total 4% bonus
                 }
 
-                if(bodyItemName.toLowerCase().contains("virtus"))
+                if(bodyItemName.contains("virtus"))
                 {
                     magicdamagebonus += 0.03;
                 }
 
-                if(legsItemName.toLowerCase().contains("virtus"))
+                if(legsItemName.contains("virtus"))
                 {
                     magicdamagebonus += 0.03;
                 }
@@ -1048,7 +1048,7 @@ public class MaxHit {
 
         // Smoke Battlestaff Dmg Bonus
         CombatSpell spell = getSpell();
-        if (weaponItemName.toLowerCase().contains("smoke battlestaff") || weaponItemName.toLowerCase().contains("smoke staff"))
+        if (weaponItemName.contains("smoke battlestaff") || weaponItemName.contains("smoke staff"))
         {
             if (spell != null && spell.getSpellbook().contains("standard")) {
                 magicdamagebonus += 0.1;
@@ -1056,7 +1056,7 @@ public class MaxHit {
         }
 
         // Twinflame Staff Magic Dmg Bonus
-        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        if (weaponItemName.contains("twinflame staff"))
         {
             if (spell != null && spell.getSpellbook().contains("standard")) {
                 magicdamagebonus += 0.1;
@@ -1077,13 +1077,13 @@ public class MaxHit {
         String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
 
         // Check for set bonus
-        if (headItemName.contains("Void mage"))
+        if (headItemName.contains("void mage"))
         {
-            if (glovesItemName.contains("Void"))
+            if (glovesItemName.contains("void"))
             {
-                if (bodyItemName.contains("Elite void"))
+                if (bodyItemName.contains("elite void"))
                 {
-                    if(legsItemName.contains("Elite void"))
+                    if(legsItemName.contains("elite void"))
                     {
                         // Elite void set
                         return 0.05; // 5% magic dmg bonus
@@ -1124,7 +1124,7 @@ public class MaxHit {
             if (selectedSpell.getName().toLowerCase().contains("fire"))
             {
                 // Check for tome of fire
-                if (shieldItemName.toLowerCase().contains("tome of fire"))
+                if (shieldItemName.contains("tome of fire"))
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
@@ -1136,7 +1136,7 @@ public class MaxHit {
             if (selectedSpell.getName().toLowerCase().contains("water"))
             {
                 // Check for tome of water
-                if (shieldItemName.toLowerCase().contains("tome of water"))
+                if (shieldItemName.contains("tome of water"))
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
@@ -1148,7 +1148,7 @@ public class MaxHit {
             if (selectedSpell.getName().toLowerCase().contains("earth"))
             {
                 // Check for tome of water
-                if (shieldItemName.toLowerCase().contains("tome of earth"))
+                if (shieldItemName.contains("tome of earth"))
                 {
                     if (!shieldItemName.contains("(empty)"))
                     {
@@ -1205,7 +1205,7 @@ public class MaxHit {
 
         // Twinflame Staff Double Hit bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        if (weaponItemName.contains("twinflame staff"))
         {
             if (spell != null && spell.getSpellbook().contains("standard"))
             {

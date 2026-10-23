@@ -84,7 +84,7 @@ public class EquipmentItems
             if(playerEquipment.length > ITEMSLOT.getSlotIdx()
                     && playerEquipment[ITEMSLOT.getSlotIdx()] != null)
             {
-                itemName = client.getItemDefinition(playerEquipment[ITEMSLOT.getSlotIdx()].getId()).getName();
+                itemName = client.getItemDefinition(playerEquipment[ITEMSLOT.getSlotIdx()].getId()).getName().toLowerCase();
             }
         }
 
@@ -138,7 +138,7 @@ public class EquipmentItems
 
         if (quiverItems != null)
         {
-            itemName = client.getItemDefinition(quiverItems.getId()).getName();
+            itemName = client.getItemDefinition(quiverItems.getId()).getName().toLowerCase();
         }
 
         return itemName;
@@ -171,50 +171,50 @@ public class EquipmentItems
     public static boolean doesAmmoMatchWeapon(String ammoTypeName, String weaponName)
     {
         // Arrows -> bows
-        if (ammoTypeName.toLowerCase().contains("arrow")) {
+        if (ammoTypeName.contains("arrow")) {
             // Ogre arrow -> ogre bow
-            if (ammoTypeName.toLowerCase().contains("ogre")) {
-                if(weaponName.toLowerCase().contains("ogre")) return true;
+            if (ammoTypeName.contains("ogre")) {
+                if(weaponName.contains("ogre")) return true;
             }
             // all other arrows -> any bow
             else {
-                if(weaponName.toLowerCase().contains("bow") && !weaponName.toLowerCase().contains("crossbow")) return true;
+                if(weaponName.contains("bow") && !weaponName.contains("crossbow")) return true;
             }
         }
         // Brutal Arrows
-        else if(ammoTypeName.toLowerCase().contains("brutal")) {
-            if(weaponName.toLowerCase().contains("ogre")) return true;
+        else if(ammoTypeName.contains("brutal")) {
+            if(weaponName.contains("ogre")) return true;
         }
         // Bolts -> crossbows
-        else if(ammoTypeName.toLowerCase().contains("bolts")) {
+        else if(ammoTypeName.contains("bolts")) {
             // Kebbit bolts -> hunters' crossbow
-            if(ammoTypeName.toLowerCase().contains("kebbit")) {
-                if(weaponName.toLowerCase().contains("hunters' crossbow")) return true;
+            if(ammoTypeName.contains("kebbit")) {
+                if(weaponName.contains("hunters' crossbow")) return true;
             }
             // Antler bolts -> hunter's sunlight crossbow
-            else if(ammoTypeName.toLowerCase().contains("antler")){
-                if(weaponName.toLowerCase().contains("hunters' sunlight crossbow")) return true;
+            else if(ammoTypeName.contains("antler")){
+                if(weaponName.contains("hunters' sunlight crossbow")) return true;
             }
             // Bone bolts -> Dorgeshuun crossbow
-            else if (ammoTypeName.toLowerCase().contains("bone")) {
-                if(weaponName.toLowerCase().contains("dorgeshuun")) return true;
+            else if (ammoTypeName.contains("bone")) {
+                if(weaponName.contains("dorgeshuun")) return true;
             }
             // All other types of bolts -> normal crossbows
             else {
-                if(weaponName.toLowerCase().contains("crossbow")) return true;
+                if(weaponName.contains("crossbow")) return true;
             }
         }
         // Bolt rack -> Karil's
-        else if(ammoTypeName.toLowerCase().contains("rack")) {
-            if(weaponName.toLowerCase().contains("karil's")) return true;
+        else if(ammoTypeName.contains("rack")) {
+            if(weaponName.contains("karil's")) return true;
         }
         // Javelin -> Ballista
-        else if(ammoTypeName.toLowerCase().contains("javelin")) {
-            if(weaponName.toLowerCase().contains("ballista")) return true;
+        else if(ammoTypeName.contains("javelin")) {
+            if(weaponName.contains("ballista")) return true;
         }
         // Tar -> Salamander
-        else if(ammoTypeName.toLowerCase().contains("tar")) {
-            if(weaponName.toLowerCase().contains("salamander")) return true;
+        else if(ammoTypeName.contains("tar")) {
+            if(weaponName.contains("salamander")) return true;
         }
 
         // otherwise, ammo does NOT match!

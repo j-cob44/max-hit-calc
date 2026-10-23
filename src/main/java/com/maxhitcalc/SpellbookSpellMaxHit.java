@@ -57,17 +57,17 @@ public class SpellbookSpellMaxHit extends MaxHit
             if (client.getVarpValue(VarPlayerID.MAGEARENA_CHARGE) > 0) // Varplayer: Charge God Spell
             {
                 if(spell == CombatSpell.CLAWS_OF_GUTHIX &&
-                        (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
+                        (capeItemName.contains("guthix cape") ||  capeItemName.contains("guthix max cape")))
                 {
                     return 30;
                 }
                 else if(spell == CombatSpell.FLAMES_OF_ZAMORAK &&
-                        (capeItemName.toLowerCase().contains("zamorak cape") || capeItemName.toLowerCase().contains("zamorak max cape")))
+                        (capeItemName.contains("zamorak cape") || capeItemName.contains("zamorak max cape")))
                 {
                     return 30;
                 }
                 else if(spell == CombatSpell.SARADOMIN_STRIKE &&
-                        (capeItemName.toLowerCase().contains("saradomin cape") || capeItemName.toLowerCase().contains("saradomin max cape")))
+                        (capeItemName.contains("saradomin cape") || capeItemName.contains("saradomin max cape")))
                 {
                     return 30;
                 }
@@ -130,7 +130,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         // Chaos Gauntlet Bonus Check
         if(spell.getName().toLowerCase().contains("bolt"))
         {
-            if (glovesItemName.toLowerCase().contains("chaos gauntlets"))
+            if (glovesItemName.contains("chaos gauntlets"))
             {
                 basehit += 3;
             }
@@ -146,7 +146,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         if (spell.getName().toLowerCase().contains("fire"))
         {
             // Check for tome of fire
-            if (shieldItemName.contains("Tome of fire"))
+            if (shieldItemName.contains("tome of fire"))
             {
                 if (!shieldItemName.contains("(empty)"))
                 {
@@ -158,7 +158,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         if (spell.getName().toLowerCase().contains("water"))
         {
             // Check for tome of water
-            if (shieldItemName.contains("Tome of water"))
+            if (shieldItemName.contains("tome of water"))
             {
                 if (!shieldItemName.contains("(empty)"))
                 {
@@ -170,7 +170,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         if (spell.getName().toLowerCase().contains("earth"))
         {
             // Check for tome of water
-            if (shieldItemName.contains("Tome of earth"))
+            if (shieldItemName.contains("tome of earth"))
             {
                 if (!shieldItemName.contains("(empty)"))
                 {
@@ -226,7 +226,7 @@ public class SpellbookSpellMaxHit extends MaxHit
 
         // Twinflame Staff Double Hit bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        if (weaponItemName.contains("twinflame staff"))
         {
             if (spell != null && spell.getSpellbook().contains("standard")) {
 
