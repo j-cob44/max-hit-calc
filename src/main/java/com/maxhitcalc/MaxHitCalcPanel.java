@@ -73,9 +73,11 @@ public class MaxHitCalcPanel extends PluginPanel
     // NPC Selection Data
     private JComboBox npcList = new JComboBox();
     private JLabel npcNameHeader = new JLabel("No NPC Selected", SwingConstants.LEFT);
-    private JLabel weaknessLabel = new JLabel("---");
+    private JLabel weaknessLabel = new JLabel("Weakness:");
     private JLabel weaknessIcon = new JLabel("---");
     private JLabel weaknessPercentLabel = new JLabel("---");
+    private JLabel flatArmourLabel = new JLabel("Flat Armour:");
+    private JLabel flatArmourValueLabel = new JLabel("---");
 
 
     enum ColossalBladeSizeBonus
@@ -301,24 +303,48 @@ public class MaxHitCalcPanel extends PluginPanel
         npcNameHeader.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         selectedNPCPanel.add(npcNameHeader, BorderLayout.NORTH);
 
-        JPanel imagePanel = new JPanel(new GridLayout(1, 3, 0, 0));
+        JPanel imagePanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints ic = new GridBagConstraints();
+        ic.fill = GridBagConstraints.HORIZONTAL;
+        ic.weightx = 1;
+        ic.gridwidth = 1;
+        ic.gridy = 0;
 
         // Selected NPC icon
-        weaknessLabel = new JLabel("---");
-        weaknessLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        weaknessLabel.setHorizontalAlignment(SwingConstants.LEFT);
         weaknessLabel.setVerticalAlignment(SwingConstants.CENTER);
-        imagePanel.add(weaknessLabel);
+        ic.gridx = 0;
+        imagePanel.add(weaknessLabel, ic);
 
         // NPC weakness icon
         weaknessIcon = new JLabel("---");
         weaknessIcon.setHorizontalAlignment(SwingConstants.CENTER);
         weaknessIcon.setVerticalAlignment(SwingConstants.CENTER);
-        imagePanel.add(weaknessIcon);
+        ic.gridx = 1;
+        imagePanel.add(weaknessIcon, ic);
 
         weaknessPercentLabel = new JLabel("---");
-        weaknessPercentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        weaknessPercentLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         weaknessPercentLabel.setVerticalAlignment(SwingConstants.CENTER);
-        imagePanel.add(weaknessPercentLabel);
+        ic.gridx = 2;
+        imagePanel.add(weaknessPercentLabel, ic);
+
+        // NPC flat armour
+        ic.gridy = 1;
+
+        flatArmourLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        flatArmourLabel.setVerticalAlignment(SwingConstants.CENTER);
+        ic.gridx = 0;
+        ic.gridwidth = 2;
+        imagePanel.add(flatArmourLabel, ic);
+
+        flatArmourValueLabel = new JLabel("---");
+        flatArmourValueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        flatArmourValueLabel.setVerticalAlignment(SwingConstants.CENTER);
+        ic.gridx = 2;
+        ic.gridwidth = 1;
+        imagePanel.add(flatArmourValueLabel, ic);
 
         selectedNPCPanel.add(imagePanel, BorderLayout.CENTER);
 
@@ -411,6 +437,27 @@ public class MaxHitCalcPanel extends PluginPanel
         }
 
         weaknessPercentLabel.setText(selectedNPCWeakness.getWeaknessPercent() + "%");
+
+        setFlatArmour(selectedNPCWeakness.getFlatArmour());
+    }
+
+    void setFlatArmour(int flatArmour)
+    {
+        if (flatArmour > 0)
+        {
+            flatArmourValueLabel.setText("+" + flatArmour);
+            flatArmourValueLabel.setForeground(ColorScheme.PROGRESS_ERROR_COLOR);
+        }
+        else if (flatArmour < 0)
+        {
+            flatArmourValueLabel.setText(Integer.toString(flatArmour));
+            flatArmourValueLabel.setForeground(ColorScheme.PROGRESS_COMPLETE_COLOR);
+        }
+        else
+        {
+            flatArmourValueLabel.setText("0");
+            flatArmourValueLabel.setForeground(ColorScheme.TEXT_COLOR);
+        }
     }
 
 
@@ -418,12 +465,13 @@ public class MaxHitCalcPanel extends PluginPanel
     {
         npcNameHeader.setText("No NPC Selected");
 
-        weaknessLabel.setText("---");
-
         weaknessIcon.setIcon(null);
         weaknessIcon.setText("---");
 
         weaknessPercentLabel.setText("---");
+
+        flatArmourValueLabel.setText("---");
+        flatArmourValueLabel.setForeground(ColorScheme.TEXT_COLOR);
     }
 
 
@@ -479,6 +527,8 @@ public class MaxHitCalcPanel extends PluginPanel
             weaknessIcon.setIcon(PanelIcons.EMPTY_RUNE_ICON);
 
             weaknessPercentLabel.setText("0%");
+
+            setFlatArmour(0);
         }
     }
 }

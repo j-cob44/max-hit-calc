@@ -118,7 +118,35 @@ public class MaxHit {
         return 0.06 * soulStack;
     }
 
+    static int applyFlatArmour(int hit, int flatArmour)
+    {
+        return Math.max(0, hit - flatArmour);
+    }
+
+    // Flat armour of the selected NPC
+    protected int getNPCFlatArmour(AttackStyle weaponAttackStyle)
+    {
+        // magic attacks ignore flat armour
+        if(weaponAttackStyle == AttackStyle.CASTING || weaponAttackStyle == AttackStyle.DEFENSIVE_CASTING)
+            return 0;
+
+        if(plugin == null || plugin.selectedNPCName == null)
+            return 0;
+
+        NPCTypeWeakness selectedNPC = NPCTypeWeakness.findWeaknessByName(plugin.selectedNPCName);
+
+        if(selectedNPC == null)
+            return 0;
+
+        return selectedNPC.getFlatArmour();
+    }
+
     protected int getPassiveMultiHit(int hit, Item[] playerEquipment)
+    {
+        return getPassiveMultiHit(hit, playerEquipment, 0);
+    }
+
+    protected int getPassiveMultiHit(int hit, Item[] playerEquipment, int flatArmour)
     {
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(
                 client,
@@ -129,7 +157,9 @@ public class MaxHit {
         if(weaponName.contains("hallowfell"))
         {
             int secondaryHit = (int)Math.floor(hit * 0.5);
-            return hit + secondaryHit + secondaryHit;
+            return applyFlatArmour(hit, flatArmour)
+                    + applyFlatArmour(secondaryHit, flatArmour)
+                    + applyFlatArmour(secondaryHit, flatArmour);
         }
 
         // Scythe of Vitur, one hit per tile of target size up to 3, each half the one before it
@@ -139,12 +169,12 @@ public class MaxHit {
 
             if(hitCount < 2) return 0; // single tile targets are hit once
 
-            int total = hit;
+            int total = 0;
             int nextHit = hit;
-            for(int i = 1; i < hitCount; i++)
+            for(int i = 0; i < hitCount; i++)
             {
+                total += applyFlatArmour(nextHit, flatArmour);
                 nextHit = (int)Math.floor(nextHit * 0.5);
-                total += nextHit;
             }
 
             return total;

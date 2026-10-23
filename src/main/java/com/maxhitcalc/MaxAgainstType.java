@@ -611,11 +611,11 @@ public class MaxAgainstType extends MaxHit {
     }
 
     /**
-     * Calculates Max Hit Vs Types
+     * Calculates Max Hit Vs Types without flat armour bonuses/negatives
      *
      * @return Max Hit vs Types as Double
      */
-    public double calculate()
+    public double calculateBeforeFlatArmour()
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
@@ -759,13 +759,28 @@ public class MaxAgainstType extends MaxHit {
             }
         }
 
-        if(maxHit >= maxHitVsType)
-        {
-            return 0; // No Type Bonus
-        }
-        else
-        {
-            return maxHitVsType;
-        }
+        return maxHitVsType;
+    }
+
+    /**
+     * Calculates Max Hit Vs Types
+     *
+     * @return Max Hit vs Types as Double
+     */
+    public double calculate()
+    {
+        return MaxHit.applyFlatArmour((int) Math.floor(calculateBeforeFlatArmour()), getFlatArmour());
+    }
+
+    // Flat armour of the selected NPC, 0 when it does not apply
+    public int getFlatArmour()
+    {
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE);
+        int weaponTypeID = client.getVarbitValue(VarbitID.COMBAT_WEAPON_CATEGORY);
+
+        AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
+        AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+        return getNPCFlatArmour(attackStyle);
     }
 }

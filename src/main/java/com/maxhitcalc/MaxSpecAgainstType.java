@@ -72,12 +72,12 @@ public class MaxSpecAgainstType extends MaxAgainstType
         // Get Type modifier
         List<Double> typeModifiersList = getTypeBonus(attackStyle, playerEquipment);
 
-        if(!typeModifiersList.isEmpty())
-        {
-            // Get Max hit then calculate Spec
-            double maxSpec = maxSpecs.calculate();
+        // Get Max hit then calculate Spec
+        double maxSpec = maxSpecs.calculate();
 
-            if(maxSpec != 0)
+        if(maxSpec != 0)
+        {
+            if(!typeModifiersList.isEmpty() || getFlatArmour() != 0)
             {
                 double maxSpecVsTypeHit = Math.floor(maxSpec);
                 // Iterate through modifiers, flooring after multiplying

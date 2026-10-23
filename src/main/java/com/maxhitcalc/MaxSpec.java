@@ -328,6 +328,11 @@ public class MaxSpec
     // Returns 0 if not a multi hit spec weapon.
     public int getSpecMultiHit(int hit)
     {
+        return getSpecMultiHit(hit, 0);
+    }
+
+    public int getSpecMultiHit(int hit, int flatArmour)
+    {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
@@ -336,7 +341,7 @@ public class MaxSpec
         // Melee Double Hit Spec Weapons
         if(weaponName.contains("dragon dagger"))
         {
-            return hit * 2;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 2;
         }
 
         if(weaponName.contains("dragon claws"))
@@ -352,41 +357,45 @@ public class MaxSpec
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Third: " + third, null);
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Fourth: " + fourth, null);
 
-            return first + second + third + fourth;
+            return MaxHit.applyFlatArmour(first, flatArmour)
+                    + MaxHit.applyFlatArmour(second, flatArmour)
+                    + MaxHit.applyFlatArmour(third, flatArmour)
+                    + MaxHit.applyFlatArmour(fourth, flatArmour);
         }
 
         if(weaponName.contains("abyssal dagger"))
         {
             int secondHit = (int)(hit * 0.85);
-            return hit + secondHit;
+            return MaxHit.applyFlatArmour(hit, flatArmour) + MaxHit.applyFlatArmour(secondHit, flatArmour);
         }
 
         if(weaponName.contains("saradomin sword"))
         {
-            return hit + 16;
+            return MaxHit.applyFlatArmour(hit, flatArmour) + 16; // magic damage, flat armour does not apply
         }
 
         // Range Double Hit Spec Weapons
         if(weaponName.contains("magic shortbow"))
         {
-            return hit * 2;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 2;
         }
 
         if (weaponName.contains("dragon knife"))
         {
-            return hit * 2;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 2;
         }
 
         if(weaponName.contains("webweaver bow"))
         {
-            return hit * 4;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 4;
         }
 
         if(weaponName.contains("burning claws"))
         {
             int absoluteMax = (int) (hit * 1.75);
-            int realMax = (int) (absoluteMax * 0.25) + (int) (absoluteMax * 0.25) + (int) (absoluteMax * 0.5);
-            return realMax;
+            return MaxHit.applyFlatArmour((int) (absoluteMax * 0.25), flatArmour)
+                    + MaxHit.applyFlatArmour((int) (absoluteMax * 0.25), flatArmour)
+                    + MaxHit.applyFlatArmour((int) (absoluteMax * 0.5), flatArmour);
         }
 
         // else

@@ -435,28 +435,49 @@ public class MaxHitCalcPlugin extends Plugin {
 		}
 
 		// Calculate Max Hit vs Types of NPCs
-		maxVsType = (int) Math.floor(maxAgainstTypes.calculate());
+		int flatArmour = maxAgainstTypes.getFlatArmour();
+
+		maxVsType = (int) Math.floor(maxAgainstTypes.calculateBeforeFlatArmour());
+		int vsTypeArmourToApply = flatArmour;
 
 		if (config.displayMultiHitWeaponsAsOneHit()) {
 			int passiveMultiHit = maxHits.getPassiveMultiHit(
 					maxVsType,
-					playerEquipment
+					playerEquipment,
+					flatArmour
 			);
 
 			if (passiveMultiHit != 0) {
 				maxVsType = passiveMultiHit;
+				vsTypeArmourToApply = 0; // already taken off each hitsplat
 			}
+		}
+
+		maxVsType = MaxHit.applyFlatArmour(maxVsType, vsTypeArmourToApply);
+
+		if (maxVsType == maxHit) {
+			maxVsType = 0; // nothing to show, same as the normal max
 		}
 
 		// Calculate Special Attack Max Hit vs Types of NPCs
 		maxSpecVsType = (int) Math.floor(maxSpecsAgainstTypes.calculate());
+		int specVsTypeArmourToApply = flatArmour;
 
 		if (config.displayMultiHitWeaponsAsOneHit()) {
-			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpecVsType);
+			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpecVsType, flatArmour);
 
 			if (multiHitSpec != 0) {
 				maxSpecVsType = multiHitSpec;
+				specVsTypeArmourToApply = 0;
 			}
+		}
+
+		if (maxSpecVsType != 0) {
+			maxSpecVsType = MaxHit.applyFlatArmour(maxSpecVsType, specVsTypeArmourToApply);
+		}
+
+		if (maxSpecVsType == maxSpec) {
+			maxSpecVsType = 0; // nothing to show, same as the normal spec max
 		}
 	}
 }
