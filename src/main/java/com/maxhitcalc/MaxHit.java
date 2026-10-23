@@ -747,7 +747,10 @@ public class MaxHit
         double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
         double gearBonus = getRangeGearBoost(playerEquipment);
 
-        double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+        double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+        // Gear bonuses apply to the floored base hit
+        double maxHit = baseHit * gearBonus;
 
         // Step 3: Bonus damage from special attack and effects
         // Rat Default +10 damage Bonus
