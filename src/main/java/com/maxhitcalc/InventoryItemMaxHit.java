@@ -50,7 +50,7 @@ public class InventoryItemMaxHit
     }
 
     // Crudely determines attack style based on an item's name
-    private AttackStyle determineAttackStyle(int weaponID)
+    AttackStyle determineAttackStyle(int weaponID)
     {
         AttackStyle attackStyle;
 

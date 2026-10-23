@@ -50,6 +50,7 @@ public class SpellbookSpellMaxHit extends MaxHit
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
         String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
+        String amuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
 
         // God Spells Cases
         if((spell == CombatSpell.FLAMES_OF_ZAMORAK) || (spell == CombatSpell.CLAWS_OF_GUTHIX) || (spell == CombatSpell.SARADOMIN_STRIKE))
@@ -135,6 +136,9 @@ public class SpellbookSpellMaxHit extends MaxHit
                 basehit += 3;
             }
         }
+
+        // Elemental Amulet Bonus Check, stacks with the chaos gauntlets
+        basehit += getElementalAmuletBonus(amuletItemName, spell.getSpellType());
 
         return basehit;
     }

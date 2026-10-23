@@ -98,7 +98,6 @@ public class StatChangedMaxHit
         String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
         String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
         String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
-        String ammuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
 
         // SPECIAL BONUSES MUST BE ORDERED CORRECTLY.
         // Dharok's Set Check
@@ -131,28 +130,11 @@ public class StatChangedMaxHit
             }
         }
 
-        // Obsidian Set Check
-        if (headItemName.contains("obsidian"))
+        // Obsidian Set and Berserker Necklace Check
+        double obsidianBonus = maxHits.getObsidianBonus(playerEquipment);
+        if (obsidianBonus > 0)
         {
-            if(bodyItemName.contains("obsidian"))
-            {
-                if(legsItemName.contains("obsidian"))
-                {
-                    if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
-                    {
-                        specialBonusesToApply.add(0.1);
-                    }
-                }
-            }
-        }
-
-        // Berserker Necklace and Obisidian Melee Check
-        if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
-        {
-            if(ammuletItemName.contains("berserker"))
-            {
-                specialBonusesToApply.add(0.2);
-            }
+            specialBonusesToApply.add(obsidianBonus);
         }
 
         // Debug
@@ -218,11 +200,11 @@ public class StatChangedMaxHit
             maxHit = Math.floor(maxHit * inquisitorDamageBonus);
         }
 
-        // Osmumten's Fang Decrease
+        // Osmumten's Fang gives up the bottom and top 15%
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         if (weaponName.contains("osmumten's fang"))
         {
-            maxHit = maxHit * 0.85 + 1;
+            maxHit = maxHit - Math.floor(maxHit * 3 / 20);
         }
 
         // Colossal Blade Base Increase
@@ -281,7 +263,10 @@ public class StatChangedMaxHit
         double equipmentRangedStrength = maxHits.getRangedStrengthBonus(playerEquipment);
         double gearBonus = maxHits.getRangeGearBoost(playerEquipment);
 
-        double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+        double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+        // Gear bonuses apply to the floored base hit
+        double maxHit = baseHit * gearBonus;
 
         // Step 3: Bonus damage from special attack and effects
         // Rat Default +10 damage Bonus

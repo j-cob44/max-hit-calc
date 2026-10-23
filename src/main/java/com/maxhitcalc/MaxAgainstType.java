@@ -374,6 +374,9 @@ public class MaxAgainstType extends MaxHit
             capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName().toLowerCase();
         }
 
+        String amuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
+
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
@@ -548,6 +551,18 @@ public class MaxAgainstType extends MaxHit
                         basehit = 20;
                     }
                 }
+
+                // Chaos Gauntlet Bonus Check
+                if(selectedSpell.getName().toLowerCase().contains("bolt"))
+                {
+                    if (glovesItemName.contains("chaos gauntlets"))
+                    {
+                        basehit += 3;
+                    }
+                }
+
+                // Elemental Amulet Bonus Check, scales with the type weakness applied later
+                basehit += getElementalAmuletBonus(amuletItemName, selectedSpell.getSpellType());
             }
         }
 

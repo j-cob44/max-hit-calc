@@ -96,11 +96,11 @@ public class PredictNextMax extends MaxHit
                 );
             }
 
-            // Osmumten's Fang Decrease
+            // Osmumten's Fang gives up the bottom and top 15%
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
             if (weaponName.contains("osmumten's fang"))
             {
-                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+                predictedMaxHit = predictedMaxHit - Math.floor(predictedMaxHit * 3 / 20);
             }
 
             // Colossal Blade Base Increase
@@ -166,11 +166,11 @@ public class PredictNextMax extends MaxHit
                 );
             }
 
-            // Osmumten's Fang Decrease
+            // Osmumten's Fang gives up the bottom and top 15%
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
             if (weaponName.contains("osmumten's fang"))
             {
-                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+                predictedMaxHit = predictedMaxHit - Math.floor(predictedMaxHit * 3 / 20);
             }
 
             // Colossal Blade Base Increase
@@ -236,11 +236,11 @@ public class PredictNextMax extends MaxHit
                 );
             }
 
-            // Osmumten's Fang Decrease
+            // Osmumten's Fang gives up the bottom and top 15%
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
             if (weaponName.contains("osmumten's fang"))
             {
-                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+                predictedMaxHit = predictedMaxHit - Math.floor(predictedMaxHit * 3 / 20);
             }
 
             // Colossal Blade Base Increase
@@ -301,7 +301,10 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
@@ -350,7 +353,10 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
@@ -401,7 +407,10 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
@@ -452,7 +461,10 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment) + i;
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus

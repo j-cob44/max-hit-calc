@@ -371,6 +371,44 @@ public class MaxHit
     }
 
     // Passive Melee Set effects
+    // Obsidian set and berserker necklace
+    protected double getObsidianBonus(Item[] playerEquipment)
+    {
+        if (playerEquipment == null) return 0;
+
+        String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
+        // The throwing rings and the staff are not melee weapons
+        if (!weaponItemName.contains("toktz-xil-ak")
+                && !weaponItemName.contains("toktz-xil-ek")
+                && !weaponItemName.contains("tzhaar-ket-em")
+                && !weaponItemName.contains("tzhaar-ket-om"))
+        {
+            return 0;
+        }
+
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+        String ammuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
+
+        int obsidianPercent = 0;
+
+        if (headItemName.contains("obsidian")
+                && bodyItemName.contains("obsidian")
+                && legsItemName.contains("obsidian"))
+        {
+            obsidianPercent += 10;
+        }
+
+        if (ammuletItemName.contains("berserker"))
+        {
+            obsidianPercent += 20;
+        }
+
+        return obsidianPercent / 100.0;
+    }
+
     protected List<Double> getMeleeSpecialBonusMultiplier(Item[] playerEquipment)
     {
         List<Double> specialBonusesToApply = new ArrayList<>();
@@ -381,7 +419,6 @@ public class MaxHit
         String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
         String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
         String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
-        String ammuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
 
         // SPECIAL BONUSES MUST BE ORDERED CORRECTLY.
         // Dharok's Set Check
@@ -404,28 +441,11 @@ public class MaxHit
             }
         }
 
-        // Obsidian Set Check
-        if (headItemName.contains("obsidian"))
+        // Obsidian Set and Berserker Necklace Check, combines into one bonus
+        double obsidianBonus = getObsidianBonus(playerEquipment);
+        if (obsidianBonus > 0)
         {
-            if(bodyItemName.contains("obsidian"))
-            {
-                if(legsItemName.contains("obsidian"))
-                {
-                    if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
-                    {
-                        specialBonusesToApply.add(0.1);
-                    }
-                }
-            }
-        }
-
-        // Berserker Necklace and Obisidian Melee Check
-        if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
-        {
-            if(ammuletItemName.contains("berserker"))
-            {
-                specialBonusesToApply.add(0.2);
-            }
+            specialBonusesToApply.add(obsidianBonus);
         }
 
         // Debug
@@ -479,11 +499,11 @@ public class MaxHit
             maxHit = Math.floor(maxHit * inquisitorDamageBonus);
         }
 
-        // Osmumten's Fang Decrease
+        // Osmumten's Fang gives up the bottom and top 15%, the special attack rolls the full max
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponName.contains("osmumten's fang"))
+        if (weaponName.contains("osmumten's fang") && !isSpecialAttack)
         {
-            maxHit = maxHit * 0.85 + 1;
+            maxHit = maxHit - Math.floor(maxHit * 3 / 20);
         }
 
         // Colossal Blade Base Increase
@@ -693,7 +713,8 @@ public class MaxHit
             {
                 if(!headItemName.contains("(basic)")
                         && !headItemName.contains("(attuned)")
-                        && !headItemName.contains("(perfected)"))
+                        && !headItemName.contains("(perfected)")
+                        && !headItemName.contains("(inactive)"))
                 {
                     damagePercentBonus += 0.025;
                 }
@@ -703,7 +724,8 @@ public class MaxHit
             {
                 if(!bodyItemName.contains("(basic)")
                         && !bodyItemName.contains("(attuned)")
-                        && !bodyItemName.contains("(perfected)"))
+                        && !bodyItemName.contains("(perfected)")
+                        && !bodyItemName.contains("(inactive)"))
                 {
                     damagePercentBonus += 0.075;
                 }
@@ -713,7 +735,8 @@ public class MaxHit
             {
                 if(!legsItemName.contains("(basic)")
                         && !legsItemName.contains("(attuned)")
-                        && !legsItemName.contains("(perfected)"))
+                        && !legsItemName.contains("(perfected)")
+                        && !legsItemName.contains("(inactive)"))
                 {
                     damagePercentBonus += 0.05;
                 }
@@ -779,6 +802,20 @@ public class MaxHit
         return maxHit;
     }
 
+    // Elemental amulets add 2 to their own spell type, the elemental amulet covers all types
+    protected int getElementalAmuletBonus(String amuletItemName, SpellType spellType)
+    {
+        if (spellType == SpellType.NoType) return 0;
+
+        if (amuletItemName.contains("elemental amulet")) return 2;
+        if (spellType == SpellType.Air && amuletItemName.contains("amulet of air")) return 2;
+        if (spellType == SpellType.Water && amuletItemName.contains("amulet of water")) return 2;
+        if (spellType == SpellType.Earth && amuletItemName.contains("amulet of earth")) return 2;
+        if (spellType == SpellType.Fire && amuletItemName.contains("amulet of fire")) return 2;
+
+        return 0;
+    }
+
     protected double getSpellBaseHit(Item[] playerEquipment, AttackStyle weaponAttackStyle, double magicLevel)
     {
         double basehit = 0;
@@ -786,6 +823,7 @@ public class MaxHit
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
         String capeItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.CAPE);
         String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
+        String amuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
@@ -988,6 +1026,9 @@ public class MaxHit
                         basehit += 3;
                     }
                 }
+
+                // Elemental Amulet Bonus Check, stacks with the chaos gauntlets
+                basehit += getElementalAmuletBonus(amuletItemName, selectedSpell.getSpellType());
             }
         }
 

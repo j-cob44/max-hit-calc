@@ -156,9 +156,10 @@ public class MaxSpec
             return 1.25;
         }
 
+        // Fang's spec adds no damage, it rolls the unshrunk max
         if (weaponName.contains("osmumten's fang"))
         {
-            return 1.16666667;
+            return 1;
         }
 
         if(weaponName.contains("voidwaker"))
