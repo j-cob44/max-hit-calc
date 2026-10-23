@@ -309,22 +309,15 @@ public class MaxHit {
         {
             if (glovesItemName.contains("void"))
             {
-                // Melee helm and gloves, check for elite or not
-                if (bodyItemName.contains("void"))
+                if (bodyItemName.contains("elite void") && legsItemName.contains("elite void"))
                 {
-                    if (legsItemName.contains("void"))
-                    {
-                        // Normal void set
-                        return 1.1;
-                    }
+                    // Elite void set
+                    return 1.1; // same for melee
                 }
-                else if (bodyItemName.contains("elite void"))
+                else if (bodyItemName.contains("void") && legsItemName.contains("void"))
                 {
-                    if(legsItemName.contains("elite void"))
-                    {
-                        // Elite void set
-                        return 1.1; // same for melee
-                    }
+                    // Normal void set
+                    return 1.1;
                 }
             }
         }
@@ -507,22 +500,15 @@ public class MaxHit {
         {
             if (glovesItemName.contains("void"))
             {
-                // Ranged helm and gloves, check for elite or not
-                if (bodyItemName.contains("void"))
+                if (bodyItemName.contains("elite void") && legsItemName.contains("elite void"))
                 {
-                    if (legsItemName.contains("void"))
-                    {
-                        // Normal void set
-                        return 1.1;
-                    }
+                    // Elite void set
+                    return 1.125;
                 }
-                else if (bodyItemName.contains("elite void"))
+                else if (bodyItemName.contains("void") && legsItemName.contains("void"))
                 {
-                    if(legsItemName.contains("elite void"))
-                    {
-                        // Elite void set
-                        return 1.125;
-                    }
+                    // Normal void set
+                    return 1.1;
                 }
             }
         }
