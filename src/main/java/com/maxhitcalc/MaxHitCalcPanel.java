@@ -413,6 +413,8 @@ public class MaxHitCalcPanel extends PluginPanel
         weaknessIcon = new JLabel("---");
         weaknessIcon.setHorizontalAlignment(SwingConstants.CENTER);
         weaknessIcon.setVerticalAlignment(SwingConstants.CENTER);
+        weaknessIcon.setPreferredSize(PanelIcons.RUNE_ICON_SIZE);
+        weaknessIcon.setMinimumSize(PanelIcons.RUNE_ICON_SIZE);
         ic.gridx = 1;
         imagePanel.add(weaknessIcon, ic);
 
