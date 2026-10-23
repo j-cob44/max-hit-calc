@@ -256,12 +256,18 @@ public class MaxHitCalcPlugin extends Plugin {
 			}
 		}
 
-//		System.out.println("Varplayer: " + event.getVarpId());
-//		System.out.println("Varbit: " + event.getVarbitId());
-//		System.out.println("Varbit value: " + event.getValue());
+		// System.out.println("Varplayer: " + event.getVarpId());
+		// System.out.println("Varbit: " + event.getVarbitId());
+		// System.out.println("Varbit value: " + event.getValue());
 
 		// On prayer changed: 83 = normal prayerbook
 		if (event.getVarpId() == VarPlayerID.PRAYER0) {
+			calculateMaxes();
+		}
+
+		// Alternate prayer toggle
+		if(event.getVarpId() == VarPlayerID.PRAYER_ALLACTIVE_ALTERNATE_0)
+		{
 			calculateMaxes();
 		}
 

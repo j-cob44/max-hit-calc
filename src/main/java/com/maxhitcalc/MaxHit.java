@@ -72,8 +72,20 @@ public class MaxHit {
             // Chivalry
             if(client.getVarbitValue(VarbitID.PRAYER_CHIVALRY) == 1) return 1.18;
 
-            // Piety
-            if(client.getVarbitValue(VarbitID.PRAYER_PIETY) == 1) return 1.23;
+            // Piety / Zeal
+            if(client.getVarbitValue(VarbitID.PRAYER_ZEAL) == 1 || client.getVarbitValue(VarbitID.PRAYER_PIETY) == 1)
+            {
+                int zealUnlocked = client.getVarbitValue(VarbitID.PRAYER_ZEAL_UNLOCKED);
+
+                if (zealUnlocked == 0)
+                {
+                    return 1.23;
+                }
+                else if (zealUnlocked == 1)
+                {
+                    return 1.28;
+                }
+            }
         }
 
         // Ranged Prayers
