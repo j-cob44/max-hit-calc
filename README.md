@@ -49,4 +49,4 @@ And suggestions can be left here: https://forms.gle/PnFryFtkSqEZAnaq8 <br>
 A BIG thank you to our Github contributors!
 
 Jacob Burton (j-cob44), October 2026 <br>
-Version 2.1.6
+Version 2.2.0
