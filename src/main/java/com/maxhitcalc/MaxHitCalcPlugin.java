@@ -54,409 +54,489 @@ import java.awt.image.BufferedImage;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Max Hit Calculator",
-	description = "Calculates Max Hit stats for the current equipment setup.",
-	tags = "max hit, combat, stats, helpful, melee, ranged, magic"
+    name = "Max Hit Calculator",
+    description = "Calculates Max Hit stats for the current equipment setup.",
+    tags = "max hit, combat, stats, helpful, melee, ranged, magic"
 )
-public class MaxHitCalcPlugin extends Plugin {
-	@Inject
-	private OverlayManager overlayManager;
+public class MaxHitCalcPlugin extends Plugin
+{
+    @Inject
+    private OverlayManager overlayManager;
 
-	@Inject
-	private MaxHitCalcOverlay pluginOverlay;
+    @Inject
+    private MaxHitCalcOverlay pluginOverlay;
 
-	@Inject
-	private Client client;
+    @Inject
+    private Client client;
 
-	@Inject
-	private ClientThread clientThread;
+    @Inject
+    private ClientThread clientThread;
 
-	@Inject
-	private MaxHitCalcConfig config;
+    @Inject
+    private MaxHitCalcConfig config;
 
-	@Inject
-	private ItemManager itemManager;
+    @Inject
+    private ItemManager itemManager;
 
-	@Inject
-	private ConfigManager configManager;
+    @Inject
+    private ConfigManager configManager;
 
-	// UI Panels
-	@Inject
-	private ClientToolbar clientToolbar;
-	private MaxHitCalcPanel panel;
-	private NavigationButton navButton;
+    // UI Panels
+    @Inject
+    private ClientToolbar clientToolbar;
+    private MaxHitCalcPanel panel;
+    private NavigationButton navButton;
 
-	//
-	private MaxHit maxHits;
-	private MaxSpec maxSpecs;
-	private MaxAgainstType maxAgainstTypes;
-	private MaxSpecAgainstType maxSpecsAgainstTypes;
+    //
+    private MaxHit maxHits;
+    private MaxSpec maxSpecs;
+    private MaxAgainstType maxAgainstTypes;
+    private MaxSpecAgainstType maxSpecsAgainstTypes;
 
-	// Public Max Hit variables, calculated when Equipment changes
-	public int maxHit = 0;
-	public int maxSpec = 0;
-	public int maxVsType = 0;
-	public int maxSpecVsType = 0;
+    // Public Max Hit variables, calculated when Equipment changes
+    public int maxHit = 0;
+    public int maxSpec = 0;
+    public int maxVsType = 0;
+    public int maxSpecVsType = 0;
 
-	// Variable to check custom "gamestate"
-	private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
+    // Variable to check custom "gamestate"
+    private boolean gameReady; // false before logged-in screen, true once logged-in screen closes, reset on logout
 
-	// Variables for Currently interacting NPC
-	public String selectedNPCName;
-	public int selectedNPCExpiryTime = Integer.MAX_VALUE;
-	boolean npcSelectedByPanel = false;
-	boolean npcResetByPanel = false;
+    // Variables for Currently interacting NPC
+    public String selectedNPCName;
+    public int selectedNPCExpiryTime = Integer.MAX_VALUE;
+    boolean npcSelectedByPanel = false;
+    boolean npcResetByPanel = false;
 
-	// Vars for Calculations
-	public int NPCSize = 1;
-	boolean npcSizeSettingChanged = false;
-	boolean markOfDarknessActive = false;
+    // Vars for Calculations
+    public int NPCSize = 1;
+    boolean npcSizeSettingChanged = false;
+    boolean markOfDarknessActive = false;
 
-	public BlowpipeDartType selectedDartType = BlowpipeDartType.MITHRIL;
-	boolean dartSettingChanged = false;
+    public BlowpipeDartType selectedDartType = BlowpipeDartType.MITHRIL;
+    boolean dartSettingChanged = false;
 
 
-	@Subscribe
-	public void onChatMessage(ChatMessage chatMessageReceived) {
-		String message = chatMessageReceived.getMessage().toLowerCase();
+    @Subscribe
+    public void onChatMessage(ChatMessage chatMessageReceived)
+    {
+        String message = chatMessageReceived.getMessage().toLowerCase();
 
-		// Mark of darkness workaround since it doesn't seem to change a varbit
-		if (message.contains("you have placed a mark of darkness upon yourself.")) {
-			markOfDarknessActive = true;
-			calculateMaxes();
-		}
-		if (message.contains("your mark of darkness has faded away.")) {
-			markOfDarknessActive = false;
-			calculateMaxes();
-		}
+        // Mark of darkness workaround since it doesn't seem to change a varbit
+        if (message.contains("you have placed a mark of darkness upon yourself."))
+        {
+            markOfDarknessActive = true;
+            calculateMaxes();
+        }
+        if (message.contains("your mark of darkness has faded away."))
+        {
+            markOfDarknessActive = false;
+            calculateMaxes();
+        }
 
-		// DEBUG CHAT COMMANDS
-//		if(chatMessageReceived.getMessage().equals("!Mhcdebug"))
-//		{
-//			calculateMaxes();
-//			System.out.println("=================S==================");
-//			System.out.println("MH: " + maxHit);
-//			System.out.println("MS: " + maxSpec);
-//			System.out.println("MHvT: " + maxVsType);
-//			System.out.println("MSvT: " + maxSpecVsType);
-//			System.out.println("=================E==================");
-//		}
-//		if(chatMessageReceived.getMessage().equals("!Allstyles"))
-//		{
-//			System.out.println("================S===============");
-//			int[] weaponStyles = client.getEnum(EnumID.WEAPON_STYLES).getIntVals();
+        // DEBUG CHAT COMMANDS
+//        if(chatMessageReceived.getMessage().equals("!Mhcdebug"))
+//        {
+//            calculateMaxes();
+//            System.out.println("=================S==================");
+//            System.out.println("MH: " + maxHit);
+//            System.out.println("MS: " + maxSpec);
+//            System.out.println("MHvT: " + maxVsType);
+//            System.out.println("MSvT: " + maxSpecVsType);
+//            System.out.println("=================E==================");
+//        }
+//        if(chatMessageReceived.getMessage().equals("!Allstyles"))
+//        {
+//            System.out.println("================S===============");
+//            int[] weaponStyles = client.getEnum(EnumID.WEAPON_STYLES).getIntVals();
 //
-//			for(int i = 0; i < weaponStyles.length; i++)
-//			{
-//				System.out.println("i: " + i + "; WS: " + weaponStyles[i]);
-//			}
-//			System.out.println("================E===============");
-//		}
+//            for(int i = 0; i < weaponStyles.length; i++)
+//            {
+//                System.out.println("i: " + i + "; WS: " + weaponStyles[i]);
+//            }
+//            System.out.println("================E===============");
+//        }
 //
-//		if(chatMessageReceived.getMessage().equals("!Getstyle"))
-//		{
-//			int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
-//			int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
+//        if(chatMessageReceived.getMessage().equals("!Getstyle"))
+//        {
+//            int attackStyleID = client.getVarpValue(VarPlayer.ATTACK_STYLE);
+//            int weaponTypeID = client.getVarbitValue(Varbits.EQUIPPED_WEAPON_TYPE);
 //
-//			System.out.println("=================S==================");
-//			System.out.println("WTID: " + weaponTypeID);
-//			System.out.println("ASID: " + attackStyleID);
-//			System.out.println("=================E==================");
-//		}
-	}
+//            System.out.println("=================S==================");
+//            System.out.println("WTID: " + weaponTypeID);
+//            System.out.println("ASID: " + attackStyleID);
+//            System.out.println("=================E==================");
+//        }
+    }
 
-	@Provides
-	MaxHitCalcConfig provideConfig(ConfigManager configManager) {
-		return configManager.getConfig(MaxHitCalcConfig.class);
-	}
+    @Provides
+    MaxHitCalcConfig provideConfig(ConfigManager configManager)
+    {
+        return configManager.getConfig(MaxHitCalcConfig.class);
+    }
 
-	@Override
-	protected void startUp() throws Exception {
-		overlayManager.add(pluginOverlay);
+    @Override
+    protected void startUp() throws Exception
+    {
+        overlayManager.add(pluginOverlay);
 
-		// Check if plugin started while game is running
-		if (client.getGameState().equals(GameState.LOGGED_IN)) {
-			gameReady = true; // Set true if game is logged in and ready
-		} else {
-			gameReady = false; // Set false on normal runelite boot
-		}
+        // Check if plugin started while game is running
+        if (client.getGameState().equals(GameState.LOGGED_IN))
+        {
+            gameReady = true; // Set true if game is logged in and ready
+        } else {
+            gameReady = false; // Set false on normal runelite boot
+        }
 
-		maxHits = new MaxHit(this, config, itemManager, client);
-		maxSpecs = new MaxSpec(this, config, itemManager, client);
-		maxAgainstTypes = new MaxAgainstType(this, config, itemManager, client);
-		maxSpecsAgainstTypes = new MaxSpecAgainstType(this, config, itemManager, client);
+        maxHits = new MaxHit(this, config, itemManager, client);
+        maxSpecs = new MaxSpec(this, config, itemManager, client);
+        maxAgainstTypes = new MaxAgainstType(this, config, itemManager, client);
+        maxSpecsAgainstTypes = new MaxSpecAgainstType(this, config, itemManager, client);
 
 
-		// UI Startup
-		panel = injector.getInstance(MaxHitCalcPanel.class);
-		panel.init(this, config);
+        // UI Startup
+        panel = injector.getInstance(MaxHitCalcPanel.class);
+        panel.init(this, config);
 
-		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/icon.png");
+        final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/icon.png");
 
-		navButton = NavigationButton.builder()
-				.tooltip("Max Hit Calc")
-				.icon(icon)
-				.priority(7)
-				.panel(panel)
-				.build();
+        navButton = NavigationButton.builder()
+                .tooltip("Max Hit Calc")
+                .icon(icon)
+                .priority(7)
+                .panel(panel)
+                .build();
 
-		if (config.showPanel()) {
-			clientToolbar.addNavigation(navButton);
-		}
-	}
+        if (config.showPanel())
+        {
+            clientToolbar.addNavigation(navButton);
+        }
+    }
 
-	@Override
-	protected void shutDown() throws Exception {
-		overlayManager.remove(pluginOverlay);
+    @Override
+    protected void shutDown() throws Exception
+    {
+        overlayManager.remove(pluginOverlay);
 
-		panel.deinit();
-		clientToolbar.removeNavigation(navButton);
-		panel = null;
-		navButton = null;
-	}
+        panel.deinit();
+        clientToolbar.removeNavigation(navButton);
+        panel = null;
+        navButton = null;
+    }
 
-	// On Widget Closed, check for when login screen is closed
-	@Subscribe
-	public void onWidgetClosed(WidgetClosed widget) {
-		if (widget.getGroupId() == InterfaceID.WELCOME_SCREEN) // "Click to play" screen interface id = 378
-		{
-			gameReady = true; // Set as soon as user closes welcome screen
-			calculateMaxes();
-		}
-	}
+    // On Widget Closed, check for when login screen is closed
+    @Subscribe
+    public void onWidgetClosed(WidgetClosed widget)
+    {
+        if (widget.getGroupId() == InterfaceID.WELCOME_SCREEN) // "Click to play" screen interface id = 378
+        {
+            gameReady = true; // Set as soon as user closes welcome screen
+            calculateMaxes();
+        }
+    }
 
-	// Un-ready when logged out.
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged event) {
-		// On return to login screen, gameReady = false
-		if (event.getGameState().equals(GameState.LOGIN_SCREEN)) {
-			gameReady = false;
-		}
-	}
+    // Un-ready when logged out.
+    @Subscribe
+    public void onGameStateChanged(GameStateChanged event)
+    {
+        // On return to login screen, gameReady = false
+        if (event.getGameState().equals(GameState.LOGIN_SCREEN))
+        {
+            gameReady = false;
+        }
+    }
 
-	// OnItemContainerChanged, waiting for equipment container
-	@Subscribe
-	public void onItemContainerChanged(ItemContainerChanged event) {
-		// On Item Equip/de-equip
-		if (event.getContainerId() == InventoryID.WORN) // Equipment Container ID
-		{
-			calculateMaxes();
-		}
-	}
+    // OnItemContainerChanged, waiting for equipment container
+    @Subscribe
+    public void onItemContainerChanged(ItemContainerChanged event)
+    {
+        // On Item Equip/de-equip
+        if (event.getContainerId() == InventoryID.WORN) // Equipment Container ID
+        {
+            calculateMaxes();
+        }
+    }
 
-	// OnVarbitChanged, waiting for change in prayer, attack style, or selected spell
-	@Subscribe
-	public void onVarbitChanged(VarbitChanged event) {
-		if (!gameReady) {
-			// Fix for potential out-of-order startup problems (logging in without welcome screen)
-			if (client.getGameState() == GameState.LOGGED_IN) {
-				gameReady = true;
-			} else {
-				return; // do nothing, before you can see the game
-			}
-		}
+    // OnVarbitChanged, waiting for change in prayer, attack style, or selected spell
+    @Subscribe
+    public void onVarbitChanged(VarbitChanged event)
+    {
+        if (!gameReady)
+        {
+            // Fix for potential out-of-order startup problems (logging in without welcome screen)
+            if (client.getGameState() == GameState.LOGGED_IN)
+            {
+                gameReady = true;
+            } else {
+                return; // do nothing, before you can see the game
+            }
+        }
 
-//		System.out.println("Varplayer: " + event.getVarpId());
-//		System.out.println("Varbit: " + event.getVarbitId());
-//		System.out.println("Varbit value: " + event.getValue());
+        // System.out.println("Varplayer: " + event.getVarpId());
+        // System.out.println("Varbit: " + event.getVarbitId());
+        // System.out.println("Varbit value: " + event.getValue());
 
-		// On prayer changed: 83 = normal prayerbook
-		if (event.getVarpId() == VarPlayerID.PRAYER0) {
-			calculateMaxes();
-		}
+        // On prayer changed: 83 = normal prayerbook
+        if (event.getVarpId() == VarPlayerID.PRAYER0)
+        {
+            calculateMaxes();
+        }
 
-		// On attack style changed
-		if (event.getVarpId() == VarPlayerID.COM_MODE) // Varplayer: Attack Style
-		{
-			calculateMaxes();
-		}
+        // Alternate prayer toggle
+        if(event.getVarpId() == VarPlayerID.PRAYER_ALLACTIVE_ALTERNATE_0)
+        {
+            calculateMaxes();
+        }
 
-		// On selected Spell changed
-		if (event.getVarbitId() == VarbitID.AUTOCAST_SPELL) {
-			calculateMaxes();
-		}
+        // On attack style changed
+        if (event.getVarpId() == VarPlayerID.COM_MODE) // Varplayer: Attack Style
+        {
+            calculateMaxes();
+        }
 
-		// On soul stack changed
-		if (event.getVarpId() == VarPlayerID.SOULREAPER_STACKS) // Varplayer: Soul Stack
-		{
-			calculateMaxes();
-		}
+        // On selected Spell changed
+        if (event.getVarbitId() == VarbitID.AUTOCAST_SPELL)
+        {
+            calculateMaxes();
+        }
 
-		// On Charge Spell Buff Start/End
-		if (event.getVarpId() == VarPlayerID.MAGEARENA_CHARGE) // Varplayer: Charge God Spell
-		{
-			calculateMaxes();
-		}
-	}
+        // On soul stack changed
+        if (event.getVarpId() == VarPlayerID.SOULREAPER_STACKS) // Varplayer: Soul Stack
+        {
+            calculateMaxes();
+        }
 
-	// OnStatChanged, waiting for skill changes, boosted or levelled
-	@Subscribe
-	public void onStatChanged(StatChanged event) {
-		// On Strength Changed
-		if (event.getSkill() == Skill.STRENGTH) {
-			calculateMaxes();
-		}
-		// On Ranged Changed
-		if (event.getSkill() == Skill.RANGED) {
-			calculateMaxes();
-		}
-		// On Magic Changed
-		if (event.getSkill() == Skill.MAGIC) {
-			calculateMaxes();
-		}
-		// On HP Changed
-		if (event.getSkill() == Skill.HITPOINTS) {
-			calculateMaxes();
-		}
-	}
+        // On Charge Spell Buff Start/End
+        if (event.getVarpId() == VarPlayerID.MAGEARENA_CHARGE) // Varplayer: Charge God Spell
+        {
+            calculateMaxes();
+        }
+    }
 
-	// On config Changed, run calculations
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event) {
-		// Only update for this plugin!
-		if (event.getGroup().contains("MaxHitCalc")) {
-			if (gameReady) {
-				clientThread.invoke(this::calculateMaxes);
+    // OnStatChanged, waiting for skill changes, boosted or levelled
+    @Subscribe
+    public void onStatChanged(StatChanged event)
+    {
+        // On Strength Changed
+        if (event.getSkill() == Skill.STRENGTH)
+        {
+            calculateMaxes();
+        }
+        // On Ranged Changed
+        if (event.getSkill() == Skill.RANGED)
+        {
+            calculateMaxes();
+        }
+        // On Magic Changed
+        if (event.getSkill() == Skill.MAGIC)
+        {
+            calculateMaxes();
+        }
+        // On HP Changed
+        if (event.getSkill() == Skill.HITPOINTS)
+        {
+            calculateMaxes();
+        }
+    }
 
-				// Update on panel if updated in settings
-				if (event.getKey().equals("blowpipeDartType")) {
-					panel.configDartSwitched();
-				}
-			}
+    // On config Changed, run calculations
+    @Subscribe
+    public void onConfigChanged(ConfigChanged event)
+    {
+        // Only update for this plugin!
+        if (event.getGroup().contains("MaxHitCalc"))
+        {
+            if (gameReady)
+            {
+                clientThread.invoke(this::calculateMaxes);
 
-			// Show or hide the side panel
-			if (config.showPanel()) {
-				clientToolbar.addNavigation(navButton);
-			} else {
-				clientToolbar.removeNavigation(navButton);
-			}
-		}
-	}
+                // Update on panel if updated in settings
+                if (event.getKey().equals("blowpipeDartType"))
+                {
+                    panel.configDartSwitched();
+                }
+            }
 
-	// Get Selected NPC from interaction
-	@Subscribe
-	public void onInteractingChanged(InteractingChanged interaction) {
-		// Verify interaction is between user and npc
-		if (interaction.getSource() != null) {
-			// Verify source == local player
-			String localPlayerName = client.getLocalPlayer().getName();
-			String sourceName = interaction.getSource().getName();
+            // Show or hide the side panel
+            if (config.showPanel())
+            {
+                clientToolbar.addNavigation(navButton);
+            } else {
+                clientToolbar.removeNavigation(navButton);
+            }
+        }
+    }
 
-			if (localPlayerName.equals(sourceName)) {
-				if (interaction.getTarget() != null) {
-					NPC rawNPC = (NPC) interaction.getTarget();
+    // Get Selected NPC from interaction
+    @Subscribe
+    public void onInteractingChanged(InteractingChanged interaction)
+    {
+        // Verify interaction is between user and npc
+        if (interaction.getSource() != null)
+        {
+            // Verify source == local player
+            String localPlayerName = client.getLocalPlayer().getName();
+            String sourceName = interaction.getSource().getName();
 
-					if (rawNPC != null) {
-						// Do nothing for combat dummy or bankers, etc
-						if (rawNPC.getCombatLevel() == 0) return; // Can't fight it, don't calc it
+            if (localPlayerName.equals(sourceName))
+            {
+                if (interaction.getTarget() != null)
+                {
+                    NPC rawNPC = (NPC) interaction.getTarget();
 
-						if (config.timeToWaitBeforeResettingSelectedNPC() > 0) {
-							selectedNPCExpiryTime = client.getTickCount() + (int) ((config.timeToWaitBeforeResettingSelectedNPC() * 60) / 0.6);
-						}
+                    if (rawNPC != null)
+                    {
+                        // Do nothing for combat dummy or bankers, etc
+                        if (rawNPC.getCombatLevel() == 0) return; // Can't fight it, don't calc it
 
-						// Get necessary vars: name and size
-						selectedNPCName = rawNPC.getComposition().getName();
-						NPCSize = Math.max(1, rawNPC.getComposition().getSize()); // enforce to 1, incase of error
+                        if (config.timeToWaitBeforeResettingSelectedNPC() > 0)
+                        {
+                            selectedNPCExpiryTime = client.getTickCount() + (int) ((config.timeToWaitBeforeResettingSelectedNPC() * 60) / 0.6);
+                        }
 
-						panel.setNPCviaPlugin();
+                        // Get necessary vars: name and size
+                        selectedNPCName = rawNPC.getComposition().getName();
+                        NPCSize = Math.max(1, rawNPC.getComposition().getSize()); // enforce to 1, incase of error
 
-						calculateMaxes();
-					}
-				}
-			}
-		}
-	}
+                        panel.setNPCviaPlugin();
 
-	// After certain amount of ticks, clear clickedNPC
-	@Subscribe
-	public void onGameTick(GameTick gameTick) {
-		// If NPC is selected, wait for time to expire to deselect it
-		if (selectedNPCName != null) {
-			if (selectedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0) {
-				selectedNPCName = null;
-				NPCSize = 1;
-				selectedNPCExpiryTime = Integer.MAX_VALUE; // Set higher than tick count
-				panel.resetNPCviaPanel();
-				calculateMaxes();
-			}
-		}
+                        calculateMaxes();
+                    }
+                }
+            }
+        }
+    }
 
-		// Check flags set by panel
-		// Update tick after panel settings are changed
-		if (npcSizeSettingChanged) {
-			calculateMaxes();
-			npcSizeSettingChanged = false;
-		}
+    // After certain amount of ticks, clear clickedNPC
+    @Subscribe
+    public void onGameTick(GameTick gameTick)
+    {
+        // If NPC is selected, wait for time to expire to deselect it
+        if (selectedNPCName != null)
+        {
+            if (selectedNPCExpiryTime < client.getTickCount() && config.timeToWaitBeforeResettingSelectedNPC() != 0)
+            {
+                selectedNPCName = null;
+                NPCSize = 1;
+                selectedNPCExpiryTime = Integer.MAX_VALUE; // Set higher than tick count
+                panel.resetNPCviaPanel();
+                calculateMaxes();
+            }
+        }
 
-		if (dartSettingChanged) {
-			calculateMaxes();
-			configManager.setConfiguration("MaxHitCalc", "blowpipeDartType", selectedDartType);
-			dartSettingChanged = false;
-		}
+        // Check flags set by panel
+        // Update tick after panel settings are changed
+        if (npcSizeSettingChanged)
+        {
+            calculateMaxes();
+            npcSizeSettingChanged = false;
+        }
 
-		if (npcSelectedByPanel) {
-			calculateMaxes();
-			npcSelectedByPanel = false;
-		}
+        if (dartSettingChanged)
+        {
+            calculateMaxes();
+            configManager.setConfiguration("MaxHitCalc", "blowpipeDartType", selectedDartType);
+            dartSettingChanged = false;
+        }
 
-		if (npcResetByPanel) {
-			calculateMaxes();
-			npcResetByPanel = false;
-		}
-	}
+        if (npcSelectedByPanel)
+        {
+            calculateMaxes();
+            npcSelectedByPanel = false;
+        }
 
-	// Calculates all panel max hits.
-	public void calculateMaxes() {
-		Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
+        if (npcResetByPanel)
+        {
+            calculateMaxes();
+            npcResetByPanel = false;
+        }
+    }
 
-		// Calculate Normal Max Hits
-		maxHit = (int) Math.floor(maxHits.calculate(false));
+    // Calculates all panel max hits.
+    public void calculateMaxes()
+    {
+        Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
 
-		if (config.displayMultiHitWeaponsAsOneHit()) {
-			int hallowfellMultiHit = maxHits.getHallowfellMultiHit(
-					maxHit,
-					playerEquipment
-			);
+        // Calculate Normal Max Hits
+        maxHit = (int) Math.floor(maxHits.calculate(false));
 
-			if (hallowfellMultiHit != 0) {
-				maxHit = hallowfellMultiHit;
-			}
-		}
+        if (config.displayMultiHitWeaponsAsOneHit())
+        {
+            int passiveMultiHit = maxHits.getPassiveMultiHit(
+                    maxHit,
+                    playerEquipment
+            );
 
-		// Calculate Special Attack Max Hit
-		maxSpec = (int) Math.floor(maxSpecs.calculate());
+            if (passiveMultiHit != 0)
+            {
+                maxHit = passiveMultiHit;
+            }
+        }
 
-		if (config.displayMultiHitWeaponsAsOneHit()) {
-			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpec);
+        // Calculate Special Attack Max Hit
+        maxSpec = (int) Math.floor(maxSpecs.calculate());
 
-			if (multiHitSpec != 0) {
-				maxSpec = multiHitSpec;
-			}
-		}
+        if (config.displayMultiHitWeaponsAsOneHit())
+        {
+            int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpec);
 
-		// Calculate Max Hit vs Types of NPCs
-		maxVsType = (int) Math.floor(maxAgainstTypes.calculate());
+            if (multiHitSpec != 0)
+            {
+                maxSpec = multiHitSpec;
+            }
+        }
 
-		if (config.displayMultiHitWeaponsAsOneHit()) {
-			int hallowfellMultiHit = maxHits.getHallowfellMultiHit(
-					maxVsType,
-					playerEquipment
-			);
+        // Calculate Max Hit vs Types of NPCs
+        int flatArmour = maxAgainstTypes.getFlatArmour();
 
-			if (hallowfellMultiHit != 0) {
-				maxVsType = hallowfellMultiHit;
-			}
-		}
+        maxVsType = (int) Math.floor(maxAgainstTypes.calculateBeforeFlatArmour());
+        int vsTypeArmourToApply = flatArmour;
 
-		// Calculate Special Attack Max Hit vs Types of NPCs
-		maxSpecVsType = (int) Math.floor(maxSpecsAgainstTypes.calculate());
+        if (config.displayMultiHitWeaponsAsOneHit())
+        {
+            int passiveMultiHit = maxHits.getPassiveMultiHit(
+                    maxVsType,
+                    playerEquipment,
+                    flatArmour
+            );
 
-		if (config.displayMultiHitWeaponsAsOneHit()) {
-			int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpecVsType);
+            if (passiveMultiHit != 0)
+            {
+                maxVsType = passiveMultiHit;
+                vsTypeArmourToApply = 0; // already taken off each hitsplat
+            }
+        }
 
-			if (multiHitSpec != 0) {
-				maxSpecVsType = multiHitSpec;
-			}
-		}
-	}
+        maxVsType = MaxHit.applyFlatArmour(maxVsType, vsTypeArmourToApply);
+
+        if (maxVsType == maxHit)
+        {
+            maxVsType = 0; // nothing to show, same as the normal max
+        }
+
+        // Calculate Special Attack Max Hit vs Types of NPCs
+        maxSpecVsType = (int) Math.floor(maxSpecsAgainstTypes.calculate());
+        int specVsTypeArmourToApply = flatArmour;
+
+        if (config.displayMultiHitWeaponsAsOneHit())
+        {
+            int multiHitSpec = maxSpecs.getSpecMultiHit(maxSpecVsType, flatArmour);
+
+            if (multiHitSpec != 0)
+            {
+                maxSpecVsType = multiHitSpec;
+                specVsTypeArmourToApply = 0;
+            }
+        }
+
+        if (maxSpecVsType != 0)
+        {
+            maxSpecVsType = MaxHit.applyFlatArmour(maxSpecVsType, specVsTypeArmourToApply);
+        }
+
+        if (maxSpecVsType == maxSpec)
+        {
+            maxSpecVsType = 0; // nothing to show, same as the normal spec max
+        }
+    }
 }

@@ -42,7 +42,8 @@ import java.util.List;
 /**
  * Contains functions for calculating max hit vs specific types of npc.
  */
-public class MaxAgainstType extends MaxHit {
+public class MaxAgainstType extends MaxHit
+{
     MaxAgainstType(MaxHitCalcPlugin plugin, MaxHitCalcConfig config, ItemManager itemManager, Client client)
     {
         super(plugin, config, itemManager, client);
@@ -58,6 +59,7 @@ public class MaxAgainstType extends MaxHit {
         String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
         String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
         String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+        String ringItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.RING);
 
         /*
          Order bonuses by when the bonus was added to the game, not when the item was added
@@ -67,81 +69,82 @@ public class MaxAgainstType extends MaxHit {
         if(attackStyle == AttackStyle.AGGRESSIVE || attackStyle == AttackStyle.CONTROLLED || attackStyle == AttackStyle.ACCURATE || attackStyle == AttackStyle.DEFENSIVE)
         {
             // Undead and Slayer checks, they are mutually exclusive
-            // Salve Amulet (e), Added 22 January 2007
-            if (amuletItemName.contains("Salve amulet (e)"))
+            // Amulet of Avarice, added 15 October 2019, does not stack with slayer gear
+            if (amuletItemName.contains("amulet of avarice"))
             {
                 typeBonusToApply.add(1.2);
             }
-            else if (amuletItemName.contains("Salve amulet(ei)"))
+            // Salve Amulet (e), Added 22 January 2007
+            else if (amuletItemName.contains("salve amulet (e)"))
+            {
+                typeBonusToApply.add(1.2);
+            }
+            else if (amuletItemName.contains("salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
             // Black Mask, Added 4 July 2006
-            else if (headItemName.contains("Black mask"))
+            else if (headItemName.contains("black mask"))
             {
                 typeBonusToApply.add(1.1667);
             }
             // Slayer Helm, same as black mask, Attribute Added 4 July 2006
-            else if (headItemName.contains("Slayer helmet"))
-            {
-                typeBonusToApply.add(1.1667);
-            }
             else if (headItemName.contains("slayer helmet"))
             {
                 typeBonusToApply.add(1.1667);
             }
             // Salve Amulet, Added 21 December 2004
-            else if (amuletItemName.contains("Salve amulet"))
+            else if (amuletItemName.contains("salve amulet"))
             {
                 typeBonusToApply.add(1.15);
             }
 
             // Demonbane, added 4 January 2001
-            if(weaponItemName.contains("Silverlight"))
+            if(weaponItemName.contains("silverlight"))
             {
                 typeBonusToApply.add(1.6) ;
             }
-            else if(weaponItemName.contains("Darklight"))
+            else if(weaponItemName.contains("darklight"))
             {
                 typeBonusToApply.add(1.6); // same bonus as silverlight
             }
 
             // Shades, added 22 March 2006
-            if(weaponItemName.contains("Gadderhammer"))
+            if(weaponItemName.contains("gadderhammer"))
             {
                 typeBonusToApply.add(1.25);
             }
 
             // Demonbane, added 9 June 2016
-            if(weaponItemName.contains("Arclight"))
+            if(weaponItemName.contains("arclight"))
             {
                 typeBonusToApply.add(1.7); // different from silverlight and darklight
             }
-            else if(weaponItemName.contains("Emberlight"))
+            else if(weaponItemName.contains("emberlight"))
             {
                 typeBonusToApply.add(1.7); //same as Arclight, but does not degrade
             }
 
             // Leaf-bladed Battleaxe vs Turoths and Kurasks, 15 September 2016
-            if(weaponItemName.contains("Leaf-bladed battleaxe"))
+            if(weaponItemName.contains("leaf-bladed battleaxe"))
             {
                 typeBonusToApply.add(1.175);
             }
 
             // Dragonbane, added 5 January 2017
-            if(weaponItemName.contains("Dragon hunter"))
+            if(weaponItemName.contains("dragon hunter"))
             {
                 typeBonusToApply.add(1.2); // same as dragon hunter crossbow boost which was added first
             }
 
             // Vampyre, added 24 May 2018
-            if(weaponItemName.contains("Ivandis flail"))
+            if(weaponItemName.contains("ivandis flail"))
             {
                 typeBonusToApply.add(1.2);
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponItemName.contains("Viggora's"))
+            if(weaponItemName.contains("viggora's"))
             {
                 if(!weaponItemName.contains("(u)"))
                 {
@@ -150,7 +153,7 @@ public class MaxAgainstType extends MaxHit {
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponItemName.contains("Ursine chainmace"))
+            if(weaponItemName.contains("ursine chainmace"))
             {
                 if(!weaponItemName.contains("(u)"))
                 {
@@ -158,44 +161,59 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
 
+            // Vampyre, Efaritay's aid, added 4 March 2020
+            if(ringItemName.contains("efaritay's aid"))
+            {
+                typeBonusToApply.add(1.1);
+            }
+
             // Vampyre, added 4 June 2020
-            if(weaponItemName.contains("Blisterwood flail"))
+            if(weaponItemName.contains("blisterwood flail"))
             {
                 typeBonusToApply.add(1.25);
             }
+            else if(weaponItemName.contains("blisterwood sickle"))
+            {
+                typeBonusToApply.add(1.15);
+            }
+            else if(weaponItemName.contains("hallowed flail"))
+            {
+                typeBonusToApply.add(1.25); // same as blisterwood flail
+            }
 
             // Golembane bonus, added 14 April 2021, updated on 28 April 2021
-            if(weaponItemName.contains("Barronite mace"))
+            if(weaponItemName.contains("barronite mace"))
             {
                 typeBonusToApply.add(1.15);
             }
 
             // Golembane bonus, added 14 April 2021, however added to this weapon on 27 August 2025
-            if(weaponItemName.contains("Granite hammer"))
+            if(weaponItemName.contains("granite hammer"))
             {
                 typeBonusToApply.add(1.3);
             }
 
             // Kalphite, acording to Mod Ash, added with Partisan, 27 April 2022
-            if(weaponItemName.contains("Keris"))
+            if(weaponItemName.contains("keris"))
             {
                 if(weaponItemName.contains("amascut"))
                 {
                     typeBonusToApply.add(1.15);
                 }
-                else {
+                else
+                {
                     typeBonusToApply.add(1.33);
                 }
             }
 
             // Demonbane, added 10 July 2024
-            if(weaponItemName.contains("Burning claws"))
+            if(weaponItemName.contains("burning claws"))
             {
                 typeBonusToApply.add(1.05) ;
             }
 
             // Vampire weapon, updated with 2026 blood moon rises update
-            if(weaponItemName.contains("Sunspear"))
+            if(weaponItemName.contains("sunspear"))
             {
                 typeBonusToApply.add(1.5) ;
             }
@@ -204,18 +222,23 @@ public class MaxAgainstType extends MaxHit {
         // Ranged Checks
         else if (attackStyle == AttackStyle.RANGING || attackStyle == AttackStyle.LONGRANGE)
         {
+            // Amulet of Avarice, added 15 October 2019, does not stack with slayer gear
+            if (amuletItemName.contains("amulet of avarice"))
+            {
+                typeBonusToApply.add(1.2);
+            }
             // Salve Amulet (ei), added 1 May 2014
-            if (amuletItemName.contains("Salve amulet(ei)"))
+            else if (amuletItemName.contains("salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
             // Salve Amulet (i), added 1 May 2014
-            else if (amuletItemName.contains("Salve amulet(i)"))
+            else if (amuletItemName.contains("salve amulet(i)"))
             {
                 typeBonusToApply.add(1.1667) ;
             }
             // Black Mask (i), added 26 September 2013
-            else if (headItemName.contains("Black mask"))
+            else if (headItemName.contains("black mask"))
             {
                 if (headItemName.contains("(i)"))
                 {
@@ -223,23 +246,19 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
             // Slayer helm (i)
-            else if (headItemName.contains("Slayer helmet (i)"))
-            {
-                typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
-            }
             else if (headItemName.contains("slayer helmet (i)"))
             {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
 
             // Dragonbane, added 5 January 2017
-            if(weaponItemName.contains("Dragon hunter"))
+            if(weaponItemName.contains("dragon hunter"))
             {
                 typeBonusToApply.add(1.25);
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponItemName.contains("Craw's bow"))
+            if(weaponItemName.contains("craw's bow"))
             {
                 if(!weaponItemName.contains("(u)"))
                 {
@@ -248,7 +267,7 @@ public class MaxAgainstType extends MaxHit {
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponItemName.contains("Webweaver bow"))
+            if(weaponItemName.contains("webweaver bow"))
             {
                 if(!weaponItemName.contains("(u)"))
                 {
@@ -256,28 +275,45 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
 
+            // Vampyre, Efaritay's aid, added 4 March 2020
+            if(ringItemName.contains("efaritay's aid"))
+            {
+                typeBonusToApply.add(1.1);
+            }
+
             // Demonbane, added 10 July 2024
-            if(weaponItemName.contains("Scorching bow"))
+            if(weaponItemName.contains("scorching bow"))
             {
                 typeBonusToApply.add(1.3);
+            }
+
+            // Vampyre, updated with 2026 blood moon rises update
+            if(weaponItemName.contains("blisterwood stake"))
+            {
+                typeBonusToApply.add(1.25);
             }
 
         }
         // Magic Checks
         else if (attackStyle == AttackStyle.CASTING || attackStyle == AttackStyle.DEFENSIVE_CASTING)
         {
+            // Amulet of Avarice, added 15 October 2019, does not stack with slayer gear
+            if (amuletItemName.contains("amulet of avarice"))
+            {
+                typeBonusToApply.add(1.2);
+            }
             // Salve Amulet (ei), added 1 May 2014
-            if (amuletItemName.contains("Salve amulet(ei)"))
+            else if (amuletItemName.contains("salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
             // Salve Amulet (i), added 1 May 2014
-            else if (amuletItemName.contains("Salve amulet(i)"))
+            else if (amuletItemName.contains("salve amulet(i)"))
             {
                 typeBonusToApply.add(1.15) ;
             }
             // Black Mask (i), added 26 September 2013
-            else if (headItemName.contains("Black mask"))
+            else if (headItemName.contains("black mask"))
             {
                 if (headItemName.contains("(i)"))
                 {
@@ -285,23 +321,19 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
             // Slayer helm (i)
-            else if (headItemName.contains("Slayer helmet (i)"))
-            {
-                typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
-            }
             else if (headItemName.contains("slayer helmet (i)"))
             {
                 typeBonusToApply.add(1.15); // same as black mask (i) boost which was added first
             }
 
             // Dragonbane, added 5 January 2017 ; OR potentially "new" type since value is different from original, added 25 September 2024
-            if(weaponItemName.contains("Dragon hunter"))
+            if(weaponItemName.contains("dragon hunter"))
             {
                 typeBonusToApply.add(1.4);
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponItemName.contains("Thammaron's sceptre"))
+            if(weaponItemName.contains("thammaron's sceptre"))
             {
                 if(!weaponItemName.contains("(u)"))
                 {
@@ -310,7 +342,7 @@ public class MaxAgainstType extends MaxHit {
             }
 
             // Wilderness, added 26 July 2018
-            if(weaponItemName.contains("Accursed sceptre"))
+            if(weaponItemName.contains("accursed sceptre"))
             {
                 if(!weaponItemName.contains("u)"))
                 {
@@ -332,79 +364,87 @@ public class MaxAgainstType extends MaxHit {
         if(playerEquipment.length > EquipmentInventorySlot.WEAPON.getSlotIdx()
                 && playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()] != null)
         {
-            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName();
+            weaponItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName().toLowerCase();
         }
 
         String capeItemName = "";
         if(playerEquipment.length > EquipmentInventorySlot.CAPE.getSlotIdx()
                 && playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()] != null)
         {
-            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName();
+            capeItemName = client.getItemDefinition(playerEquipment[EquipmentInventorySlot.CAPE.getSlotIdx()].getId()).getName().toLowerCase();
         }
+
+        String amuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
+        String glovesItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.GLOVES);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Magic Weapon: " + client.getItemDefinition(playerItems[EquipmentInventorySlot.WEAPON.getSlotIdx()].getId()).getName(), null);
 
         // Powered Staff Check
         // Trident of the Seas
-        if(weaponItemName.toLowerCase().contains("of the seas"))
+        if(weaponItemName.contains("of the seas"))
         {
             basehit = Math.max((Math.floor((Math.min(magicLevel, 125) - 15) / 3)), 1); // Corrected, thanks to Mod Ash
         }
         // Trident of the Swamp
-        else if(weaponItemName.toLowerCase().contains("of the swamp"))
+        else if(weaponItemName.contains("of the swamp"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 6) / 3))), 3); // Corrected, thanks to Mod Ash
         }
         // Sanquinesti Staff
-        else if(weaponItemName.contains("Sanguinesti"))
+        else if(weaponItemName.contains("sanguinesti"))
         {
             basehit = Math.max((Math.floor(((Math.min(magicLevel, 125) - 3) / 3))), 4); // Corrected, thanks to Mod Ash
         }
         // Thammaron's Sceptre
-        else if(weaponItemName.contains("Thammaron's"))
+        else if(weaponItemName.contains("thammaron's"))
         {
             basehit = (Math.floor(magicLevel/3) - 8);
         }
         // Accursed Sceptre
-        else if(weaponItemName.contains("Accursed"))
+        else if(weaponItemName.contains("accursed"))
         {
             basehit = (Math.floor(magicLevel/3) - 6);
         }
         // Tumeken's Shadow
-        else if(weaponItemName.contains("Tumeken"))
+        else if(weaponItemName.contains("tumeken"))
         {
             basehit = (Math.floor(magicLevel/3) + 1);
         }
         // Warped sceptre
-        else if(weaponItemName.contains("Warped sceptre"))
+        else if(weaponItemName.contains("warped sceptre"))
         {
             // Current Wiki Value
             basehit = Math.floor(((8*magicLevel)+96)/37);
         }
         // Crystal staff (basic)
-        else if(weaponItemName.contains("Crystal staff (basic)"))
+        else if(weaponItemName.contains("crystal staff (basic)"))
         {
             basehit = 23;
         }
         // Crystal staff (attuned)
-        else if(weaponItemName.contains("Crystal staff (attuned)"))
+        else if(weaponItemName.contains("crystal staff (attuned)"))
         {
             basehit = 31;
         }
         // Crystal staff (perfected)
-        else if(weaponItemName.contains("Crystal staff (perfected)"))
+        else if(weaponItemName.contains("crystal staff (perfected)"))
         {
             basehit = 39;
         }
-        else if(weaponItemName.contains("Bone staff"))
+        else if(weaponItemName.contains("bone staff"))
         {
             basehit = Math.floor(magicLevel/3) + 5;
         }
         // The Eye of Ayak
-        else if(weaponItemName.contains("Eye of ayak") || weaponItemName.contains("Eye of Ayak"))
+        else if(weaponItemName.contains("eye of ayak"))
         {
             basehit = Math.floor(magicLevel/3) - 6;
+        }
+        // Dawnbringer
+        else if(weaponItemName.contains("dawnbringer"))
+        {
+            basehit = Math.max(Math.floor(magicLevel/3) - 2, 2);
         }
         // Autocasted Spell
         else
@@ -431,7 +471,7 @@ public class MaxAgainstType extends MaxHit {
                 {
                     double magicDartDamage = Math.floor(magicLevel * ((double)1/10)) + 10;
 
-                    if(weaponItemName.contains("Slayer's staff (e)"))
+                    if(weaponItemName.contains("slayer's staff (e)"))
                     {
                         magicDartDamage = Math.floor(magicLevel * ((double)1/6)) + 13;
                     }
@@ -473,7 +513,7 @@ public class MaxAgainstType extends MaxHit {
                 }
 
                 // Purging Staff Boost to Demonbane spells
-                if(weaponItemName.contains("Purging staff"))
+                if(weaponItemName.contains("purging staff"))
                 {
                     if((selectedSpell == CombatSpell.INFERIOR_DEMONBANE) || (selectedSpell == CombatSpell.SUPERIOR_DEMONBANE) || (selectedSpell == CombatSpell.DARK_DEMONBANE))
                     {
@@ -487,17 +527,17 @@ public class MaxAgainstType extends MaxHit {
                     if (client.getVarpValue(VarPlayerID.MAGEARENA_CHARGE) > 0) // Varplayer: Charge God Spell
                     {
                         if(selectedSpell == CombatSpell.CLAWS_OF_GUTHIX &&
-                                (capeItemName.toLowerCase().contains("guthix cape") ||  capeItemName.toLowerCase().contains("guthix max cape")))
+                                (capeItemName.contains("guthix cape") ||  capeItemName.contains("guthix max cape")))
                         {
                             basehit = 30;
                         }
                         else if(selectedSpell == CombatSpell.FLAMES_OF_ZAMORAK &&
-                                (capeItemName.toLowerCase().contains("zamorak cape") || capeItemName.toLowerCase().contains("zamorak max cape")))
+                                (capeItemName.contains("zamorak cape") || capeItemName.contains("zamorak max cape")))
                         {
                             basehit = 30;
                         }
                         else if(selectedSpell == CombatSpell.SARADOMIN_STRIKE &&
-                                (capeItemName.toLowerCase().contains("saradomin cape") || capeItemName.toLowerCase().contains("saradomin max cape")))
+                                (capeItemName.contains("saradomin cape") || capeItemName.contains("saradomin max cape")))
                         {
                             basehit = 30;
                         }
@@ -511,6 +551,18 @@ public class MaxAgainstType extends MaxHit {
                         basehit = 20;
                     }
                 }
+
+                // Chaos Gauntlet Bonus Check
+                if(selectedSpell.getName().toLowerCase().contains("bolt"))
+                {
+                    if (glovesItemName.contains("chaos gauntlets"))
+                    {
+                        basehit += 3;
+                    }
+                }
+
+                // Elemental Amulet Bonus Check, scales with the type weakness applied later
+                basehit += getElementalAmuletBonus(amuletItemName, selectedSpell.getSpellType());
             }
         }
 
@@ -576,11 +628,11 @@ public class MaxAgainstType extends MaxHit {
     }
 
     /**
-     * Calculates Max Hit Vs Types
+     * Calculates Max Hit Vs Types without flat armour bonuses/negatives
      *
      * @return Max Hit vs Types as Double
      */
-    public double calculate()
+    public double calculateBeforeFlatArmour()
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
@@ -609,13 +661,13 @@ public class MaxAgainstType extends MaxHit {
 
         // Remove bonuses that are constant from normal max hit in order to calculate max vs type.
         // Remove default + 2 colossal blade bonus
-        if(weaponName.contains("Colossal blade"))
+        if(weaponName.contains("colossal blade"))
         {
             maxHitVsType = maxHitVsType - 2; // remove default bonus
         }
 
         // remove default +10 rat bonus
-        if(weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
+        if(weaponName.contains("bone mace") || weaponName.contains("bone shortbow"))
         {
             maxHitVsType = maxHitVsType - 10;
         }
@@ -631,7 +683,7 @@ public class MaxAgainstType extends MaxHit {
 
         // Re Add Bonuses that do not scale
         // Re-add Colossal Blade Increase, factoring in other modifiers.
-        if(weaponName.contains("Colossal blade"))
+        if(weaponName.contains("colossal blade"))
         {
             int sizeBonus = (2 * Math.min(plugin.NPCSize, 5));
 
@@ -639,7 +691,7 @@ public class MaxAgainstType extends MaxHit {
         }
 
         // Re-add Rat +10 Damage Bonus
-        if(weaponName.contains("Bone mace") || weaponName.contains("Bone shortbow"))
+        if(weaponName.contains("bone mace") || weaponName.contains("bone shortbow"))
         {
             maxHitVsType = maxHitVsType + 10;
         }
@@ -651,7 +703,7 @@ public class MaxAgainstType extends MaxHit {
             {
                 if(spell.getName().toLowerCase().contains("demonbane"))
                 {
-                    if(weaponName.toLowerCase().contains("purging staff"))
+                    if(weaponName.contains("purging staff"))
                     {
                         double bonusDmg = Math.floor(maxHitVsType) * 0.5;
                         maxHitVsType = Math.floor(maxHitVsType) + Math.floor(bonusDmg);
@@ -677,16 +729,20 @@ public class MaxAgainstType extends MaxHit {
                 // NO TIER,
                 spellBaseHit = spell.getBaseDamage();
             }
-            else {
+            else
+            {
                 // GET TIER, Get highest tier in level
                 int spellTier = spell.getTier();
                 String spellbook = spell.getSpellbook();
 
                 CombatSpell[] spellsInTier = CombatSpell.getSpellsOfTier(spellTier, spellbook);
 
-                for (CombatSpell itSpell : spellsInTier) {
-                    if (magicLevel >= spell.getReqLevel()) {
-                        if (spellBaseHit <= itSpell.getBaseDamage()) {
+                for (CombatSpell itSpell : spellsInTier)
+                {
+                    if (magicLevel >= spell.getReqLevel())
+                    {
+                        if (spellBaseHit <= itSpell.getBaseDamage())
+                        {
                             // new highest found
                             spellBaseHit = itSpell.getBaseDamage();
                         }
@@ -712,9 +768,10 @@ public class MaxAgainstType extends MaxHit {
 
         // Twinflame Staff Double Hit bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        if (weaponItemName.contains("twinflame staff"))
         {
-            if (spell != null && spell.getSpellbook().contains("standard")) {
+            if (spell != null && spell.getSpellbook().contains("standard"))
+            {
 
                 if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                 {
@@ -724,13 +781,28 @@ public class MaxAgainstType extends MaxHit {
             }
         }
 
-        if(maxHit >= maxHitVsType)
-        {
-            return 0; // No Type Bonus
-        }
-        else
-        {
-            return maxHitVsType;
-        }
+        return maxHitVsType;
+    }
+
+    /**
+     * Calculates Max Hit Vs Types
+     *
+     * @return Max Hit vs Types as Double
+     */
+    public double calculate()
+    {
+        return MaxHit.applyFlatArmour((int) Math.floor(calculateBeforeFlatArmour()), getFlatArmour());
+    }
+
+    // Flat armour of the selected NPC, 0 when it does not apply
+    public int getFlatArmour()
+    {
+        int attackStyleID = client.getVarpValue(VarPlayerID.COM_MODE);
+        int weaponTypeID = client.getVarbitValue(VarbitID.COMBAT_WEAPON_CATEGORY);
+
+        AttackStyle[] weaponAttackStyles = WeaponType.getWeaponTypeStyles(client, weaponTypeID);
+        AttackStyle attackStyle = weaponAttackStyles[attackStyleID];
+
+        return getNPCFlatArmour(attackStyle);
     }
 }

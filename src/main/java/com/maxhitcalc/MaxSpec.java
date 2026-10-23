@@ -61,52 +61,52 @@ public class MaxSpec
         // Check if we even have a spec weapon
         // ***********************************************************************
         // Melee Spec weapon checks
-        if(weaponName.contains("Armadyl godsword"))
+        if(weaponName.contains("armadyl godsword"))
         {
             return 1.375;
         }
 
-        if(weaponName.contains("Ancient godsword"))
+        if(weaponName.contains("ancient godsword"))
         {
             return 1.1;
         }
 
-        if(weaponName.contains("Bandos godsword"))
+        if(weaponName.contains("bandos godsword"))
         {
             return 1.21;
         }
 
-        if(weaponName.contains("Saradomin godsword"))
+        if(weaponName.contains("saradomin godsword"))
         {
             return 1.1;
         }
 
-        if(weaponName.contains("Zamorak godsword"))
+        if(weaponName.contains("zamorak godsword"))
         {
             return 1.1;
         }
 
-        if(weaponName.contains("Saradomin sword"))
+        if(weaponName.contains("saradomin sword"))
         {
             return 1.1;
         }
 
-        if(weaponName.contains("Dragon dagger"))
+        if(weaponName.contains("dragon dagger"))
         {
             return 1.15;
         }
 
-        if(weaponName.contains("Dragon sword"))
+        if(weaponName.contains("dragon sword"))
         {
             return 1.25;
         }
 
-        if(weaponName.contains("Dragon halberd"))
+        if(weaponName.contains("dragon halberd"))
         {
             return 1.1;
         }
 
-        if(weaponName.contains("Crystal halberd"))
+        if(weaponName.contains("crystal halberd"))
         {
             if(!weaponName.contains("(basic)") && !weaponName.contains("(attuned)") && !weaponName.contains("(perfected)"))
             {
@@ -114,88 +114,95 @@ public class MaxSpec
             }
         }
 
-        if(weaponName.contains("Barrelchest"))
+        if(weaponName.contains("barrelchest"))
         {
             return 1.1;
         }
 
-        if(weaponName.contains("Dragon hasta"))
+        if(weaponName.contains("dragon hasta"))
         {
             return 1.0 + (0.5 * ((double)client.getVarpValue(VarPlayerID.SA_ENERGY) /1000)); // Varplayer: Special Attack Percent
         }
 
-        if(weaponName.contains("Dragon longsword"))
+        if(weaponName.contains("dragon longsword"))
         {
             return 1.25;
         }
 
-        if(weaponName.contains("Dragon mace"))
+        if(weaponName.contains("dragon mace"))
         {
             return 1.5;
         }
 
-        if(weaponName.contains("Dragon warhammer"))
+        if(weaponName.contains("dragon warhammer"))
         {
             return 1.5;
         }
 
-        if(weaponName.contains("Rune claws"))
+        if(weaponName.contains("rune claws"))
         {
             return 1.1;
         }
 
-        if(weaponName.contains("Abyssal bludgeon"))
+        if(weaponName.contains("abyssal bludgeon"))
         {
             double currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
             double totalPrayer = client.getRealSkillLevel(Skill.PRAYER);
             return (1 +(0.005 * (totalPrayer - currentPrayer)));
         }
 
-        if(weaponName.contains("Saradomin's blessed sword"))
+        if(weaponName.contains("saradomin's blessed sword"))
         {
             return 1.25;
         }
 
-        if (weaponName.contains("Osmumten's fang"))
+        // Fang's spec adds no damage, it rolls the unshrunk max
+        if (weaponName.contains("osmumten's fang"))
         {
-            return 1.16666667;
+            return 1;
         }
 
-        if(weaponName.contains("Voidwaker"))
+        if(weaponName.contains("voidwaker"))
         {
             return 1.5;
         }
 
-        if(weaponName.contains("Vesta's longsword"))
+        if(weaponName.contains("vesta's longsword"))
         {
             return 1.20;
         }
 
-        if(weaponName.contains("Statius's warhammer"))
+        if(weaponName.contains("statius's warhammer"))
         {
             return 1.25;
         }
 
-        if(weaponName.contains("Soulreaper axe"))
+        if(weaponName.contains("soulreaper axe"))
         {
             return 1 + maxHits.getSoulStackBonus();
         }
 
-        if(weaponName.contains("Dual macuahuitl"))
+        if(weaponName.contains("dual macuahuitl"))
         {
             return 1.25;
         }
 
-        if(weaponName.contains("Arkan blade"))
+        if(weaponName.contains("arkan blade"))
         {
             return 1.5;
         }
 
+        // Blue Moon spear, bonus caps at 75 ticks of binding removed
+        if(weaponName.contains("blue moon spear"))
+        {
+            if(hasBlueMoonSet(playerEquipment)) return 2.125;
+        }
+
         // ***********************************************************************
         // Ranged Spec weapon checks
-        if(weaponName.contains("Dark bow"))
+        if(weaponName.contains("dark bow"))
         {
-            if(ammoItemName.contains("Dragon arrow"))
+            if(ammoItemName.contains("dragon arrow"))
             {
                 return 1.5;
             }
@@ -204,51 +211,51 @@ public class MaxSpec
                 return 1.3;
             }
         }
-        if(weaponName.contains("Zaryte crossbow"))
+        if(weaponName.contains("zaryte crossbow"))
         {
             if(ammoItemName.contains("bolts (e)"))
             {
                 return 1.1;
             }
         }
-        if(weaponName.contains("Dragon crossbow"))
+        if(weaponName.contains("dragon crossbow"))
         {
             return 1.2;
         }
         if(weaponName.contains("crossbow"))
         {
-            if(ammoItemName.contains("Diamond bolts (e)"))
+            if(ammoItemName.contains("diamond bolts (e)"))
             {
                 return 1.15;
             }
 
-            if(ammoItemName.contains("Dragonstone bolts (e)"))
+            if(ammoItemName.contains("dragonstone bolts (e)"))
             {
                 return 1.45;
             }
 
-            if(ammoItemName.contains("Onyx bolts (e)"))
+            if(ammoItemName.contains("onyx bolts (e)"))
             {
                 return 1.15;
             }
 
-            if(ammoItemName.contains("Opal bolts (e)"))
+            if(ammoItemName.contains("opal bolts (e)"))
             {
                 return 1.25;
             }
         }
 
-        if(weaponName.contains("Morrigan's throwing axe"))
+        if(weaponName.contains("morrigan's throwing axe"))
         {
             return 1.25;
         }
 
-        if(weaponName.contains("Webweaver bow"))
+        if(weaponName.contains("webweaver bow"))
         {
             return 0.4;
         }
 
-        if(weaponName.contains("Toxic blowpipe"))
+        if(weaponName.contains("toxic blowpipe"))
         {
             return 1.5;
         }
@@ -260,7 +267,7 @@ public class MaxSpec
 
         // ***********************************************************************
         // Magic Spec weapon checks
-        if(weaponName.contains("Eye of ayak") || weaponName.contains("Eye of Ayak"))
+        if(weaponName.contains("eye of ayak"))
         {
             return 1.3;
         }
@@ -268,9 +275,64 @@ public class MaxSpec
         return 0; // Not a spec weapon with a damage boost
     }
 
+    // Spec weapons that add flat damage instead of a multiplier
+    double getSpecFlatBonus(Item[] playerEquipment)
+    {
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
+        if(weaponName.contains("granite hammer")) return 5;
+
+        return 0;
+    }
+
+    // Spec weapons that replace the max hit entirely instead of scaling it.
+    // Returns 0 if not one of them.
+    double getSpecAbsoluteMaxHit(Item[] playerEquipment)
+    {
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        double magicLevel = client.getBoostedSkillLevel(Skill.MAGIC);
+        double basehit;
+
+        if(weaponName.contains("eldritch nightmare staff"))
+        {
+            basehit = Math.min(Math.floor((44 * magicLevel / 99) + 1), 44);
+        }
+        else if(weaponName.contains("volatile nightmare staff"))
+        {
+            basehit = Math.min(Math.floor((58 * magicLevel / 99) + 1), 58);
+        }
+        else
+        {
+            return 0;
+        }
+
+        return Math.floor(basehit * maxHits.getMagicEquipmentBoost(playerEquipment));
+    }
+
+    private boolean hasBlueMoonSet(Item[] playerEquipment)
+    {
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+
+        return isWorkingBlueMoonPiece(headItemName)
+                && isWorkingBlueMoonPiece(bodyItemName)
+                && isWorkingBlueMoonPiece(legsItemName);
+    }
+
+    private boolean isWorkingBlueMoonPiece(String itemName)
+    {
+        return itemName.contains("blue moon") && !itemName.contains("(broken)");
+    }
+
     // Returns the maximum hit of a spec weapon that hits multiple times in one move.
     // Returns 0 if not a multi hit spec weapon.
     public int getSpecMultiHit(int hit)
+    {
+        return getSpecMultiHit(hit, 0);
+    }
+
+    public int getSpecMultiHit(int hit, int flatArmour)
     {
         // Get Current Equipment
         Item[] playerEquipment = EquipmentItems.getCurrentlyEquipped(client);
@@ -278,12 +340,12 @@ public class MaxSpec
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
 
         // Melee Double Hit Spec Weapons
-        if(weaponName.contains("Dragon dagger"))
+        if(weaponName.contains("dragon dagger"))
         {
-            return hit * 2;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 2;
         }
 
-        if(weaponName.contains("Dragon claws"))
+        if(weaponName.contains("dragon claws"))
         {
             int first = hit - 1;
             int second = (hit - (hit/2)) - 1;
@@ -296,41 +358,45 @@ public class MaxSpec
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Third: " + third, null);
             //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Fourth: " + fourth, null);
 
-            return first + second + third + fourth;
+            return MaxHit.applyFlatArmour(first, flatArmour)
+                    + MaxHit.applyFlatArmour(second, flatArmour)
+                    + MaxHit.applyFlatArmour(third, flatArmour)
+                    + MaxHit.applyFlatArmour(fourth, flatArmour);
         }
 
-        if(weaponName.contains("Abyssal dagger"))
+        if(weaponName.contains("abyssal dagger"))
         {
             int secondHit = (int)(hit * 0.85);
-            return hit + secondHit;
+            return MaxHit.applyFlatArmour(hit, flatArmour) + MaxHit.applyFlatArmour(secondHit, flatArmour);
         }
 
-        if(weaponName.contains("Saradomin sword"))
+        if(weaponName.contains("saradomin sword"))
         {
-            return hit + 16;
+            return MaxHit.applyFlatArmour(hit, flatArmour) + 16; // magic damage, flat armour does not apply
         }
 
         // Range Double Hit Spec Weapons
-        if(weaponName.contains("Magic shortbow"))
+        if(weaponName.contains("magic shortbow"))
         {
-            return hit * 2;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 2;
         }
 
-        if (weaponName.contains("Dragon knife"))
+        if (weaponName.contains("dragon knife"))
         {
-            return hit * 2;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 2;
         }
 
-        if(weaponName.contains("Webweaver bow"))
+        if(weaponName.contains("webweaver bow"))
         {
-            return hit * 4;
+            return MaxHit.applyFlatArmour(hit, flatArmour) * 4;
         }
 
-        if(weaponName.contains("Burning claws"))
+        if(weaponName.contains("burning claws"))
         {
             int absoluteMax = (int) (hit * 1.75);
-            int realMax = (int) (absoluteMax * 0.25) + (int) (absoluteMax * 0.25) + (int) (absoluteMax * 0.5);
-            return realMax;
+            return MaxHit.applyFlatArmour((int) (absoluteMax * 0.25), flatArmour)
+                    + MaxHit.applyFlatArmour((int) (absoluteMax * 0.25), flatArmour)
+                    + MaxHit.applyFlatArmour((int) (absoluteMax * 0.5), flatArmour);
         }
 
         // else
@@ -352,15 +418,24 @@ public class MaxSpec
 
         // Get Spec modifier
         double specialAttackWeapon = this.getSpecWeaponStat(playerEquipment);
+        double flatSpecBonus = this.getSpecFlatBonus(playerEquipment);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
 
+        // Specs that ignore the normal max hit
+        double absoluteSpecHit = this.getSpecAbsoluteMaxHit(playerEquipment);
+        if(absoluteSpecHit != 0)
+        {
+            return absoluteSpecHit;
+        }
+
         double maxHit = maxHits.calculate(true);
-        if(specialAttackWeapon != 0)
+        if(specialAttackWeapon != 0 || flatSpecBonus != 0)
         {
             // Get Max hit then calculate Spec
-            double maxSpecHit = Math.floor(maxHit) * specialAttackWeapon;
+            double specMultiplier = (specialAttackWeapon != 0) ? specialAttackWeapon : 1;
+            double maxSpecHit = (Math.floor(maxHit) * specMultiplier) + flatSpecBonus;
 
             return maxSpecHit;
         }

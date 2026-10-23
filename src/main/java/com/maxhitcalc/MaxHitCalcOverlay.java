@@ -33,6 +33,7 @@ import net.runelite.api.Menu;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.widgets.*;
 import net.runelite.api.Item;
 import net.runelite.client.plugins.itemstats.StatChange;
@@ -41,7 +42,6 @@ import net.runelite.client.plugins.itemstats.ItemStatChanges;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
@@ -81,6 +81,12 @@ public class MaxHitCalcOverlay extends OverlayPanel
     public Dimension render(Graphics2D graphics)
     {
         panelComponent.getChildren().clear();
+
+        // Hide panel during cutscenes
+        if (client.getVarbitValue(VarbitID.CUTSCENE_STATUS) == 1)
+        {
+            return null;
+        }
 
         // Don't Display if 0, or -1 (error)
         if(plugin.maxHit > 0 && config.showMaxHit())
@@ -177,7 +183,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
             {
                 result += prediction.get(2) + " Strength Levels </br>" + prediction.get(3) + " Strength Bonus </br>";
             }
-            else {
+            else
+            {
                 result += prediction.get(1) + " Ranged Levels </br>" + prediction.get(3) + " Ranged Strength Bonus </br>";
             }
 
@@ -281,7 +288,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
                     int maxWithItem = (int) inventoryMaxHits.predict(itemID, slotID);
 
                     // If no error
-                    if (maxWithItem != -1){
+                    if (maxWithItem != -1)
+                    {
                         int deltaMax = maxWithItem - maxHit;
 
                         // Display depending on Negative or Positive Increase
@@ -319,7 +327,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
                             int maxWithChangedStats = (int) statcChangedMaxHits.predict(statChanges);
 
                             // If no error
-                            if (maxWithChangedStats != -1){
+                            if (maxWithChangedStats != -1)
+                            {
                                 int deltaMax = maxWithChangedStats - maxHit;
 
                                 // Display depending on Negative or Positive Increase
@@ -386,7 +395,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
             CombatSpell spell = CombatSpell.getSpellBySpriteID(spellSpriteID);
 
             // Check if spell is disabled
-            if (spell == null && config.showTooltipOnDisabledSpells()){
+            if (spell == null && config.showTooltipOnDisabledSpells())
+            {
                 spell = CombatSpell.getSpellByDisabledSpriteID(spellSpriteID);
             }
 
@@ -400,7 +410,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
                 {
                     playerEquipment = client.getItemContainer(InventoryID.WORN).getItems();
                 }
-                else {
+                else
+                {
                     playerEquipment = null;
                 }
 
@@ -456,7 +467,8 @@ public class MaxHitCalcOverlay extends OverlayPanel
             CombatSpell spell = CombatSpell.getSpellBySpriteID(spellSpriteID);
 
             // Check if spell is disabled
-            if (spell == null && config.showTooltipOnDisabledSpells()){
+            if (spell == null && config.showTooltipOnDisabledSpells())
+            {
                 spell = CombatSpell.getSpellByDisabledSpriteID(spellSpriteID);
             }
 

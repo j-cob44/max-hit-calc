@@ -98,17 +98,16 @@ public class StatChangedMaxHit
         String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
         String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
         String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
-        String ammuletItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.AMULET);
 
         // SPECIAL BONUSES MUST BE ORDERED CORRECTLY.
         // Dharok's Set Check
-        if (headItemName.contains("Dharok's"))
+        if (headItemName.contains("dharok's"))
         {
-            if(bodyItemName.contains("Dharok's"))
+            if(bodyItemName.contains("dharok's"))
             {
-                if(legsItemName.contains("Dharok's"))
+                if(legsItemName.contains("dharok's"))
                 {
-                    if(weaponItemName.contains("Dharok's"))
+                    if(weaponItemName.contains("dharok's"))
                     {
                         // Passed Check, Dharok's Set Equipped, Apply Effect
                         double baseHP = client.getRealSkillLevel(Skill.HITPOINTS);
@@ -131,28 +130,11 @@ public class StatChangedMaxHit
             }
         }
 
-        // Obsidian Set Check
-        if (headItemName.contains("Obsidian"))
+        // Obsidian Set and Berserker Necklace Check
+        double obsidianBonus = maxHits.getObsidianBonus(playerEquipment);
+        if (obsidianBonus > 0)
         {
-            if(bodyItemName.contains("Obsidian"))
-            {
-                if(legsItemName.contains("Obsidian"))
-                {
-                    if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
-                    {
-                        specialBonusesToApply.add(0.1);
-                    }
-                }
-            }
-        }
-
-        // Berserker Necklace and Obisidian Melee Check
-        if(weaponItemName.contains("ket") || weaponItemName.contains("xil"))
-        {
-            if(ammuletItemName.contains("Berserker"))
-            {
-                specialBonusesToApply.add(0.2);
-            }
+            specialBonusesToApply.add(obsidianBonus);
         }
 
         // Debug
@@ -218,20 +200,21 @@ public class StatChangedMaxHit
             maxHit = Math.floor(maxHit * inquisitorDamageBonus);
         }
 
-        // Osmumten's Fang Decrease
+        // Osmumten's Fang gives up the bottom and top 15%
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponName.contains("Osmumten's fang"))
+        if (weaponName.contains("osmumten's fang"))
         {
-            maxHit = maxHit * 0.85 + 1;
+            maxHit = maxHit - Math.floor(maxHit * 3 / 20);
         }
 
         // Colossal Blade Base Increase
-        if(weaponName.contains("Colossal blade")){
+        if(weaponName.contains("colossal blade"))
+        {
             maxHit = maxHit + 2;
         }
 
         // Rat Default +10 damage Bonus
-        if(weaponName.contains("Bone mace"))
+        if(weaponName.contains("bone mace"))
         {
             maxHit = maxHit + 10;
         }
@@ -280,17 +263,20 @@ public class StatChangedMaxHit
         double equipmentRangedStrength = maxHits.getRangedStrengthBonus(playerEquipment);
         double gearBonus = maxHits.getRangeGearBoost(playerEquipment);
 
-        double maxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+        double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+        // Gear bonuses apply to the floored base hit
+        double maxHit = baseHit * gearBonus;
 
         // Step 3: Bonus damage from special attack and effects
         // Rat Default +10 damage Bonus
-        if(weaponItemName.contains("Bone shortbow"))
+        if(weaponItemName.contains("bone shortbow"))
         {
             maxHit = maxHit + 10;
         }
 
         // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-        if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
+        if(weaponItemName.contains("tonalztics of ralos"))
         {
             maxHit = Math.floor(maxHit * 0.75); // unknown if flooring here causes miscalcs
             if(!weaponItemName.contains("(uncharged)"))
@@ -356,7 +342,7 @@ public class StatChangedMaxHit
 
         // Twinflame Staff Double Hit bonus
         String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-        if (weaponItemName.toLowerCase().contains("twinflame staff"))
+        if (weaponItemName.contains("twinflame staff"))
         {
             if (spell != null && spell.getSpellbook().contains("standard"))
             {
@@ -406,7 +392,8 @@ public class StatChangedMaxHit
             double magicMaxHit = calculateMagicMaxHit(playerEquipment, attackStyle, changedStats);
 
             // If -1, error, skip
-            if (magicMaxHit > -1){
+            if (magicMaxHit > -1)
+            {
                 return magicMaxHit;
             }
         }

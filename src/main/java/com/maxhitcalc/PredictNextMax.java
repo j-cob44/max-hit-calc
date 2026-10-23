@@ -96,20 +96,21 @@ public class PredictNextMax extends MaxHit
                 );
             }
 
-            // Osmumten's Fang Decrease
+            // Osmumten's Fang gives up the bottom and top 15%
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponName.contains("Osmumten's fang"))
+            if (weaponName.contains("osmumten's fang"))
             {
-                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+                predictedMaxHit = predictedMaxHit - Math.floor(predictedMaxHit * 3 / 20);
             }
 
             // Colossal Blade Base Increase
-            if(weaponName.contains("Colossal blade")){
+            if(weaponName.contains("colossal blade"))
+            {
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
             // Rat Default +10 damage Bonus
-            if(weaponName.contains("Bone mace"))
+            if(weaponName.contains("bone mace"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
             }
@@ -165,20 +166,21 @@ public class PredictNextMax extends MaxHit
                 );
             }
 
-            // Osmumten's Fang Decrease
+            // Osmumten's Fang gives up the bottom and top 15%
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponName.contains("Osmumten's fang"))
+            if (weaponName.contains("osmumten's fang"))
             {
-                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+                predictedMaxHit = predictedMaxHit - Math.floor(predictedMaxHit * 3 / 20);
             }
 
             // Colossal Blade Base Increase
-            if(weaponName.contains("Colossal blade")){
+            if(weaponName.contains("colossal blade"))
+            {
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
             // Rat Default +10 damage Bonus
-            if(weaponName.contains("Bone mace"))
+            if(weaponName.contains("bone mace"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
             }
@@ -234,20 +236,21 @@ public class PredictNextMax extends MaxHit
                 );
             }
 
-            // Osmumten's Fang Decrease
+            // Osmumten's Fang gives up the bottom and top 15%
             String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponName.contains("Osmumten's fang"))
+            if (weaponName.contains("osmumten's fang"))
             {
-                predictedMaxHit = predictedMaxHit * 0.85 + 1;
+                predictedMaxHit = predictedMaxHit - Math.floor(predictedMaxHit * 3 / 20);
             }
 
             // Colossal Blade Base Increase
-            if(weaponName.contains("Colossal blade")){
+            if(weaponName.contains("colossal blade"))
+            {
                 predictedMaxHit = predictedMaxHit + 2;
             }
 
             // Rat Default +10 damage Bonus
-            if(weaponName.contains("Bone mace"))
+            if(weaponName.contains("bone mace"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
             }
@@ -298,17 +301,20 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
-            if(weaponItemName.contains("Bone shortbow"))
+            if(weaponItemName.contains("bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
+            if(weaponItemName.contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))
@@ -347,17 +353,20 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
-            if(weaponItemName.contains("Bone shortbow"))
+            if(weaponItemName.contains("bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
+            if(weaponItemName.contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))
@@ -398,17 +407,20 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment);
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
-            if(weaponItemName.contains("Bone shortbow"))
+            if(weaponItemName.contains("bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
+            if(weaponItemName.contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))
@@ -449,18 +461,21 @@ public class PredictNextMax extends MaxHit
             double equipmentRangedStrength = getRangedStrengthBonus(playerEquipment) + i;
             double gearBonus = getRangeGearBoost(playerEquipment);
 
-            double predictedMaxHit = (0.5 + (((effectiveRangedStrength * (equipmentRangedStrength + 64))/640) * gearBonus) );
+            double baseHit = Math.floor(0.5 + ((effectiveRangedStrength * (equipmentRangedStrength + 64))/640));
+
+            // Gear bonuses apply to the floored base hit
+            double predictedMaxHit = baseHit * gearBonus;
 
             // Step 3: Bonus damage from special attack and effects
             // Rat Default +10 damage Bonus
 
-            if(weaponItemName.contains("Bone shortbow"))
+            if(weaponItemName.contains("bone shortbow"))
             {
                 predictedMaxHit = predictedMaxHit + 10;
             }
 
             // Tonalztics of Ralos (uncharged) max hit is 75% of normal
-            if(weaponItemName.toLowerCase().contains("tonalztics of ralos"))
+            if(weaponItemName.contains("tonalztics of ralos"))
             {
                 predictedMaxHit = Math.floor(predictedMaxHit * 0.75); // unknown if flooring here causes miscalcs
                 if(!weaponItemName.contains("(uncharged)"))
@@ -557,9 +572,10 @@ public class PredictNextMax extends MaxHit
 
             // Twinflame Staff Double Hit bonus
             String weaponItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
-            if (weaponItemName.toLowerCase().contains("twinflame staff"))
+            if (weaponItemName.contains("twinflame staff"))
             {
-                if (spell != null && spell.getSpellbook().contains("standard")) {
+                if (spell != null && spell.getSpellbook().contains("standard"))
+                {
 
                     if(!spell.getName().toLowerCase().contains("strike") && !spell.getName().toLowerCase().contains("surge"))
                     {
