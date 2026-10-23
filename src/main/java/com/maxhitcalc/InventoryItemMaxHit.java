@@ -80,7 +80,8 @@ public class InventoryItemMaxHit
                 || weaponItemName.contains("crozier")
                 || weaponItemName.contains("void knight mace")
                 || weaponItemName.contains("blue moon spear")
-                || weaponItemName.contains("eye of ayak"))
+                || weaponItemName.contains("eye of ayak")
+                || weaponItemName.contains("dawnbringer"))
         {
 
             attackStyle = AttackStyle.CASTING;

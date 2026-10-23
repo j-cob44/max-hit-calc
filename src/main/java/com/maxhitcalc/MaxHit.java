@@ -118,7 +118,7 @@ public class MaxHit {
         return 0.06 * soulStack;
     }
 
-    protected int getHallowfellMultiHit(int hit, Item[] playerEquipment)
+    protected int getPassiveMultiHit(int hit, Item[] playerEquipment)
     {
         String weaponName = EquipmentItems.getItemNameInGivenSetSlot(
                 client,
@@ -130,6 +130,24 @@ public class MaxHit {
         {
             int secondaryHit = (int)Math.floor(hit * 0.5);
             return hit + secondaryHit + secondaryHit;
+        }
+
+        // Scythe of Vitur, one hit per tile of target size up to 3, each half the one before it
+        if(weaponName.contains("scythe of vitur"))
+        {
+            int hitCount = Math.min(plugin.NPCSize, 3);
+
+            if(hitCount < 2) return 0; // single tile targets are hit once
+
+            int total = hit;
+            int nextHit = hit;
+            for(int i = 1; i < hitCount; i++)
+            {
+                nextHit = (int)Math.floor(nextHit * 0.5);
+                total += nextHit;
+            }
+
+            return total;
         }
 
         return 0;
@@ -818,6 +836,11 @@ public class MaxHit {
         else if(weaponItemName.contains("eye of ayak"))
         {
             basehit = Math.floor(magicLevel/3) - 6;
+        }
+        // Dawnbringer
+        else if(weaponItemName.contains("dawnbringer"))
+        {
+            basehit = Math.max(Math.floor(magicLevel/3) - 2, 2);
         }
         // Autocasted Spell
         else

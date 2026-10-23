@@ -212,9 +212,9 @@ public class EquipmentItems
         else if(ammoTypeName.contains("javelin")) {
             if(weaponName.contains("ballista")) return true;
         }
-        // Tar -> Salamander
+        // Tar -> Salamander or Swamp lizard
         else if(ammoTypeName.contains("tar")) {
-            if(weaponName.contains("salamander")) return true;
+            if(weaponName.contains("salamander") || weaponName.contains("lizard")) return true;
         }
 
         // otherwise, ammo does NOT match!

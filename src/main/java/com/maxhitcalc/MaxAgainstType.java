@@ -58,6 +58,7 @@ public class MaxAgainstType extends MaxHit {
         String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
         String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
         String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+        String ringItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.RING);
 
         /*
          Order bonuses by when the bonus was added to the game, not when the item was added
@@ -67,8 +68,13 @@ public class MaxAgainstType extends MaxHit {
         if(attackStyle == AttackStyle.AGGRESSIVE || attackStyle == AttackStyle.CONTROLLED || attackStyle == AttackStyle.ACCURATE || attackStyle == AttackStyle.DEFENSIVE)
         {
             // Undead and Slayer checks, they are mutually exclusive
+            // Amulet of Avarice, added 15 October 2019, does not stack with slayer gear
+            if (amuletItemName.contains("amulet of avarice"))
+            {
+                typeBonusToApply.add(1.2);
+            }
             // Salve Amulet (e), Added 22 January 2007
-            if (amuletItemName.contains("salve amulet (e)"))
+            else if (amuletItemName.contains("salve amulet (e)"))
             {
                 typeBonusToApply.add(1.2);
             }
@@ -154,10 +160,24 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
 
+            // Vampyre, Efaritay's aid, added 4 March 2020
+            if(ringItemName.contains("efaritay's aid"))
+            {
+                typeBonusToApply.add(1.1);
+            }
+
             // Vampyre, added 4 June 2020
             if(weaponItemName.contains("blisterwood flail"))
             {
                 typeBonusToApply.add(1.25);
+            }
+            else if(weaponItemName.contains("blisterwood sickle"))
+            {
+                typeBonusToApply.add(1.15);
+            }
+            else if(weaponItemName.contains("hallowed flail"))
+            {
+                typeBonusToApply.add(1.25); // same as blisterwood flail
             }
 
             // Golembane bonus, added 14 April 2021, updated on 28 April 2021
@@ -200,8 +220,13 @@ public class MaxAgainstType extends MaxHit {
         // Ranged Checks
         else if (attackStyle == AttackStyle.RANGING || attackStyle == AttackStyle.LONGRANGE)
         {
+            // Amulet of Avarice, added 15 October 2019, does not stack with slayer gear
+            if (amuletItemName.contains("amulet of avarice"))
+            {
+                typeBonusToApply.add(1.2);
+            }
             // Salve Amulet (ei), added 1 May 2014
-            if (amuletItemName.contains("salve amulet(ei)"))
+            else if (amuletItemName.contains("salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
@@ -248,18 +273,35 @@ public class MaxAgainstType extends MaxHit {
                 }
             }
 
+            // Vampyre, Efaritay's aid, added 4 March 2020
+            if(ringItemName.contains("efaritay's aid"))
+            {
+                typeBonusToApply.add(1.1);
+            }
+
             // Demonbane, added 10 July 2024
             if(weaponItemName.contains("scorching bow"))
             {
                 typeBonusToApply.add(1.3);
             }
 
+            // Vampyre, updated with 2026 blood moon rises update
+            if(weaponItemName.contains("blisterwood stake"))
+            {
+                typeBonusToApply.add(1.25);
+            }
+
         }
         // Magic Checks
         else if (attackStyle == AttackStyle.CASTING || attackStyle == AttackStyle.DEFENSIVE_CASTING)
         {
+            // Amulet of Avarice, added 15 October 2019, does not stack with slayer gear
+            if (amuletItemName.contains("amulet of avarice"))
+            {
+                typeBonusToApply.add(1.2);
+            }
             // Salve Amulet (ei), added 1 May 2014
-            if (amuletItemName.contains("salve amulet(ei)"))
+            else if (amuletItemName.contains("salve amulet(ei)"))
             {
                 typeBonusToApply.add(1.2);
             }
@@ -393,6 +435,11 @@ public class MaxAgainstType extends MaxHit {
         else if(weaponItemName.contains("eye of ayak"))
         {
             basehit = Math.floor(magicLevel/3) - 6;
+        }
+        // Dawnbringer
+        else if(weaponItemName.contains("dawnbringer"))
+        {
+            basehit = Math.max(Math.floor(magicLevel/3) - 2, 2);
         }
         // Autocasted Spell
         else

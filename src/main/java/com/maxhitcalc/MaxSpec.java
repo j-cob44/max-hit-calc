@@ -191,6 +191,12 @@ public class MaxSpec
             return 1.5;
         }
 
+        // Blue Moon spear, bonus caps at 75 ticks of binding removed
+        if(weaponName.contains("blue moon spear"))
+        {
+            if(hasBlueMoonSet(playerEquipment)) return 2.125;
+        }
+
         // ***********************************************************************
         // Ranged Spec weapon checks
         if(weaponName.contains("dark bow"))
@@ -266,6 +272,56 @@ public class MaxSpec
         }
 
         return 0; // Not a spec weapon with a damage boost
+    }
+
+    // Spec weapons that add flat damage instead of a multiplier
+    double getSpecFlatBonus(Item[] playerEquipment)
+    {
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+
+        if(weaponName.contains("granite hammer")) return 5;
+
+        return 0;
+    }
+
+    // Spec weapons that replace the max hit entirely instead of scaling it.
+    // Returns 0 if not one of them.
+    double getSpecAbsoluteMaxHit(Item[] playerEquipment)
+    {
+        String weaponName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.WEAPON);
+        double magicLevel = client.getBoostedSkillLevel(Skill.MAGIC);
+        double basehit;
+
+        if(weaponName.contains("eldritch nightmare staff"))
+        {
+            basehit = Math.min(Math.floor((44 * magicLevel / 99) + 1), 44);
+        }
+        else if(weaponName.contains("volatile nightmare staff"))
+        {
+            basehit = Math.min(Math.floor((58 * magicLevel / 99) + 1), 58);
+        }
+        else
+        {
+            return 0;
+        }
+
+        return Math.floor(basehit * maxHits.getMagicEquipmentBoost(playerEquipment));
+    }
+
+    private boolean hasBlueMoonSet(Item[] playerEquipment)
+    {
+        String headItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.HEAD);
+        String bodyItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.BODY);
+        String legsItemName = EquipmentItems.getItemNameInGivenSetSlot(client, playerEquipment, EquipmentInventorySlot.LEGS);
+
+        return isWorkingBlueMoonPiece(headItemName)
+                && isWorkingBlueMoonPiece(bodyItemName)
+                && isWorkingBlueMoonPiece(legsItemName);
+    }
+
+    private boolean isWorkingBlueMoonPiece(String itemName)
+    {
+        return itemName.contains("blue moon") && !itemName.contains("(broken)");
     }
 
     // Returns the maximum hit of a spec weapon that hits multiple times in one move.
@@ -352,15 +408,24 @@ public class MaxSpec
 
         // Get Spec modifier
         double specialAttackWeapon = this.getSpecWeaponStat(playerEquipment);
+        double flatSpecBonus = this.getSpecFlatBonus(playerEquipment);
 
         // Debug
         //client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Spec Modifier: " + specialAttackWeapon, null);
 
+        // Specs that ignore the normal max hit
+        double absoluteSpecHit = this.getSpecAbsoluteMaxHit(playerEquipment);
+        if(absoluteSpecHit != 0)
+        {
+            return absoluteSpecHit;
+        }
+
         double maxHit = maxHits.calculate(true);
-        if(specialAttackWeapon != 0)
+        if(specialAttackWeapon != 0 || flatSpecBonus != 0)
         {
             // Get Max hit then calculate Spec
-            double maxSpecHit = Math.floor(maxHit) * specialAttackWeapon;
+            double specMultiplier = (specialAttackWeapon != 0) ? specialAttackWeapon : 1;
+            double maxSpecHit = (Math.floor(maxHit) * specMultiplier) + flatSpecBonus;
 
             return maxSpecHit;
         }

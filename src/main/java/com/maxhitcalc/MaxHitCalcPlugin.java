@@ -413,13 +413,13 @@ public class MaxHitCalcPlugin extends Plugin {
 		maxHit = (int) Math.floor(maxHits.calculate(false));
 
 		if (config.displayMultiHitWeaponsAsOneHit()) {
-			int hallowfellMultiHit = maxHits.getHallowfellMultiHit(
+			int passiveMultiHit = maxHits.getPassiveMultiHit(
 					maxHit,
 					playerEquipment
 			);
 
-			if (hallowfellMultiHit != 0) {
-				maxHit = hallowfellMultiHit;
+			if (passiveMultiHit != 0) {
+				maxHit = passiveMultiHit;
 			}
 		}
 
@@ -438,13 +438,13 @@ public class MaxHitCalcPlugin extends Plugin {
 		maxVsType = (int) Math.floor(maxAgainstTypes.calculate());
 
 		if (config.displayMultiHitWeaponsAsOneHit()) {
-			int hallowfellMultiHit = maxHits.getHallowfellMultiHit(
+			int passiveMultiHit = maxHits.getPassiveMultiHit(
 					maxVsType,
 					playerEquipment
 			);
 
-			if (hallowfellMultiHit != 0) {
-				maxVsType = hallowfellMultiHit;
+			if (passiveMultiHit != 0) {
+				maxVsType = passiveMultiHit;
 			}
 		}
 
